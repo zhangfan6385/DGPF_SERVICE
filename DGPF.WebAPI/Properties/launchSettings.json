@@ -1,0 +1,33 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/DGPF.WebAPI",
+      "sslPort": 0
+    },
+    "iisExpress": {
+      "applicationUrl": "http://192.168.1.122:51332/",
+      "sslPort": 0
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "conf/fetchConfigList",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "DGPF.WebAPI": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "conf/fetchConfigList",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:51333/"
+    }
+  }
+}
