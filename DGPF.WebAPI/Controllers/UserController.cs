@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using DGPF.BIZModule;
 using DGPF.LOG;
 using System.Data;
+using Newtonsoft.Json;
 
 namespace DGPF.WebAPI.Controllers
 {
@@ -219,8 +220,9 @@ namespace DGPF.WebAPI.Controllers
             try
             {
                 if (UserId==mm.getAdminCode()) {
-
-                    return Json(new { code = 2000, message = "", roles = "", name = "系统超级管理员", userCode=UserId ,token = accessToken, introduction = "", avatar = "", sysCode = "1", sysName = "", userId = UserId, userSex = 0 });
+                    string[] arr = new string[1];
+                    arr[0] = "";
+                    return Json(new { code = 2000, message = "", roles = JsonConvert.DeserializeObject("['admin']") , name = "系统超级管理员", userCode=UserId ,token = accessToken, introduction = "", avatar = "", sysCode = "1", sysName = "", userId = UserId, userSex = 0 });
                 }
                 Dictionary<string, object> d = value.ToObject<Dictionary<string, object>>();
                 string _token = d["token"] == null ? "" : d["token"].ToString();

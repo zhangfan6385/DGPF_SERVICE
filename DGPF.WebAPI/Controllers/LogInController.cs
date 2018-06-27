@@ -38,7 +38,7 @@ namespace DGPF.WebAPI.Controllers
                     string accessToken = AccessTokenTool.GetAccessToken(admin);
                     DGPF.UTILITY.AccessTokenTool.DeleteToken(admin);
                     DGPF.UTILITY.AccessTokenTool.InsertToken(admin, accessToken, DateTime.Now.AddHours(1));
-                    return Json(new { code = 2000, message = "", token = accessToken});
+                    return Json(new { code = 2000, message = "", token = accessToken,roleLevel = "admin" });
                 }
                 else {
                     DGPF.BIZModule.Models.ts_uidp_userinfo mode = mm.getUserInfoByLogin(username, d["userDomain"].ToString());
@@ -56,7 +56,7 @@ namespace DGPF.WebAPI.Controllers
                     DGPF.UTILITY.AccessTokenTool.InsertToken(userId, accessToken, DateTime.Now.AddHours(1));
                     DataTable dtUserOrg = mm.GetUserOrg(mode.USER_ID);
                     //  string strUserOrg = JsonConvert.SerializeObject(dtUserOrg);
-                    return Json(new { code = 2000, message = "", token = accessToken, orgList = dtUserOrg });
+                    return Json(new { code = 2000, message = "", token = accessToken, orgList = dtUserOrg, roleLevel = "" });
                 }
             }
             catch (Exception ex)
