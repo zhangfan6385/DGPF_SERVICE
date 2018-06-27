@@ -23,9 +23,9 @@ namespace DGPF.BIZModule
                 string jsonStr = "";
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    jsonStr = GetSubMenu("''", dt);
+                    jsonStr = GetSubMenu("", dt);
                 }
-                r["items"] = JsonConvert.DeserializeObject(jsonStr);
+                r["items"] = JsonConvert.DeserializeObject("["+jsonStr+"]");
                 r["code"] = 2000;
                 r["message"] = "查询成功";
             }
@@ -63,8 +63,47 @@ namespace DGPF.BIZModule
         /// <returns></returns>
         public string updateRoleArticle(Dictionary<string, object> d)
         {
-            return db.updateRoleArticle(d);
+            if (d["id"] == null)
+            {
+                return "无角色id";
+            }
+            DataTable dt = db.GetRoles();
+            string strIds = getRoleIds(d["id"].ToString(), dt);
+            if (strIds != null && strIds != "")
+            {
+                strIds += ",'" + d["id"].ToString() + "'";
+            }
+            else
+            {
+                strIds = "'" + d["id"].ToString() + "'";
+            }
+            return db.updateRoleArticle(strIds);
         }
+        /// <summary>
+        /// 所有子节点的id  逗号隔开
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns></returns>
+        public string getRoleIds(string pid, DataTable dt)
+        {
+            StringBuilder sb = new StringBuilder();
+            DataRow[] rows = dt.Select("GROUP_CODE_UPPER='" + pid + "'");
+            if (rows.Length > 0)
+            {
+                bool isFist = false;
+                foreach (DataRow dr in rows)
+                {
+                    if (isFist)
+                        sb.Append(",");
+                    isFist = true;
+                    string id = dr["GROUP_ID"].ToString();
+                    sb.AppendFormat("'{0}'", dr["GROUP_ID"] == null ? "" : dr["GROUP_ID"]);
+                    sb.Append(getRoleIds(id, dt));
+                }
+            }
+            return sb.ToString();
+        }
+
         /// <summary>
         /// 系统自动生成orgId
         /// </summary>
@@ -120,7 +159,7 @@ namespace DGPF.BIZModule
         private string GetSubMenu(string pid, DataTable dt)
         {
             StringBuilder sb = new StringBuilder();
-            DataRow[] rows = dt.Select("ORG_CODE_UPPER=" + pid);
+            DataRow[] rows = dt.Select("GROUP_CODE_UPPER='" + pid+"'");
             if (rows.Length > 0)
             {
                 bool isFist = false;
@@ -131,12 +170,12 @@ namespace DGPF.BIZModule
                     isFist = true;
                     string id = dr["GROUP_ID"].ToString();
                     sb.Append("{");
-                    sb.AppendFormat("\"id\":\"{0}\",", dr["ORG_ID"]);
-                    sb.AppendFormat("\"parentId\":\"icon_{0}\",", dr["ORG_CODE_UPPER"]);
-                    sb.AppendFormat("\"groupName\":\"{0}\",", dr["ORG_NAME_FULL"]);
-                    sb.AppendFormat("\"groupCode\":\"{0}\",", dr["PHONE"]);
-                    sb.AppendFormat("\"sysCode\":\"{0}\",", dr["PHONE_S"]);
-                    sb.AppendFormat("\"remark\":\"{0}\",", dr["PHONE_FAX"]);
+                    sb.AppendFormat("\"id\":\"{0}\",", dr["GROUP_ID"]==null?"": dr["GROUP_ID"]);
+                    sb.AppendFormat("\"parentId\":\"{0}\",", dr["GROUP_CODE_UPPER"]==null?"": dr["GROUP_CODE_UPPER"]);
+                    sb.AppendFormat("\"groupName\":\"{0}\",", dr["GROUP_NAME"]==null?"": dr["GROUP_NAME"]);
+                    sb.AppendFormat("\"groupCode\":\"{0}\",", dr["GROUP_CODE"]==null?"": dr["GROUP_CODE"]);
+                    sb.AppendFormat("\"sysCode\":\"{0}\",", dr["SYS_CODE"]==null?"": dr["SYS_CODE"]);
+                    sb.AppendFormat("\"remark\":\"{0}\"", dr["REMARK"]==null?"": dr["REMARK"]);
                     sb.Append(",\"children\":[");
                     sb.Append(GetSubMenu(id, dt));
                     sb.Append("]");
@@ -153,6 +192,14 @@ namespace DGPF.BIZModule
         public string updateUserRoleArticle(Dictionary<string, object> d)
         {
             return db.updateUserRoleArticle(d);
+        }
+        /// <summary>
+        /// 清空用户角色信息
+        /// </summary>
+        /// <param name="d"></param>
+        /// <returns></returns>
+        public string deleteUserRoleArticle(Dictionary<string, object> d) {
+            return db.deleteUserRoleArticle(d);
         }
     }
 }

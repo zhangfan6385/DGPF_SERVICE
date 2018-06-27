@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using DGPF.BIZModule;
 using DGPF.LOG;
+using System.Data;
+
 namespace DGPF.WebAPI.Controllers
 {
     [Produces("application/json")]
-    [Route("api/User")]
+    [Route("User")]
     public class UserController : WebApiBaseController
     {
         UserModule mm = new UserModule();
-        ClsSysLog log = new ClsSysLog();
         /// <summary>
         /// 查询用户信息
         /// </summary>
@@ -191,7 +192,6 @@ namespace DGPF.WebAPI.Controllers
                 if (b == "")
                 {
                     r["message"] = "成功";
-
                     r["code"] = 2000;
                 }
                 else
@@ -213,10 +213,39 @@ namespace DGPF.WebAPI.Controllers
         /// </summary>
         /// <param name=""></param>
         /// <returns></returns>
-        [HttpGet("Info")]
-        public IActionResult Info(string token) {
-            BIZModule.Models.ts_uidp_userinfo mode= mm.getUserInfoByToken(token);
-            return Json(new { code=2000,message="",data=Newtonsoft.Json.JsonConvert.SerializeObject(mode)});
+        [HttpPost("Info")]
+        public IActionResult Info([FromBody]JObject value) {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                if (UserId==mm.getAdminCode()) {
+
+                    return Json(new { code = 2000, message = "", roles = "", name = "系统超级管理员", userCode=UserId ,token = accessToken, introduction = "", avatar = "", sysCode = "1", sysName = "", userId = UserId, userSex = 0 });
+                }
+                Dictionary<string, object> d = value.ToObject<Dictionary<string, object>>();
+                string _token = d["token"] == null ? "" : d["token"].ToString();
+                string departcode = d["departCode"] == null ? "" : d["departCode"].ToString();
+                DataTable dt = mm.getUserAndGroupgByToken(_token);
+                if (dt!=null&&dt.Rows.Count>0) {
+                    string[] role = new string[dt.Rows.Count];
+                    for (int i= 0;i < dt.Rows.Count;i++)
+                    {
+                        role[i] = dt.Rows[i]["GROUP_NAME"]==null?"": dt.Rows[i]["GROUP_NAME"].ToString();
+                    }
+                    string _name = dt.Rows[0]["USER_NAME"] == null ? "" : dt.Rows[0]["USER_NAME"].ToString();
+                    string _userCode= dt.Rows[0]["USER_CODE"] == null ? "" : dt.Rows[0]["USER_CODE"].ToString();
+                    string _userId= dt.Rows[0]["USER_ID"] == null ? "" : dt.Rows[0]["USER_ID"].ToString();
+                    int _userSex= Convert.ToInt32(dt.Rows[0]["USER_SEX"].ToString());
+                    return Json(new { code = 2000, message = "", roles = role,name=_name, userCode=_userCode, token =_token, introduction="", avatar="", sysCode ="1", sysName ="" , userId =_userId,userSex=_userSex});
+                }
+                return Json(new { code = 2000, message = "", roles = "", name = "", userCode="", token = _token, introduction = "", avatar = "", sysCode = "", sysName = "", userId = "", userSex=0 });
+            }
+            catch (Exception ex)
+            {
+                r["code"] = -1;
+                r["message"] = ex.Message;
+            }
+            return Json(r);
         }
         /// <summary>
         /// 查询用户信息(包括角色信息)

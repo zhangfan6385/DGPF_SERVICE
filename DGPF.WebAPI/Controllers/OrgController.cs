@@ -11,8 +11,8 @@ using Newtonsoft.Json.Linq;
 namespace DGPF.WebAPI.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Org")]
-    public class OrgController : Controller
+    [Route("Org")]
+    public class OrgController : WebApiBaseController
     {
         OrgModule mm = new OrgModule();
         /// <summary>
@@ -132,6 +132,39 @@ namespace DGPF.WebAPI.Controllers
             try
             {
                 string b = mm.updateUserOrgArticle(d);
+                if (b == "")
+                {
+                    r["message"] = "成功";
+
+                    r["code"] = 2000;
+                }
+                else
+                {
+                    r["code"] = -1;
+                    r["message"] = b;
+                }
+
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return Json(r);
+        }
+        /// <summary>
+        /// 清空用户角色
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [HttpPost("deleteUserOrgArticle")]
+        public IActionResult deleteUserOrgArticle([FromBody]JObject value)
+        {
+            Dictionary<string, object> d = value.ToObject<Dictionary<string, object>>();
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                string b = mm.deleteUserOrgArticle(d);
                 if (b == "")
                 {
                     r["message"] = "成功";

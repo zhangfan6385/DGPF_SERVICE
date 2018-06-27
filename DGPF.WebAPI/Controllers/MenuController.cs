@@ -11,7 +11,7 @@ using Newtonsoft.Json.Linq;
 namespace DGPF.WebAPI.Controllers
 {
     [Route("[controller]")]
-    public class MenuController : Controller
+    public class MenuController : WebApiBaseController
     {
         MenuModule mm = new MenuModule();
         // GET api/values

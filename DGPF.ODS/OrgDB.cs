@@ -63,11 +63,11 @@ namespace DGPF.ODS
         /// <summary>
         /// 删除组织机构
         /// </summary>
-        /// <param name="d"></param>
+        /// <param name="d">带单引号 逗号分隔的id字符串</param>
         /// <returns></returns>
-        public string updateOrgArticle(Dictionary<string, object> d)
+        public string updateOrgArticle(string strid)
         {
-            string sql = "delete FROM ts_uidp_org where ORG_ID='" + d["id"].ToString() + "' ;";
+            string sql = "delete FROM ts_uidp_org where ORG_ID in(" + strid + ")";
 
             return db.ExecutByStringResult(sql);
         }
@@ -79,18 +79,23 @@ namespace DGPF.ODS
         public string updateUserOrgArticle(Dictionary<string, object> d)
         {
             // string[] array = d["multipleSelection"].ToString().Split(',');
-            var array =(JArray) d["multipleSelection"];
+            var array =(JArray) d["arr"];
             string fengefu = "";
             string sql = " insert into ts_uidp_org_user(ORG_ID,USER_ID)values ";
+            string delSql = "delete from ts_uidp_org_user where ORG_ID='" + d["orgId"].ToString() + "' and USER_ID in (";
             foreach (var item in array)
             {
-
+                delSql += fengefu + "'" +item.ToString()+ "'";
                 sql +=fengefu+ "(";
                 sql += "'"+d["orgId"].ToString()+"','" + item.ToString()+"'" ;
                 sql += ")";
                 fengefu = ",";
             }
-            return db.ExecutByStringResult(sql);
+            delSql += ")";
+            List<string> list = new List<string>();
+            list.Add(delSql);
+            list.Add(sql);
+            return db.Executs(list);
         }
         /// <summary>
         /// 通过组织结构id查询
@@ -108,6 +113,28 @@ namespace DGPF.ODS
         public DataTable fetchOrgList() {
             string sql = "select * FROM ts_uidp_org ";
             return db.GetDataTable(sql);
+        }
+        /// <summary>
+        /// 清空用户组织机构
+        /// </summary>
+        /// <param name="d"></param>
+        /// <returns></returns>
+        public string deleteUserOrgArticle(Dictionary<string, object> d)
+        {
+            var array = (JArray)d["arr"];
+            if (array == null || array.Count == 0)
+            {
+                return "";
+            }
+            string fengefu = "";
+            string delSql = " delete from ts_uidp_org_user where  USER_ID in(";
+            foreach (var item in array)
+            {
+                delSql += fengefu + "'" + item.ToString() + "'";
+                fengefu = ",";
+            }
+            delSql += ")";
+            return db.ExecutByStringResult(delSql);
         }
     }
 }

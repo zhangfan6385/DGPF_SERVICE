@@ -10,15 +10,15 @@ using Newtonsoft.Json.Linq;
 namespace DGPF.WebAPI.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Role")]
-    public class RoleController : Controller
+    [Route("Role")]
+    public class RoleController : WebApiBaseController
     {
         RoleModule mm = new RoleModule();
         /// <summary>
         /// 查询
         /// </summary>
         /// <returns></returns>
-        [HttpGet("fetchOrgList")]
+        [HttpGet("fetchRoleList")]
         public IActionResult fetchRoleList(string sysCode)
         {
             Dictionary<string, object> d = new Dictionary<string, object>();
@@ -134,6 +134,39 @@ namespace DGPF.WebAPI.Controllers
             try
             {
                 string b = mm.updateUserRoleArticle(d);
+                if (b == "")
+                {
+                    r["message"] = "成功";
+
+                    r["code"] = 2000;
+                }
+                else
+                {
+                    r["code"] = -1;
+                    r["message"] = b;
+                }
+
+            }
+            catch (Exception e)
+            {
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return Json(r);
+        }
+        /// <summary>
+        /// 清空用户角色
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [HttpPost("deleteUserRoleArticle")]
+        public IActionResult deleteUserRoleArticle([FromBody]JObject value)
+        {
+            Dictionary<string, object> d = value.ToObject<Dictionary<string, object>>();
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                string b = mm.deleteUserRoleArticle(d);
                 if (b == "")
                 {
                     r["message"] = "成功";

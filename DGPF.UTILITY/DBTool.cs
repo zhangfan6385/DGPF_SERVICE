@@ -8,22 +8,24 @@ using System.Text;
 using System.Threading.Tasks;
 using DGPF.DB;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 namespace DGPF.UTILITY
 {
     public class DBTool
     {
-        public  readonly string strMySqlCon;//"server=localhost;user id=root;pwd=root;database=uidp;SslMode=none;charset=UTF8";
+        private static  string strMySqlCon;//"server=localhost;user id=root;pwd=root;database=uidp;SslMode=none;charset=UTF8";
         public  IDataBase db;
-        public DBTool(string DBType)
+        private static string dbType;
+        public DBTool(string dd)
         {
             try
             {
-                strMySqlCon = GetStrConn(DBType);
-                db = new ClsDBFactory(DBType, strMySqlCon).DataBase;
+                GetStrConn();
+                db = new ClsDBFactory(dbType, strMySqlCon).DataBase;
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -148,11 +150,10 @@ namespace DGPF.UTILITY
                 {
                     return "";
                 }
-                return "";
+                return "-1";
             }
             catch (Exception ex)
             {
-               
                 return ex.Message.ToString();
             }
             finally
@@ -160,26 +161,28 @@ namespace DGPF.UTILITY
                 db.Close();
             }
         }
-
         /// <summary>
         /// 执行sql方法;
         /// </summary>
         /// <param name="sql"></param>
         /// <returns></returns>
-        public string ExecutByStringResult(Dictionary< string,string> sql)
+        public string ExecutByStringResult(Dictionary<string, string> sql)
         {
             try
             {
+
                 db.Open();
+                db.BeginTransaction();
                 foreach (var str in sql)
                 {
                     db.ExecuteSQL(str.Value);
                 }
+                db.Commit();
                 return "";
             }
             catch (Exception ex)
             {
-
+                db.Rollback();
                 return ex.Message.ToString();
             }
             finally
@@ -187,15 +190,12 @@ namespace DGPF.UTILITY
                 db.Close();
             }
         }
-
-
-
         /// <summary>
         /// 执行多语句sql方法;
         /// </summary>
         /// <param name="sql"></param>
         /// <returns></returns>
-        public bool Executs(List<string> sql)
+        public string Executs(List<string> sql)
         {
             try
             {
@@ -207,44 +207,34 @@ namespace DGPF.UTILITY
                 }
                 db.Commit();
                 db.Close();
-                return true;
+                return "";
             }
             catch (Exception ex)
             {
                 db.Rollback();
-                return false;
+                return ex.Message;
             }
             finally {
                 db.Close();
             }
         }
         /// <summary>
-        /// 
+        /// 获取链接数据库类型
         /// </summary>
         /// <returns></returns>
-        private  string GetStrConn(string ConnType)
+        public static void GetStrConn()
         {
             try
             {
-                StreamReader sr = new StreamReader(System.IO.Directory.GetCurrentDirectory() + "\\DBConfig.json", Encoding.Default);
-                String line;
-                string jsonobj = "";
-                while ((line = sr.ReadLine()) != null)
+                using (System.IO.StreamReader file = System.IO.File.OpenText(System.IO.Directory.GetCurrentDirectory() + "\\DBConfig.json"))
                 {
-                    jsonobj = jsonobj + line.ToString();
-                }
-                DBConn dbConn = JsonConvert.DeserializeObject<DBConn>(jsonobj);
-                System.Reflection.PropertyInfo[] properties = dbConn.GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-                foreach (System.Reflection.PropertyInfo item in properties)
-                {
-                    string name = item.Name;
-                    object value = item.GetValue(dbConn, null);
-                    if (name==ConnType)
+                    using (JsonTextReader reader = new JsonTextReader(file))
                     {
-                        return value.ToString();
+                        JObject o = (JObject)JToken.ReadFrom(reader);
+                        dbType = o["DataType"].ToString();
+                        strMySqlCon= o[dbType].ToString();
                     }
                 }
-                return "";
             }
             catch (Exception ex)
             {
@@ -252,8 +242,46 @@ namespace DGPF.UTILITY
             }
 
         }
+        #region MyRegion
+
+
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <returns></returns>
+        //private  string GetStrConn(string ConnType)
+        //{
+        //    try
+        //    {
+        //        StreamReader sr = new StreamReader(System.IO.Directory.GetCurrentDirectory() + "\\DBConfig.json", Encoding.Default);
+        //        String line;
+        //        string jsonobj = "";
+        //        while ((line = sr.ReadLine()) != null)
+        //        {
+        //            jsonobj = jsonobj + line.ToString();
+        //        }
+        //        DBConn dbConn = JsonConvert.DeserializeObject<DBConn>(jsonobj);
+        //        System.Reflection.PropertyInfo[] properties = dbConn.GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+        //        foreach (System.Reflection.PropertyInfo item in properties)
+        //        {
+        //            string name = item.Name;
+        //            object value = item.GetValue(dbConn, null);
+        //            if (name==ConnType)
+        //            {
+        //                return value.ToString();
+        //            }
+        //        }
+        //        return "";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+
+        //}
+        #endregion
     }
-public class DBConn
+    public class DBConn
     {
         public string MYSQL { get; set; }
         public string SQLSERVER { get; set; }

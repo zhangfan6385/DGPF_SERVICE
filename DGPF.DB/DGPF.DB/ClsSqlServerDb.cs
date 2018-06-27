@@ -20,6 +20,7 @@ namespace DGPF.DB
 		private SqlConnection m_Connection;
 		private SqlTransaction m_Transaction;
 		private string m_ConnectionString = "";
+        private SqlCommand sqlCommand;
         private int m_ConnectionTimeout = 3600;
 		private string m_Database = "";
 		private ConnectionState m_ConnectionState = ConnectionState.Closed;
@@ -31,7 +32,8 @@ namespace DGPF.DB
 		public ClsSqlServerDb()
 		{
 			m_Connection = new SqlConnection();
-			InitDB();
+            sqlCommand = new SqlCommand();
+            InitDB();
 		}
 
 		/// <summary>
@@ -42,6 +44,7 @@ namespace DGPF.DB
 		{
 			m_ConnectionString = strConnect;
 			m_Connection = new SqlConnection(m_ConnectionString);
+            sqlCommand = new SqlCommand("", m_Connection);
 			InitDB();
 		}
 
@@ -209,7 +212,8 @@ namespace DGPF.DB
 		public IDbTransaction BeginTransaction()
 		{
 			m_Transaction = m_Connection.BeginTransaction();
-			return m_Transaction;
+            sqlCommand = new SqlCommand("",m_Connection,m_Transaction);
+            return m_Transaction;
 		}
 
 		/// <summary>
@@ -304,8 +308,10 @@ namespace DGPF.DB
         /// <returns></returns>
         public int ExecuteSQL(string p_SQL)
         {
-            SqlCommand Cmd = new SqlCommand(p_SQL, m_Connection);
-            return Cmd.ExecuteNonQuery();
+
+            //SqlCommand Cmd = new SqlCommand(p_SQL, m_Connection);
+            sqlCommand.CommandText = p_SQL;
+            return sqlCommand.ExecuteNonQuery();
         }
         /// <summary>
         /// 执行 带参数的SQL 语句并返回受影响的行数。 

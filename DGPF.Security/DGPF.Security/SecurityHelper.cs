@@ -101,7 +101,7 @@ namespace DGPF.Security
                     return encoding.GetString(ms.ToArray());
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 return input;
             }

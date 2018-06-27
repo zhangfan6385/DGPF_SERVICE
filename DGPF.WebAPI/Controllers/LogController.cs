@@ -8,8 +8,8 @@ using DGPF.BIZModule;
 namespace DGPF.WebAPI.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Log")]
-    public class LogController : Controller
+    [Route("Log")]
+    public class LogController : WebApiBaseController
     {
         LogModule mm = new LogModule();
         /// <summary>

@@ -4,7 +4,6 @@ using System.Text;
 using System.Data;
 using System.Data.Common;
 using MySql.Data.MySqlClient;
-
 namespace DGPF.DB
 {
    public class ClsMySqlDb : IDataBase

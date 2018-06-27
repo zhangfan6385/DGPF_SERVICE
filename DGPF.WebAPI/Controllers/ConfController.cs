@@ -12,7 +12,7 @@ namespace DGPF.WebAPI.Controllers
 {
     [Produces("application/json")]
     [Route("[controller]")]
-    public class ConfController : Controller
+    public class ConfController : WebApiBaseController
     {
         ConfModule mm = new ConfModule();
         // GET api/values

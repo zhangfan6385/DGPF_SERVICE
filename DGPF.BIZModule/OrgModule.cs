@@ -17,9 +17,9 @@ namespace DGPF.BIZModule
                 string jsonStr = "";
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    jsonStr = GetSubMenu("''", dt);
+                    jsonStr = GetSubMenu("", dt);
                 }
-                r["items"] = JsonConvert.DeserializeObject(jsonStr);
+                r["items"] = JsonConvert.DeserializeObject("[" + jsonStr+"]");
                 r["code"] = 2000;
                 r["message"] = "查询成功";
             }
@@ -101,8 +101,44 @@ namespace DGPF.BIZModule
         /// <returns></returns>
         public string updateOrgArticle(Dictionary<string, object> d)
         {
-            return db.updateOrgArticle(d);
+            if (d["id"]==null) {
+                return "无组织机构id";
+            }
+            DataTable dt = db.fetchOrgList();
+            string strIds = getOrgIds(d["id"].ToString(), dt);
+            if (strIds != null && strIds != "")
+            {
+                strIds += ",'" + d["id"].ToString() + "'";
+            }
+            else {
+                strIds = "'" + d["id"].ToString() + "'";
+            }
+            return db.updateOrgArticle(strIds);
         }
+        /// <summary>
+        /// 所有子节点的id  逗号隔开
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns></returns>
+        public string getOrgIds(string pid,DataTable dt) {
+            StringBuilder sb = new StringBuilder();
+            DataRow[] rows = dt.Select("ORG_CODE_UPPER='" + pid + "'");
+            if (rows.Length > 0)
+            {
+                bool isFist = false;
+                foreach (DataRow dr in rows)
+                {
+                    if (isFist)
+                        sb.Append(",");
+                    isFist = true;
+                    string id = dr["ORG_ID"].ToString();
+                    sb.AppendFormat("'{0}'", dr["ORG_ID"] == null ? "" : dr["ORG_ID"]);
+                    sb.Append(getOrgIds(id, dt));
+                }
+            }
+            return sb.ToString();
+        }
+
         /// <summary>
         /// D.	分配组织结构给用户
         /// </summary>
@@ -121,7 +157,7 @@ namespace DGPF.BIZModule
         private string GetSubMenu(string pid, DataTable dt)
         {
             StringBuilder sb = new StringBuilder();
-            DataRow[] rows = dt.Select("ORG_CODE_UPPER=" + pid);
+            DataRow[] rows = dt.Select("ORG_CODE_UPPER='" + pid+"'");
             if (rows.Length > 0)
             {
                 bool isFist = false;
@@ -132,18 +168,18 @@ namespace DGPF.BIZModule
                     isFist = true;
                     string id = dr["ORG_ID"].ToString();
                     sb.Append("{");
-                    sb.AppendFormat("\"id\":\"{0}\",", dr["ORG_ID"]);
-                    sb.AppendFormat("\"orgCode\":\"{0}\",", dr["ORG_CODE"]);
-                    sb.AppendFormat("\"orgName\":\"{0}\",", dr["ORG_NAME"]);
-                    sb.AppendFormat("\"parentId\":\"icon_{0}\",", dr["ORG_CODE_UPPER"]);
-                    sb.AppendFormat("\"orgNameFull\":\"{0}\",", dr["ORG_NAME_FULL"]);
-                    sb.AppendFormat("\"phone\":\"{0}\",", dr["PHONE"]);
-                    sb.AppendFormat("\"phoneS\":\"{0}\",", dr["PHONE_S"]);
-                    sb.AppendFormat("\"phoneFax\":\"{0}\",", dr["PHONE_FAX"]);
-                    sb.AppendFormat("\"orgAddr\":\"{0}\",", dr["ORG_ADDR"]);
-                    sb.AppendFormat("\"remark\":\"{0}\"", dr["REMARK"]);
+                    sb.AppendFormat("\"id\":\"{0}\",", dr["ORG_ID"]==null?"": dr["ORG_ID"]);
+                    sb.AppendFormat("\"orgCode\":\"{0}\",", dr["ORG_CODE"]==null?"":dr["ORG_CODE"]);
+                    sb.AppendFormat("\"orgName\":\"{0}\",", dr["ORG_NAME"]==null?"": dr["ORG_NAME"]);
+                    sb.AppendFormat("\"parentId\":\"{0}\",", dr["ORG_CODE_UPPER"]==null?"":dr["ORG_CODE_UPPER"]);
+                    sb.AppendFormat("\"orgNameFull\":\"{0}\",", dr["ORG_NAME_FULL"]==null?"": dr["ORG_NAME_FULL"]);
+                    sb.AppendFormat("\"phone\":\"{0}\",", dr["PHONE"]==null?"": dr["PHONE"]);
+                    sb.AppendFormat("\"phoneS\":\"{0}\",", dr["PHONE_S"]==null?"": dr["PHONE_S"]);
+                    sb.AppendFormat("\"phoneFax\":\"{0}\",", dr["PHONE_FAX"]==null?"": dr["PHONE_FAX"]);
+                    sb.AppendFormat("\"orgAddr\":\"{0}\",", dr["ORG_ADDR"]==null?"":dr["ORG_ADDR"]);
+                    sb.AppendFormat("\"remark\":\"{0}\"", dr["REMARK"]==null?"" : dr["REMARK"]);
                     sb.Append(",\"children\":[");
-                    sb.Append(GetSubMenuSon(id, dt));
+                    sb.Append(GetSubMenu(id, dt));
                     sb.Append("]");
                     sb.Append("}");
                 }
@@ -176,6 +212,14 @@ namespace DGPF.BIZModule
                 }
             }
             return sb.ToString();
+        }
+        /// <summary>
+        /// 清空用户组织机构
+        /// </summary>
+        /// <param name="d"></param>
+        /// <returns></returns>
+        public string deleteUserOrgArticle(Dictionary<string, object> d) {
+            return db.deleteUserOrgArticle(d);
         }
     }
 }

@@ -69,9 +69,9 @@ namespace DGPF.UTILITY
         /// </summary>
         /// <param name="staffId">系统内部用户id</param>
         /// <returns>2000：合法；50008:非法的token; 50012:其他客户端登录了;  50014:Token 过期了;</returns>
-        public static Message IsInValidUser(string userId, string token) {
+        public static Message IsInValidUser(string userId, string token,string admin) {
             Message mes = new Message();
-            DataTable dt = GetToken(userId,token);
+            DataTable dt = GetToken(userId,token,admin);
             if (dt == null || dt.Rows.Count == 0)
             {
                 mes.code = 50008;
@@ -114,9 +114,16 @@ namespace DGPF.UTILITY
         /// <param name="userId"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static DataTable GetToken(string userId,string token) {
+        public static DataTable GetToken(string userId,string token,string admin) {
             DBTool tool = new DBTool("MYSQL");
-            string sql = "select a.* from ts_uidp_accesstoken a join ts_uidp_userinfo b on a.USER_ID=b.USER_ID where a.USER_ID='" + userId + "' and ACCESS_TOKEN='" + token + "' ";
+            string sql = "";
+            if (admin == "")
+            {
+                 sql = "select a.* from ts_uidp_accesstoken a join ts_uidp_userinfo b on a.USER_ID=b.USER_ID where a.USER_ID='" + userId + "' and ACCESS_TOKEN='" + token + "' ";
+            }
+            else {
+                 sql = "select a.* from ts_uidp_accesstoken a  where a.USER_ID='" + userId + "' and a.ACCESS_TOKEN='" + token + "' ";
+            }
             return tool.GetDataTable(sql);
         }
         /// <summary>
@@ -124,7 +131,7 @@ namespace DGPF.UTILITY
         /// </summary>
         public static void DeleteToken(string userId) {
             DBTool tool = new DBTool("MYSQL");
-            string sql = "delete from uidp.ts_uidp_userinfo where USER_ID='" + userId + "' ;";
+            string sql = "delete from ts_uidp_accesstoken where USER_ID='" + userId + "' ;";
             tool.Execut(sql);
         }
         /// <summary>

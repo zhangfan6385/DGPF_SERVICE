@@ -60,9 +60,9 @@ namespace DGPF.ODS
         /// </summary>
         /// <param name="d"></param>
         /// <returns></returns>
-        public string updateRoleArticle(Dictionary<string, object> d)
+        public string updateRoleArticle(string ids)
         {
-            string sql = "delete FROM ts_uidp_groupinfo where GROUP_ID='" + d["id"].ToString() + "' ;";
+            string sql = "delete FROM ts_uidp_groupinfo where GROUP_ID in(" + ids + ") ;";
 
             return db.ExecutByStringResult(sql);
         }
@@ -88,6 +88,11 @@ namespace DGPF.ODS
             string sql = " select * from ts_uidp_groupinfo where GROUP_ID='"+roleId+"'";
             return db.GetDataTable(sql);
         }
+        public DataTable GetRoles()
+        {
+            string sql = " select * from ts_uidp_groupinfo ";
+            return db.GetDataTable(sql);
+        }
         /// <summary>
         /// 分配角色给用户
         /// </summary>
@@ -96,18 +101,49 @@ namespace DGPF.ODS
         public string updateUserRoleArticle(Dictionary<string, object> d)
         {
             // string[] array = d["multipleSelection"].ToString().Split(',');
-            var array = (JArray)d["multipleSelection"];
+            var array = (JArray)d["arr"];
+            if (array==null||array.Count==0) {
+                return "";
+            }
             string fengefu = "";
             string sql = " insert into ts_uidp_group_user(GROUP_ID,USER_ID)values ";
+            string delSql = " delete from ts_uidp_group_user where  GROUP_ID='" + d["roleId"].ToString()+ "' and USER_ID in(";
             foreach (var item in array)
             {
-
+                delSql += fengefu + "'" + item.ToString()+"'" ;
                 sql += fengefu + "(";
                 sql += "'" + d["roleId"].ToString() + "','" + item.ToString() + "'";
                 sql += ")";
                 fengefu = ",";
             }
-            return db.ExecutByStringResult(sql);
+            delSql += ")";
+            List<string> list = new List<string>();
+            list.Add(delSql);
+            list.Add(sql);
+            return db.Executs(list);
+        }
+        /// <summary>
+        /// 清空用户角色
+        /// </summary>
+        /// <param name="d"></param>
+        /// <returns></returns>
+        public string deleteUserRoleArticle(Dictionary<string, object> d)
+        {
+            // string[] array = d["multipleSelection"].ToString().Split(',');
+            var array = (JArray)d["arr"];
+            if (array == null || array.Count == 0)
+            {
+                return "";
+            }
+            string fengefu = "";
+            string delSql = " delete from ts_uidp_group_user where  USER_ID in(";
+            foreach (var item in array)
+            {
+                delSql += fengefu + "'" + item.ToString() + "'";
+                fengefu = ",";
+            }
+            delSql += ")";
+            return db.ExecutByStringResult(delSql);
         }
     }
 }
