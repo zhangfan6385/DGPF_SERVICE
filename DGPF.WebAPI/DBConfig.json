@@ -1,5 +1,5 @@
 {
-  "MYSQL": "server=localhost;user id=root;pwd=root;database=uidp;SslMode = none;Charset=utf8",
+  "MYSQL": "server=localhost;user id=root;pwd=7800525;database=dgpf;SslMode = none;Charset=utf8",
   "SQLSERVER": "server=localhost;user id=root;pwd=root;database=uidp;SslMode = none;Charset=utf8",
   "ORACLE": "server=localhost;user id=root;pwd=root;database=uidp;SslMode = none;Charset=utf8"
 }

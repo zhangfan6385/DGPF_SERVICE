@@ -22,7 +22,8 @@ namespace DGPF.BIZModule
 
                 DataTable dt = db.fetchConfigList(d);
                 r["total"] = dt.Rows.Count;
-                r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page,limit));
+                //r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page,limit));
+                r["items"] = KVTool.RowsToListDic(dt, d);
                 r["code"] = 2000;
                 r["message"] = "查询成功";
             }

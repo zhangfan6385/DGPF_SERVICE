@@ -152,6 +152,7 @@ namespace DGPF.UTILITY
             }
             catch (Exception ex)
             {
+               
                 return ex.Message.ToString();
             }
             finally
@@ -159,6 +160,36 @@ namespace DGPF.UTILITY
                 db.Close();
             }
         }
+
+        /// <summary>
+        /// 执行sql方法;
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
+        public string ExecutByStringResult(Dictionary< string,string> sql)
+        {
+            try
+            {
+                db.Open();
+                foreach (var str in sql)
+                {
+                    db.ExecuteSQL(str.Value);
+                }
+                return "";
+            }
+            catch (Exception ex)
+            {
+
+                return ex.Message.ToString();
+            }
+            finally
+            {
+                db.Close();
+            }
+        }
+
+
+
         /// <summary>
         /// 执行多语句sql方法;
         /// </summary>

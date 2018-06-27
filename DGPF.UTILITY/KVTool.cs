@@ -63,24 +63,44 @@ namespace DGPF.UTILITY
             return newdt;
         }
 
+        public static IList<T> PaginationDataSource<T>(IList<T> list, int pageIndex, int pageSize, out int totals)
+        {
+            totals = 0;
+            if (pageIndex < 0)
+                throw new ArgumentException("pageIndex必须大于0");
+
+            if (pageSize <= 0)
+                throw new ArgumentException("pageSize必须大于0");
+
+
+            totals = list.Count;
+            int rowBegin = (pageIndex - 1) * pageSize >= totals ? 0 : (pageIndex - 1) * pageSize;
+            int rowEnd = rowBegin + pageSize - 1 >= totals ? totals : rowBegin + pageSize - 1;
+
+            IList<T> result = new List<T>();
+            for (int i = rowBegin; i < rowEnd; i++)
+            {
+                result.Add(list[i]);
+            }
+            return result;
+        }
+
 
         public static List<Dictionary<string, object>> RowsToListDic(DataTable dt, Dictionary<string, object> d, bool isStoreDB = true )
         {
             List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
             Dictionary<string, object> dct;
 
-            
 
-            var rows = dt.Rows.Cast<DataRow>();
 
             int limit = d["limit"] == null ? 100 : int.Parse(d["limit"].ToString());
             int page = d["page"] == null ? 1 : int.Parse(d["page"].ToString());
+            page = page - 1;
+
+            var curRows = dt.Rows.Cast<DataRow>().Skip(page* limit).Take(limit).ToArray();
 
 
-            var curRows = rows.Skip(page-1).Take(limit).ToList();
-
-
-            foreach (DataRow dr in curRows)
+            foreach (var dr in curRows)
             {
                 dct = new Dictionary<string, object>();
                 foreach (DataColumn dc in dt.Columns)
