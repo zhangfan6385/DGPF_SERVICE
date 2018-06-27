@@ -125,15 +125,25 @@ namespace DGPF.ODS
 
         public DataTable fetchPermission(Dictionary<string, object> sysCode)
         {
+            string sqluser = "SELECT conf_value from ts_uidp_config where conf_code= 'Admin_Code'";
 
-            string sql = "SELECT distinct * " +
-  "from(select f.* " +
-          "from ts_uidp_group_user ur, " +
-               "TS_UIDP_GROUP_POWERINFO rf, " +
-              "ts_uidp_menuinfo        f " +
-         "where ur.user_id = '" + sysCode["userId"].ToString() + "' " +
-           "and ur.group_id = rf.group_id " +
-           "and rf.menu_id = f.menu_id) a ";
+          string user=  db.GetString(sqluser);
+            string sql = "";
+            if (user == sysCode["userId"].ToString())
+            {
+                sql = "SELECT  * from ts_uidp_menuinfo";
+            }
+            else
+            {
+                sql = "SELECT distinct * " +
+      "from(select f.* " +
+              "from ts_uidp_group_user ur, " +
+                   "TS_UIDP_GROUP_POWERINFO rf, " +
+                  "ts_uidp_menuinfo        f " +
+             "where ur.user_id = '" + sysCode["userId"].ToString() + "' " +
+               "and ur.group_id = rf.group_id " +
+               "and rf.menu_id = f.menu_id) a ";
+            }
 
             //string sql = "SELECT * from ts_uidp_menuinfo";
 
