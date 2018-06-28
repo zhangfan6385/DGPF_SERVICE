@@ -18,10 +18,12 @@ namespace DGPF.WebAPI.Controllers
     [Route("LogIn")]
     public class LogInController : Controller
     {
-       
+        DGPF.LOG.SysLog log = new LOG.SysLog();
         [HttpPost("login")]
         public IActionResult LogIn([FromBody]JObject value)
         {
+            string userId = "";
+            string userName = "";
             try
             {
                 Dictionary<string, object> d = value.ToObject<Dictionary<string, object>>();
@@ -32,12 +34,15 @@ namespace DGPF.WebAPI.Controllers
                     return Json(new { code = -1, message = "用户名或密码不能为空！" });
                 }
                 UserModule mm = new UserModule();
-                string admin = mm.getAdminCode();
+                 userId = mm.getAdminCode();
                 string pass = mm.getAdminPass();
-                if ((username==admin)&&(password==pass)) {
-                    string accessToken = AccessTokenTool.GetAccessToken(admin);
-                    DGPF.UTILITY.AccessTokenTool.DeleteToken(admin);
-                    DGPF.UTILITY.AccessTokenTool.InsertToken(admin, accessToken, DateTime.Now.AddHours(1));
+                if ((username== userId) &&(password==pass)) {
+                    userName = "系统超级管理员";
+                    string accessToken = AccessTokenTool.GetAccessToken(userId);
+                    DGPF.UTILITY.AccessTokenTool.DeleteToken(userId);
+                    DGPF.UTILITY.AccessTokenTool.InsertToken(userId, accessToken, DateTime.Now.AddHours(1));
+                   
+                    log.Info(DateTime.Now, userId, userName, Extension.GetClientUserIp(Request.HttpContext), 1, "LogIn", "");
                     return Json(new { code = 2000, message = "", token = accessToken,roleLevel = "admin" });
                 }
                 else {
@@ -50,16 +55,19 @@ namespace DGPF.WebAPI.Controllers
                     {
                         return Json(new { code = -1, message = "密码错误！" });
                     }
-                    string userId = mode.USER_ID;
+                    userId = mode.USER_ID;
+                    userName = mode.USER_NAME;
                     string accessToken = AccessTokenTool.GetAccessToken(userId);
                     DGPF.UTILITY.AccessTokenTool.DeleteToken(userId);
                     DGPF.UTILITY.AccessTokenTool.InsertToken(userId, accessToken, DateTime.Now.AddHours(1));
                     DataTable dtUserOrg = mm.GetUserOrg(mode.USER_ID);
+                    log.Info(DateTime.Now, userId, mode.USER_NAME, Extension.GetClientUserIp(Request.HttpContext), 3, "LogIn", "");
                     return Json(new { code = 2000, message = "", token = accessToken, orgList = dtUserOrg, roleLevel = "" });
                 }
             }
             catch (Exception ex)
             {
+                log.Info(DateTime.Now, userId, userName, Extension.GetClientUserIp(Request.HttpContext), 1, "LogIn", ex.Message.Length>120?ex.Message.Substring(0,100):ex.Message);
                 return Json(new { code = -1, message = "登录时程序发生错误"+ex.Message});
 
             }

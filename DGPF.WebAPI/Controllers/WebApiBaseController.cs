@@ -51,12 +51,12 @@ namespace DGPF.WebAPI.Controllers
                 UserId = userId;
                 ClientIp = Extension.GetClientUserIp(Request.HttpContext);
                 DGPF.LOG.SysLog log = new LOG.SysLog();
-                log.Info(DateTime.Now, userId, UserName, ClientIp, 0, actionName, "方法名");
+                log.Info(DateTime.Now, userId, UserName, ClientIp, 0, actionName, "");
             }
             catch (Exception ex)
             {
                 DGPF.LOG.SysLog log = new LOG.SysLog();
-                log.Info(DateTime.Now, UserId, UserName, ClientIp, 1, actionName, ex.Message.ToString().Substring(0,100));
+                log.Info(DateTime.Now, UserId, UserName, ClientIp, 1, actionName, ex.Message.Length > 120 ? ex.Message.Substring(0, 100) : ex.Message);
                 context.Result = new ObjectResult(new { code = -1, msg = "验证token时程序出错", result = ex.Message });
             }
 

@@ -27,7 +27,7 @@ namespace DGPF.BIZModule
                 DataTable dt = db.fetchUserList(d);
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    DataTable dtName = dt.DefaultView.ToTable(true, "USER_ID", "REG_TIME", "USER_NAME", "USER_CODE", "USER_ALIAS", "USER_PASS", "PHONE_MOBILE", "PHONE_OFFICE", "PHONE_ORG", "USER_EMAIL", "EMAIL_OFFICE", "USER_IP", "FLAG", "USER_DOMAIN", "REMARK");
+                    DataTable dtName = dt.DefaultView.ToTable(true, "USER_ID", "REG_TIME", "USER_NAME", "USER_CODE", "USER_ALIAS", "USER_PASS", "PHONE_MOBILE", "PHONE_OFFICE", "PHONE_ORG", "USER_EMAIL", "EMAIL_OFFICE", "USER_IP", "FLAG", "USER_DOMAIN", "REMARK","USER_SEX");
                     dtName.Columns.Add("ORG_ID");
                     dtName.Columns.Add("ORG_NAME");
                     foreach (DataRow row in dtName.Rows)
