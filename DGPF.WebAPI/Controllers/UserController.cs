@@ -222,7 +222,7 @@ namespace DGPF.WebAPI.Controllers
                 if (UserId==mm.getAdminCode()) {
                     string[] arr = new string[1];
                     arr[0] = "";
-                    return Json(new { code = 2000, message = "", roles = JsonConvert.DeserializeObject("['admin']") , name = "系统超级管理员", userCode=UserId ,token = accessToken, introduction = "", avatar = "", sysCode = "1", sysName = "大港油田软件研发平台", userId = UserId, userSex = 0 });
+                    return Json(new { code = 2000, message = "", roles = JsonConvert.DeserializeObject("['admin']") , name = "系统超级管理员", userCode=UserId ,token = accessToken, introduction = "", avatar = "", sysCode = "1", sysName = mm.getSysName(), userId = UserId, userSex = 0 });
                 }
                 Dictionary<string, object> d = value.ToObject<Dictionary<string, object>>();
                 string _token = d["token"] == null ? "" : d["token"].ToString();
