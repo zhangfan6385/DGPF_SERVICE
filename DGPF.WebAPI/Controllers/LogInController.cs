@@ -42,7 +42,7 @@ namespace DGPF.WebAPI.Controllers
                     DGPF.UTILITY.AccessTokenTool.DeleteToken(userId);
                     DGPF.UTILITY.AccessTokenTool.InsertToken(userId, accessToken, DateTime.Now.AddHours(1));
                    
-                    log.Info(DateTime.Now, userId, userName, Extension.GetClientUserIp(Request.HttpContext), 1, "LogIn", "");
+                    log.Info(DateTime.Now, userId, userName, Extension.GetClientUserIp(Request.HttpContext), 2, "LogIn", "");
                     return Json(new { code = 2000, message = "", token = accessToken,roleLevel = "admin" });
                 }
                 else {
@@ -61,7 +61,7 @@ namespace DGPF.WebAPI.Controllers
                     DGPF.UTILITY.AccessTokenTool.DeleteToken(userId);
                     DGPF.UTILITY.AccessTokenTool.InsertToken(userId, accessToken, DateTime.Now.AddHours(1));
                     DataTable dtUserOrg = mm.GetUserOrg(mode.USER_ID);
-                    log.Info(DateTime.Now, userId, mode.USER_NAME, Extension.GetClientUserIp(Request.HttpContext), 3, "LogIn", "");
+                    log.Info(DateTime.Now, userId, mode.USER_NAME, Extension.GetClientUserIp(Request.HttpContext), 2, "LogIn", "");
                     return Json(new { code = 2000, message = "", token = accessToken, orgList = dtUserOrg, roleLevel = "" });
                 }
             }
