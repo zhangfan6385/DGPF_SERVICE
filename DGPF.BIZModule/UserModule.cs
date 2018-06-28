@@ -25,15 +25,43 @@ namespace DGPF.BIZModule
                 int page = d["page"] == null ? 1 : int.Parse(d["page"].ToString());
 
                 DataTable dt = db.fetchUserList(d);
-                r["total"] = dt.Rows.Count;
-                r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page, limit));
-                r["code"] = 2000;
-                r["message"] = "查询成功";
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    DataTable dtName = dt.DefaultView.ToTable(true, "USER_ID", "REG_TIME", "USER_NAME", "USER_CODE", "USER_ALIAS", "USER_PASS", "PHONE_MOBILE", "PHONE_OFFICE", "PHONE_ORG", "USER_EMAIL", "EMAIL_OFFICE", "USER_IP", "FLAG", "USER_DOMAIN", "REMARK");
+                    dtName.Columns.Add("ORG_ID");
+                    dtName.Columns.Add("ORG_NAME");
+                    foreach (DataRow row in dtName.Rows)
+                    {
+                        string fengefu = "";
+                        foreach (DataRow item in dt.Rows)
+                        {
+                            if (row["USER_ID"].ToString() == item["USER_ID"].ToString() && item["ORG_ID"] != null && item["ORG_ID"].ToString() != "")
+                            {
+                                if (!row["ORG_ID"].ToString().Contains(item["ORG_ID"].ToString()))
+                                {
+                                    row["ORG_ID"] += fengefu + item["ORG_ID"].ToString();
+                                    row["ORG_NAME"] += fengefu + item["ORG_NAME"].ToString();
+                                    fengefu = ",";
+                                }
+                            }
+                        }
+                    }
+                    r["total"] = dtName.Rows.Count;
+                    r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dtName, page, limit));
+                    r["code"] = 2000;
+                    r["message"] = "查询成功";
+                }
+                else {
+                    r["total"] = dt.Rows.Count;
+                    r["items"] = new Dictionary<string, object>();
+                    r["code"] = 2000;
+                    r["message"] = "查询成功";
+                }
             }
             catch (Exception e)
             {
                 r["total"] = 0;
-                r["items"] = null;
+                r["items"] = new Dictionary<string, object>();
                 r["code"] = -1;
                 r["message"] = e.Message;
             }

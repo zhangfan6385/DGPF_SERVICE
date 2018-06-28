@@ -15,7 +15,7 @@ namespace DGPF.ODS
         /// <returns></returns>
         public DataTable fetchUserList(Dictionary<string, object> d)
         {
-            string sql = "select a.*,b.ORG_NAME from ts_uidp_userinfo a ";
+            string sql = "select a.*,b.ORG_NAME,b.ORG_ID from ts_uidp_userinfo a ";
             sql += " left join ts_uidp_org_user c on c.USER_ID=a.USER_ID ";
             sql += " left join ts_uidp_org b on b.ORG_ID=c.ORG_ID  ";
             sql += " where 1=1 ";
