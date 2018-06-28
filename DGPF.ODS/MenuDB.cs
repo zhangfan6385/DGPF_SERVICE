@@ -131,7 +131,7 @@ namespace DGPF.ODS
             string sql = "";
             if (user == sysCode["userId"].ToString())
             {
-                sql = "SELECT  * from ts_uidp_menuinfo";
+                sql = "SELECT  * from ts_uidp_menuinfo where SYS_CODE = '"+ sysCode["sysCode"].ToString() + "' ";
             }
             else
             {
@@ -141,6 +141,7 @@ namespace DGPF.ODS
                    "TS_UIDP_GROUP_POWERINFO rf, " +
                   "ts_uidp_menuinfo        f " +
              "where ur.user_id = '" + sysCode["userId"].ToString() + "' " +
+             " and f.SYS_CODE='"+ sysCode["sysCode"].ToString() + "' " +
                "and ur.group_id = rf.group_id " +
                "and rf.menu_id = f.menu_id) a ";
             }
