@@ -114,10 +114,10 @@ namespace DGPF.LOG
                 }
                 using (MySqlCommand cmd = new MySqlCommand(SQLString, conn))
                 {
-                    MySqlTransaction tran = conn.BeginTransaction();
+                   // MySqlTransaction tran = conn.BeginTransaction();
                     cmd.Parameters.AddRange(cmdParms);
                     cmd.ExecuteNonQuery();//s返回受影响行数
-                    tran.Commit();
+                   // tran.Commit();
                 }
             }
             catch (MySqlException e)

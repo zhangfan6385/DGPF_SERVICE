@@ -55,7 +55,6 @@ namespace DGPF.WebAPI.Controllers
                     DGPF.UTILITY.AccessTokenTool.DeleteToken(userId);
                     DGPF.UTILITY.AccessTokenTool.InsertToken(userId, accessToken, DateTime.Now.AddHours(1));
                     DataTable dtUserOrg = mm.GetUserOrg(mode.USER_ID);
-                    //  string strUserOrg = JsonConvert.SerializeObject(dtUserOrg);
                     return Json(new { code = 2000, message = "", token = accessToken, orgList = dtUserOrg, roleLevel = "" });
                 }
             }

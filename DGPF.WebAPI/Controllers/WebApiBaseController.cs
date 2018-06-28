@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace DGPF.WebAPI.Controllers
 {
-    [Produces("application/json")]
+//    [Produces("application/json")]
     [Route("api/WebApiBase")]
     public class WebApiBaseController : Controller
     {
@@ -16,12 +16,16 @@ namespace DGPF.WebAPI.Controllers
         public string UserId = "";
         public string UserName = "";
         public string accessToken = "";
+        public string actionName = "";
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             try
             {
+                
                 Microsoft.Extensions.Primitives.StringValues AccessToken;//获取header中某一项的值
                 context.HttpContext.Request.Headers.TryGetValue("X-Token", out AccessToken);
+
+                actionName = (context.RouteData.Values["action"]).ToString().ToLower();//获取当前方法
                 //根据实际需求进行具体实现
                 accessToken = AccessToken;
                 if (accessToken == "")
@@ -44,13 +48,15 @@ namespace DGPF.WebAPI.Controllers
                 {
                     context.Result = new ObjectResult(mes);
                 }
-                
-                
                 UserId = userId;
                 ClientIp = Extension.GetClientUserIp(Request.HttpContext);
+                DGPF.LOG.SysLog log = new LOG.SysLog();
+                log.Info(DateTime.Now, userId, UserName, ClientIp, 0, actionName, "方法名");
             }
             catch (Exception ex)
             {
+                DGPF.LOG.SysLog log = new LOG.SysLog();
+                log.Info(DateTime.Now, UserId, UserName, ClientIp, 1, actionName, ex.Message.ToString().Substring(0,100));
                 context.Result = new ObjectResult(new { code = -1, msg = "验证token时程序出错", result = ex.Message });
             }
 
