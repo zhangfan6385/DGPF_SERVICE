@@ -238,9 +238,9 @@ namespace DGPF.WebAPI.Controllers
                     string _userCode= dt.Rows[0]["USER_CODE"] == null ? "" : dt.Rows[0]["USER_CODE"].ToString();
                     string _userId= dt.Rows[0]["USER_ID"] == null ? "" : dt.Rows[0]["USER_ID"].ToString();
                     int _userSex= Convert.ToInt32(dt.Rows[0]["USER_SEX"].ToString());
-                    return Json(new { code = 2000, message = "", roles = role,name=_name, userCode=_userCode, token =_token, introduction="", avatar="", sysCode ="1", sysName ="大港油田软件研发平台" , userId =_userId,userSex=_userSex});
+                    return Json(new { code = 2000, message = "", roles = role,name=_name, userCode=_userCode, token =_token, introduction="", avatar="", sysCode ="1", sysName =mm.getSysName() , userId =_userId,userSex=_userSex});
                 }
-                return Json(new { code = 2000, message = "", roles = "", name = "", userCode="", token = _token, introduction = "", avatar = "", sysCode = "", sysName = "", userId = "", userSex=0 });
+                return Json(new { code = 2000, message = "", roles = "", name = "", userCode="", token = _token, introduction = "", avatar = "", sysCode = "", sysName = mm.getSysName(), userId = "", userSex=0 });
             }
             catch (Exception ex)
             {

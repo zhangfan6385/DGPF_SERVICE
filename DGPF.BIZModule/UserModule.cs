@@ -419,5 +419,13 @@ namespace DGPF.BIZModule
         {
             return db.getAdminPass();
         }
+        /// <summary>
+        /// 获取sysname
+        /// </summary>
+        /// <returns></returns>
+        public string getSysName()
+        {
+            return db.getSysName();
+        }
     }
 }

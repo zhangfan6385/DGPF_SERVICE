@@ -302,5 +302,14 @@ namespace DGPF.ODS
 
             return db.GetDataTable(sql);
         }
+        /// <summary>
+        /// 获取sysname
+        /// </summary>
+        /// <returns></returns>
+        public string getSysName() {
+            string sql = "select CONF_VALUE from ts_uidp_config where CONF_CODE='SYS_NAME'";
+            string sysName = db.GetString(sql);
+            return sysName == "" ? "大港油田软件研发平台" : sysName;
+        }
     }
 }
