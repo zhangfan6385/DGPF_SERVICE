@@ -15,7 +15,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "conf/fetchConfigList",
+      "launchUrl": "values/value",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -23,7 +23,7 @@
     "DGPF.WebAPI": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "conf/fetchConfigList",
+      "launchUrl": "values/value",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
