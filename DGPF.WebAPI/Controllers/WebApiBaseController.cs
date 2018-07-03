@@ -29,7 +29,7 @@ namespace DGPF.WebAPI.Controllers
                 accessToken = AccessToken;
                 if (accessToken == "")
                 {
-                    context.Result = new ObjectResult(new { code = 50008, msg = "没有找到X-Token" });
+                    //context.Result = new ObjectResult(new { code = 50008, msg = "没有找到X-Token" });
                 }
                 string userId = DGPF.UTILITY.AccessTokenTool.GetUserId(AccessToken);
                 if (actionName == "Info")//登录成功后获取用户信息方法，
@@ -37,7 +37,7 @@ namespace DGPF.WebAPI.Controllers
                     DGPF.UTILITY.Message mes = DGPF.UTILITY.AccessTokenTool.IsInValidUser(userId, AccessToken, "admin");
                     if (mes.code != 2000)
                     {
-                        context.Result = new ObjectResult(mes);
+                        //context.Result = new ObjectResult(mes);
                     }
                 }
                 else {//其他业务操作
@@ -54,7 +54,7 @@ namespace DGPF.WebAPI.Controllers
                     DGPF.UTILITY.Message mes = DGPF.UTILITY.AccessTokenTool.IsInValidUser(userId, AccessToken, admin);
                     if (mes.code != 2000)
                     {
-                        context.Result = new ObjectResult(mes);
+                       // context.Result = new ObjectResult(mes);
                     }
                     UserId = userId;
                     ClientIp = Extension.GetClientUserIp(Request.HttpContext);
