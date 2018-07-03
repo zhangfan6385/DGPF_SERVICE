@@ -109,22 +109,18 @@ namespace DGPF.ODS
             sql += "order by a.LOGIN_ID";
             return db.GetDataTable(sql);
         }
-        public DataTable fetchUserForLoginList(string LOGIN_REMARK, string sort)
+        public DataTable fetchUserForLoginList(string USER_NAME, string LOGIN_ID)
         {
             string sql = " select c.USER_ID,c.USER_CODE,c.USER_NAME,c.USER_DOMAIN,a.LOGIN_ID,a.LOGIN_REMARK from ts_uidp_userinfo c  ";
             sql += " left join ts_uidp_login_user b on  c.USER_ID=b.USER_ID ";
-            sql += " left join ts_uidp_login a  on a.LOGIN_ID=b.LOGIN_ID ";
-            if (!string.IsNullOrEmpty(LOGIN_REMARK))
+            sql += " left join ts_uidp_login a  on a.LOGIN_ID=b.LOGIN_ID where 1=1 ";
+            if (!string.IsNullOrEmpty(USER_NAME))
             {
-                sql += " where a.LOGIN_REMARK like '%" + LOGIN_REMARK + "%'";
+                sql += " and c.USER_NAME like '%" + USER_NAME + "%'";
             }
-            if (sort != null && sort == "-LOGIN_ID")
+            if (LOGIN_ID != null && LOGIN_ID!= "")
             {
-                sql += " order by a.LOGIN_ID desc";
-            }
-            else
-            {
-                sql += "order by a.LOGIN_ID";
+                sql += " AND  a.LOGIN_ID ='"+LOGIN_ID+"'";
             }
             return db.GetDataTable(sql);
         }

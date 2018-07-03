@@ -73,7 +73,7 @@ namespace DGPF.BIZModule
         /// </summary>
         /// <param name="d"></param>
         /// <returns></returns>
-        public Dictionary<string, object> fetchUserForLoginList(string limit, string page, string LOGIN_REMARK, string sort)
+        public Dictionary<string, object> fetchUserForLoginList(string limit, string page, string USER_NAME, string LOGIN_ID)
         {
 
             Dictionary<string, object> r = new Dictionary<string, object>();
@@ -82,7 +82,7 @@ namespace DGPF.BIZModule
                 int limit1 = limit == null ? 100 : int.Parse(limit);
                 int page1 = page == null ? 1 : int.Parse(page);
 
-                DataTable dt = db.fetchUserForLoginList(LOGIN_REMARK, sort);
+                DataTable dt = db.fetchUserForLoginList(USER_NAME, LOGIN_ID);
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     r["total"] = dt.Rows.Count;

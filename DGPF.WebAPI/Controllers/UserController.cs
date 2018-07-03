@@ -339,10 +339,10 @@ namespace DGPF.WebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("fetchUserForLoginList")]
-        public IActionResult fetchUserForLoginLists(string limit, string page, string LOGIN_REMARK = "", string sort = "")
+        public IActionResult fetchUserForLoginLists(string limit, string page, string USER_NAME = "", string LOGIN_ID = "")
         {
             UserLoginModule mm = new UserLoginModule();
-            Dictionary<string, object> res = mm.fetchUserForLoginList(limit, page, LOGIN_REMARK, sort);
+            Dictionary<string, object> res = mm.fetchUserForLoginList(limit, page, USER_NAME, LOGIN_ID);
             return Json(res);
         }
         #region MyRegion
