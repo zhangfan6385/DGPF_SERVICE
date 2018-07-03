@@ -3,11 +3,11 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iis": {
-      "applicationUrl": "http://localhost/DGPF.WebAPI",
+      "applicationUrl": "http://10.201.1.82/DGPF.WebAPI",
       "sslPort": 0
     },
     "iisExpress": {
-      "applicationUrl": "http://192.168.1.122:51332/",
+      "applicationUrl": "http://10.201.1.82:12345/",
       "sslPort": 0
     }
   },
@@ -21,7 +21,7 @@
       }
     },
     "DGPF.WebAPI": {
-      "commandName": "Project",
+      "commandName": "IIS",
       "launchBrowser": true,
       "launchUrl": "values/value",
       "environmentVariables": {
