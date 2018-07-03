@@ -32,25 +32,35 @@ namespace DGPF.WebAPI.Controllers
                     context.Result = new ObjectResult(new { code = 50008, msg = "没有找到X-Token" });
                 }
                 string userId = DGPF.UTILITY.AccessTokenTool.GetUserId(AccessToken);
-                BIZModule.UserModule mm = new BIZModule.UserModule();
-                string admin = mm.getAdminCode();
-                if (userId == admin)
+                if (actionName == "Info")//登录成功后获取用户信息方法，
                 {
-                    UserName = "系统超级管理员";
+                    DGPF.UTILITY.Message mes = DGPF.UTILITY.AccessTokenTool.IsInValidUser(userId, AccessToken, "admin");
+                    if (mes.code != 2000)
+                    {
+                        context.Result = new ObjectResult(mes);
+                    }
                 }
-                else
-                {
-                    UserName = mm.getUserInfoByUserId(userId).USER_NAME;
+                else {//其他业务操作
+                    BIZModule.UserModule mm = new BIZModule.UserModule();
+                    string admin = mm.getAdminCode();
+                    if (userId == admin)
+                    {
+                        UserName = "系统超级管理员";
+                    }
+                    else
+                    {
+                        UserName = mm.getUserInfoByUserId(userId).USER_NAME;
+                    }
+                    DGPF.UTILITY.Message mes = DGPF.UTILITY.AccessTokenTool.IsInValidUser(userId, AccessToken, admin);
+                    if (mes.code != 2000)
+                    {
+                        context.Result = new ObjectResult(mes);
+                    }
+                    UserId = userId;
+                    ClientIp = Extension.GetClientUserIp(Request.HttpContext);
+                    DGPF.LOG.SysLog log = new LOG.SysLog();
+                    log.Info(DateTime.Now, userId, UserName, ClientIp, 0, actionName, "");
                 }
-                DGPF.UTILITY.Message mes = DGPF.UTILITY.AccessTokenTool.IsInValidUser(userId, AccessToken,admin);
-                if (mes.code != 2000)
-                {
-                    context.Result = new ObjectResult(mes);
-                }
-                UserId = userId;
-                ClientIp = Extension.GetClientUserIp(Request.HttpContext);
-                DGPF.LOG.SysLog log = new LOG.SysLog();
-                log.Info(DateTime.Now, userId, UserName, ClientIp, 0, actionName, "");
             }
             catch (Exception ex)
             {

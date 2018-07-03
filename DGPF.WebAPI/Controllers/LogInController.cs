@@ -51,6 +51,8 @@ namespace DGPF.WebAPI.Controllers
                         code = 2000,
                         message = "",
                         token = accessToken,
+                        orgList = new DataTable(),
+                        userList = new DataTable(),
                         roleLevel = "admin" });
                 }
                 else
@@ -76,7 +78,7 @@ namespace DGPF.WebAPI.Controllers
                         code = 2000,
                         message = "",
                         token = accessToken,
-                        orgList = new Dictionary<string,object>(),
+                        orgList = new DataTable(),
                         userList =dtUser,
                         roleLevel = "" });
                 }

@@ -19,7 +19,7 @@ namespace DGPF.WebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("fetchUserLoginList")]
-        public IActionResult fetchUserLoginLists(string limit, string page, string LOGIN_REMARK, string sort)
+        public IActionResult fetchUserLoginLists(string limit, string page,  string sort, string LOGIN_REMARK = "")
         {
             Dictionary<string, object> res = mm.fetchUserLoginList(limit,  page,  LOGIN_REMARK,  sort);
             return Json(res);

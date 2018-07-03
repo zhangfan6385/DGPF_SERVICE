@@ -43,7 +43,7 @@ namespace DGPF.ODS
             foreach (var v in d)
             {
                 col += "," + v.Key;
-                if (v.Value.GetType().ToString()== "System.Int64") {
+                if (v.Value.GetType().ToString() == "System.Int64") {
                     val += "," + v.Value + "";
                 }
                 else
@@ -71,13 +71,13 @@ namespace DGPF.ODS
         }
         public string updateUserFlag(Dictionary<string, object> d)
         {
-            string sql = "update  ts_uidp_userinfo set FLAG="+d["FLAG"] +" where USER_ID='" + d["USER_ID"].ToString() + "' ;";
+            string sql = "update  ts_uidp_userinfo set FLAG=" + d["FLAG"] + " where USER_ID='" + d["USER_ID"].ToString() + "' ;";
 
             return db.ExecutByStringResult(sql);
         }
         public string updatePasswordData(Dictionary<string, object> d)
         {
-            string sql = "update  ts_uidp_userinfo set USER_PASS=" + d["newpassword"].ToString() + " where USER_ID='" + d["userid"].ToString() + "' and USER_PASS='"+d["password"].ToString() + "' ;";
+            string sql = "update  ts_uidp_userinfo set USER_PASS=" + d["newpassword"].ToString() + " where USER_ID='" + d["userid"].ToString() + "' and USER_PASS='" + d["password"].ToString() + "' ;";
 
             return db.ExecutByStringResult(sql);
         }
@@ -102,18 +102,18 @@ namespace DGPF.ODS
             sb.Append(" EMAIL_OFFICE='" + d["EMAIL_OFFICE"] + "', ");
             sb.Append(" USER_IP='" + d["USER_IP"] + "', ");
             sb.Append(" FLAG=" + d["FLAG"] + ", ");
-            sb.Append(" USER_SEX="+d["USER_SEX"]+",");
+            sb.Append(" USER_SEX=" + d["USER_SEX"] + ",");
             sb.Append(" USER_DOMAIN='" + d["USER_DOMAIN"] + "', ");
             sb.Append(" REMARK='" + d["REMARK"] + "' ");
             sb.Append(" where USER_ID='" + d["USER_ID"].ToString() + "' ");
             return db.ExecutByStringResult(sb.ToString());
         }
-        public DataTable  GetUserInfoByUserId(string userId)
+        public DataTable GetUserInfoByUserId(string userId)
         {
             string sql = "select * from ts_uidp_userinfo where USER_ID='" + userId + "' ";
             return db.GetDataTable(sql);
         }
-        public DataTable GetUserInfoByUserCode(string userCode,string userid)
+        public DataTable GetUserInfoByUserCode(string userCode, string userid)
         {
             string sql = "select * from ts_uidp_userinfo where USER_CODE='" + userCode + "' ";
             if (!string.IsNullOrEmpty(userid))
@@ -125,7 +125,7 @@ namespace DGPF.ODS
         public DataTable GetUserInfoBylogin(string username, string userDomain)
         {
             string sql = "select * from ts_uidp_userinfo where ";
-            if (userDomain== "userDomain") {
+            if (userDomain == "userDomain") {
                 sql += " USER_DOMAIN = '" + username + "' ";
             }
             else
@@ -134,11 +134,11 @@ namespace DGPF.ODS
             }
             return db.GetDataTable(sql);
         }
-        public DataTable GetUserInfoByUSER_DOMAIN(string USER_DOMAIN,string userid)
+        public DataTable GetUserInfoByUSER_DOMAIN(string USER_DOMAIN, string userid)
         {
             string sql = "select * from ts_uidp_userinfo where USER_DOMAIN='" + USER_DOMAIN + "' ";
             if (!string.IsNullOrEmpty(userid)) {
-                sql += " and USER_ID!='"+userid+"'";
+                sql += " and USER_ID!='" + userid + "'";
             }
             return db.GetDataTable(sql);
         }
@@ -148,11 +148,11 @@ namespace DGPF.ODS
         /// <returns></returns>
         public string getAdminCode() {
             string sqluser = "SELECT conf_value from ts_uidp_config where conf_code= 'Admin_Code'";
-            return  db.GetString(sqluser);
+            return db.GetString(sqluser);
         }/// <summary>
-        /// 获取管理员密码
-        /// </summary>
-        /// <returns></returns>
+         /// 获取管理员密码
+         /// </summary>
+         /// <returns></returns>
         public string getAdminPass()
         {
             string sqluser = "SELECT conf_value from ts_uidp_config where conf_code= 'Admin_Password'";
@@ -166,7 +166,7 @@ namespace DGPF.ODS
         public DataTable GetUserOrg(string userId) {
             string sql = "select a.ORG_ID orgId ,a.ORG_NAME orgName, a.ORG_CODE orgCode from ts_uidp_org a ";
             sql += " join ts_uidp_org_user b on a.ORG_ID=b.ORG_ID ";
-            sql += " where b.USER_ID='"+userId+"'; ";
+            sql += " where b.USER_ID='" + userId + "'; ";
             return db.GetDataTable(sql);
 
         }
@@ -211,7 +211,7 @@ namespace DGPF.ODS
                 sql += " order by a.USER_ID ASC";
             }
             if (d["orgId"] != null) {
-                 sql = "select a.*,b.ORG_ID orgId,b.ORG_CODE,b.ORG_NAME orgName from ts_uidp_userinfo a";
+                sql = "select a.*,b.ORG_ID orgId,b.ORG_CODE,b.ORG_NAME orgName from ts_uidp_userinfo a";
                 sql += "  join ts_uidp_org_user c on c.USER_ID=a.USER_ID ";
                 sql += "  join ts_uidp_org b on b.ORG_ID=c.ORG_ID  where 1=1 ";
                 sql += " and a.USER_ID in (select a.USER_ID from ts_uidp_userinfo a";
@@ -227,7 +227,7 @@ namespace DGPF.ODS
                 }
                 if (d["orgId"] != null)
                 {
-                    sql += " and b.ORG_ID='" + d["orgId"].ToString()+"' ";
+                    sql += " and b.ORG_ID='" + d["orgId"].ToString() + "' ";
                 }
                 sql += " ) ";
                 if (d["sort"] != null && d["sort"].ToString() != "" && d["sort"].ToString() == "-USER_ID")
@@ -310,6 +310,19 @@ namespace DGPF.ODS
             string sql = "select CONF_VALUE from ts_uidp_config where CONF_CODE='SYS_NAME'";
             string sysName = db.GetString(sql);
             return sysName == "" ? "大港油田软件研发平台" : sysName;
+        }
+        /// <summary>
+        /// 查询用户信息
+        /// </summary>
+        /// <param name="d"></param>
+        /// <returns></returns>
+        public DataTable GetUserAndOrgByUserId(string USER_ID)
+        {
+            string sql = "select a.*,b.ORG_NAME,b.ORG_ID,b.ORG_CODE from ts_uidp_userinfo a ";
+            sql += " left join ts_uidp_org_user c on c.USER_ID=a.USER_ID ";
+            sql += " left join ts_uidp_org b on b.ORG_ID=c.ORG_ID  ";
+            sql += " where a.USER_ID='"+USER_ID+"'";
+            return db.GetDataTable(sql);
         }
     }
 }

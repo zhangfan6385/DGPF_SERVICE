@@ -216,31 +216,70 @@ namespace DGPF.WebAPI.Controllers
         /// <returns></returns>
         [HttpPost("Info")]
         public IActionResult Info([FromBody]JObject value) {
+            Dictionary<string, object> d = value.ToObject<Dictionary<string, object>>();
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                if (UserId==mm.getAdminCode()) {
-                    string[] arr = new string[1];
-                    arr[0] = "";
-                    return Json(new { code = 2000, message = "", roles = JsonConvert.DeserializeObject("['admin']") , name = "系统超级管理员", userCode=UserId ,token = accessToken, introduction = "", avatar = "", sysCode = "1", sysName = mm.getSysName(), userId = UserId, userSex = 0 });
+                if (d["userId"].ToString() ==mm.getAdminCode()) {
+                    return Json(new {
+                        code = 2000,
+                        message = "",
+                        roles = JsonConvert.DeserializeObject("['admin']") ,
+                        name = "系统超级管理员",
+                        userCode = d["userId"].ToString(),
+                        token = DGPF.UTILITY.AccessTokenTool.GetAccessToken(d["userId"].ToString()),
+                        introduction = "",
+                        avatar = "",
+                        sysCode = "1",
+                        sysName = mm.getSysName(),
+                        userId = d["userId"].ToString(),
+                        userSex = 0,
+                        departCode = "",
+                        departName = ""
+                    });
                 }
-                Dictionary<string, object> d = value.ToObject<Dictionary<string, object>>();
-                string _token = d["token"] == null ? "" : d["token"].ToString();
-                string departcode = d["departCode"] == null ? "" : d["departCode"].ToString();
-                DataTable dt = mm.getUserAndGroupgByToken(_token);
-                if (dt!=null&&dt.Rows.Count>0) {
-                    string[] role = new string[dt.Rows.Count];
-                    for (int i= 0;i < dt.Rows.Count;i++)
-                    {
-                        role[i] = dt.Rows[i]["GROUP_NAME"]==null?"": dt.Rows[i]["GROUP_NAME"].ToString();
-                    }
+                string token = DGPF.UTILITY.AccessTokenTool.GetAccessToken(d["userId"].ToString());
+                DataTable dt = mm.GetUserAndOrgByUserId(d["userId"].ToString());
+                if (dt != null && dt.Rows.Count > 0) { 
                     string _name = dt.Rows[0]["USER_NAME"] == null ? "" : dt.Rows[0]["USER_NAME"].ToString();
                     string _userCode= dt.Rows[0]["USER_CODE"] == null ? "" : dt.Rows[0]["USER_CODE"].ToString();
                     string _userId= dt.Rows[0]["USER_ID"] == null ? "" : dt.Rows[0]["USER_ID"].ToString();
                     int _userSex= Convert.ToInt32(dt.Rows[0]["USER_SEX"].ToString());
-                    return Json(new { code = 2000, message = "", roles = role,name=_name, userCode=_userCode, token =_token, introduction="", avatar="", sysCode ="1", sysName =mm.getSysName() , userId =_userId,userSex=_userSex});
+                    string _deptCode = dt.Rows[0]["ORG_CODE"] == null ? "" : dt.Rows[0]["ORG_CODE"].ToString();
+                    string _deptName = dt.Rows[0]["ORG_NAME"] == null ? "" : dt.Rows[0]["ORG_NAME"].ToString();
+                    return Json(new {
+                        code = 2000,
+                        message = "",
+                        roles = new Dictionary<string, object>(),
+                        token = token,
+                        introduction = "",
+                        avatar = "",
+                        name = _name,
+                        userCode = _userCode,
+                        sysCode = "1",
+                        sysName = mm.getSysName(),
+                        userId = _userId,
+                        userSex = _userSex,
+                        departCode = _deptCode,
+                        departName = _deptName
+                    });
                 }
-                return Json(new { code = 2000, message = "", roles = "", name = "", userCode="", token = _token, introduction = "", avatar = "", sysCode = "", sysName = mm.getSysName(), userId = "", userSex=0 });
+                return Json(new {
+                    code = 2000,
+                    message = "",
+                    roles = "",
+                    name = "",
+                    userCode ="",
+                    token = token,
+                    introduction = "",
+                    avatar = "",
+                    sysCode = "1",
+                    sysName = mm.getSysName(),
+                    userId = "",
+                    userSex =0 ,
+                    departCode = "",
+                    departName = ""
+                });
             }
             catch (Exception ex)
             {
@@ -295,5 +334,51 @@ namespace DGPF.WebAPI.Controllers
             Dictionary<string, object> res = mm.fetchUserRoleList(d);
             return Json(res);
         }
+        #region MyRegion
+        ///// <summary>
+        ///// 获取用户信息
+        ///// </summary>
+        ///// <param name=""></param>
+        ///// <returns></returns>
+        //[HttpPost("Info")]
+        //public IActionResult Info([FromBody]JObject value)
+        //{
+        //    Dictionary<string, object> r = new Dictionary<string, object>();
+        //    try
+        //    {
+        //        if (UserId == mm.getAdminCode())
+        //        {
+        //            string[] arr = new string[1];
+        //            arr[0] = "";
+        //            return Json(new { code = 2000, message = "", roles = JsonConvert.DeserializeObject("['admin']"), name = "系统超级管理员", userCode = UserId, token = accessToken, introduction = "", avatar = "", sysCode = "1", sysName = mm.getSysName(), userId = UserId, userSex = 0 });
+        //        }
+        //        Dictionary<string, object> d = value.ToObject<Dictionary<string, object>>();
+        //        string _token = d["token"] == null ? "" : d["token"].ToString();
+        //        string departcode = d["departCode"] == null ? "" : d["departCode"].ToString();
+        //        DataTable dt = mm.getUserAndGroupgByToken(_token);
+        //        if (dt != null && dt.Rows.Count > 0)
+        //        {
+        //            string[] role = new string[dt.Rows.Count];
+        //            for (int i = 0; i < dt.Rows.Count; i++)
+        //            {
+        //                role[i] = dt.Rows[i]["GROUP_NAME"] == null ? "" : dt.Rows[i]["GROUP_NAME"].ToString();
+        //            }
+        //            string _name = dt.Rows[0]["USER_NAME"] == null ? "" : dt.Rows[0]["USER_NAME"].ToString();
+        //            string _userCode = dt.Rows[0]["USER_CODE"] == null ? "" : dt.Rows[0]["USER_CODE"].ToString();
+        //            string _userId = dt.Rows[0]["USER_ID"] == null ? "" : dt.Rows[0]["USER_ID"].ToString();
+        //            int _userSex = Convert.ToInt32(dt.Rows[0]["USER_SEX"].ToString());
+        //            return Json(new { code = 2000, message = "", roles = role, name = _name, userCode = _userCode, token = _token, introduction = "", avatar = "", sysCode = "1", sysName = mm.getSysName(), userId = _userId, userSex = _userSex });
+        //        }
+        //        return Json(new { code = 2000, message = "", roles = "", name = "", userCode = "", token = _token, introduction = "", avatar = "", sysCode = "", sysName = mm.getSysName(), userId = "", userSex = 0 });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        r["code"] = -1;
+        //        r["message"] = ex.Message;
+        //    }
+        //    return Json(r);
+        //}
+        #endregion
+
     }
 }
