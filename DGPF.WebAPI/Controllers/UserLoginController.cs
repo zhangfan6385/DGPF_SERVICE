@@ -24,16 +24,16 @@ namespace DGPF.WebAPI.Controllers
             Dictionary<string, object> res = mm.fetchUserLoginList(limit,  page,  LOGIN_REMARK,  sort);
             return Json(res);
         }
-        /// <summary>
-        /// 弹窗查询
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("fetchUserForLoginList")]
-        public IActionResult fetchUserForLoginLists(string limit, string page, string LOGIN_REMARK="", string sort="")
-        {
-            Dictionary<string, object> res = mm.fetchUserForLoginList(limit, page, LOGIN_REMARK, sort);
-            return Json(res);
-        }
+        ///// <summary>
+        ///// 弹窗查询
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpGet("fetchUserForLoginList")]
+        //public IActionResult fetchUserForLoginLists(string limit, string page, string LOGIN_REMARK="", string sort="")
+        //{
+        //    Dictionary<string, object> res = mm.fetchUserForLoginList(limit, page, LOGIN_REMARK, sort);
+        //    return Json(res);
+        //}
         /// <summary>
         /// 新增
         /// </summary>

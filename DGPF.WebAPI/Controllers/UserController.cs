@@ -334,6 +334,17 @@ namespace DGPF.WebAPI.Controllers
             Dictionary<string, object> res = mm.fetchUserRoleList(d);
             return Json(res);
         }
+       // / <summary>
+        /// 弹窗查询
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("fetchUserForLoginList")]
+        public IActionResult fetchUserForLoginLists(string limit, string page, string LOGIN_REMARK = "", string sort = "")
+        {
+            UserLoginModule mm = new UserLoginModule();
+            Dictionary<string, object> res = mm.fetchUserForLoginList(limit, page, LOGIN_REMARK, sort);
+            return Json(res);
+        }
         #region MyRegion
         ///// <summary>
         ///// 获取用户信息
