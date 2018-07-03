@@ -221,6 +221,8 @@ namespace DGPF.WebAPI.Controllers
             try
             {
                 if (d["userId"].ToString() ==mm.getAdminCode()) {
+                    DGPF.LOG.SysLog log = new LOG.SysLog();
+                    log.Info(DateTime.Now, d["userId"].ToString(), "系统超级管理员", ClientIp, 0, "info", "");
                     return Json(new {
                         code = 2000,
                         message = "",
@@ -247,6 +249,8 @@ namespace DGPF.WebAPI.Controllers
                     int _userSex= Convert.ToInt32(dt.Rows[0]["USER_SEX"].ToString());
                     string _deptCode = dt.Rows[0]["ORG_CODE"] == null ? "" : dt.Rows[0]["ORG_CODE"].ToString();
                     string _deptName = dt.Rows[0]["ORG_NAME"] == null ? "" : dt.Rows[0]["ORG_NAME"].ToString();
+                    DGPF.LOG.SysLog log = new LOG.SysLog();
+                    log.Info(DateTime.Now, d["userId"].ToString(), _name, ClientIp, 0, "info", "");
                     return Json(new {
                         code = 2000,
                         message = "",

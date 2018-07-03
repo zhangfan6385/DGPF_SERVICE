@@ -155,7 +155,7 @@ namespace DGPF.UTILITY
         public static void UpdateToken(string userId, DateTime datetime)
         {
             DBTool tool = new DBTool("MYSQL");
-            string sql = "update ts_uidp_accesstoken set EXPIRED_TIME='"+datetime.ToString()+ "' where USER_ID='" + userId+"'";
+            string sql = "update ts_uidp_accesstoken set EXPIRED_TIME='"+datetime.ToString("yyyy-MM-dd HH:mm:ss") + "' where USER_ID='" + userId+"'";
             tool.Execut(sql);
         }
     }

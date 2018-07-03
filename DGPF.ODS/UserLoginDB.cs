@@ -106,7 +106,7 @@ namespace DGPF.ODS
             sql += "  join ts_uidp_login_user b on a.LOGIN_ID=b.LOGIN_ID ";
             sql += "  join ts_uidp_userinfo c on c.USER_ID=b.USER_ID ";
             sql += " where a.LOGIN_ID ='" + LOGIN_ID + "'";
-            sql += "order by a.LOGIN_ID";
+            sql += " order by a.LOGIN_ID";
             return db.GetDataTable(sql);
         }
         public DataTable fetchUserForLoginList(string USER_NAME, string LOGIN_ID)
