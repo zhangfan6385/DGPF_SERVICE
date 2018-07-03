@@ -20,7 +20,7 @@ namespace DGPF.WebAPI.Controllers
     {
         DGPF.LOG.SysLog log = new LOG.SysLog();
 
-        [HttpPost("loginByUsername")]
+        [HttpPost("login")]
         public IActionResult loginByUsernames([FromBody]JObject value)
         {
             string userId = "";
