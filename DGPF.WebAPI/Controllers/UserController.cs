@@ -220,7 +220,8 @@ namespace DGPF.WebAPI.Controllers
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                if (d["userId"].ToString() ==mm.getAdminCode()) {
+                string tokenUserId = DGPF.UTILITY.AccessTokenTool.GetUserId(d["token"].ToString());
+                if (tokenUserId == mm.getAdminCode()) {
                     DGPF.LOG.SysLog log = new LOG.SysLog();
                     log.Info(DateTime.Now, d["userId"].ToString(), "系统超级管理员", ClientIp, 0, "info", "");
                     return Json(new {
@@ -229,7 +230,7 @@ namespace DGPF.WebAPI.Controllers
                         roles = JsonConvert.DeserializeObject("['admin']") ,
                         name = "系统超级管理员",
                         userCode = d["userId"].ToString(),
-                        token = DGPF.UTILITY.AccessTokenTool.GetAccessToken(d["userId"].ToString()),
+                        token = d["token"].ToString(),
                         introduction = "",
                         avatar = "",
                         sysCode = "1",
