@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace DGPF.WebAPI.Controllers
 {
-//    [Produces("application/json")]
+    //    [Produces("application/json")]
     [Route("api/WebApiBase")]
     public class WebApiBaseController : Controller
     {
@@ -23,24 +23,26 @@ namespace DGPF.WebAPI.Controllers
             {
                 Microsoft.Extensions.Primitives.StringValues AccessToken;//获取header中某一项的值
                 context.HttpContext.Request.Headers.TryGetValue("X-Token", out AccessToken);
-
+                ClientIp = Extension.GetClientUserIp(Request.HttpContext);
                 actionName = (context.RouteData.Values["action"]).ToString().ToLower();//获取当前方法
                 //根据实际需求进行具体实现
                 accessToken = AccessToken;
                 if (accessToken == "")
                 {
-                    //context.Result = new ObjectResult(new { code = 50008, msg = "没有找到X-Token" });
+                    context.Result = new ObjectResult(new { code = 50008, msg = "没有找到X-Token" });
                 }
                 string userId = DGPF.UTILITY.AccessTokenTool.GetUserId(AccessToken);
-                if (actionName == "Info")//登录成功后获取用户信息方法，
+                UserId = userId;
+                if (actionName=="info")
                 {
-                    DGPF.UTILITY.Message mes = DGPF.UTILITY.AccessTokenTool.IsInValidUser(userId, AccessToken, "admin");
+                    DGPF.UTILITY.Message mes = DGPF.UTILITY.AccessTokenTool.IsInValidUser(userId, AccessToken, "user");
                     if (mes.code != 2000)
                     {
-                        //context.Result = new ObjectResult(mes);
+                        context.Result = new ObjectResult(mes);
                     }
                 }
-                else {//其他业务操作
+                else
+                {
                     BIZModule.UserModule mm = new BIZModule.UserModule();
                     string admin = mm.getAdminCode();
                     if (userId == admin)
@@ -54,10 +56,8 @@ namespace DGPF.WebAPI.Controllers
                     DGPF.UTILITY.Message mes = DGPF.UTILITY.AccessTokenTool.IsInValidUser(userId, AccessToken, admin);
                     if (mes.code != 2000)
                     {
-                       // context.Result = new ObjectResult(mes);
+                        context.Result = new ObjectResult(mes);
                     }
-                    UserId = userId;
-                    ClientIp = Extension.GetClientUserIp(Request.HttpContext);
                     DGPF.LOG.SysLog log = new LOG.SysLog();
                     log.Info(DateTime.Now, userId, UserName, ClientIp, 0, actionName, "");
                 }

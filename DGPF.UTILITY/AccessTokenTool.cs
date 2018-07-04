@@ -143,7 +143,7 @@ namespace DGPF.UTILITY
         public static void InsertToken(string userId,string token,DateTime datetime)
         {
             DBTool tool = new DBTool("MYSQL");
-            string sql = "insert into ts_uidp_accesstoken (USER_ID,ACCESS_TOKEN,EXPIRED_TIME) VALUES('"+userId+"','"+token+ "','"+datetime.ToString()+"'); ";
+            string sql = "insert into ts_uidp_accesstoken (USER_ID,ACCESS_TOKEN,EXPIRED_TIME) VALUES('"+userId+"','"+token+ "','"+datetime.ToString("yyyy-MM-dd HH:mm:ss") +"'); ";
             tool.Execut(sql);
         }
         /// <summary>
@@ -155,7 +155,7 @@ namespace DGPF.UTILITY
         public static void UpdateToken(string userId, DateTime datetime)
         {
             DBTool tool = new DBTool("MYSQL");
-            string sql = "update ts_uidp_accesstoken set EXPIRED_TIME='"+datetime.ToString()+ "' where USER_ID='" + userId+"'";
+            string sql = "update ts_uidp_accesstoken set EXPIRED_TIME='"+datetime.ToString("yyyy-MM-dd HH:mm:ss") + "' where USER_ID='" + userId+"'";
             tool.Execut(sql);
         }
     }

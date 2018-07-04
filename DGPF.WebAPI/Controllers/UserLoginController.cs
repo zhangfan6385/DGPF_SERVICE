@@ -11,7 +11,7 @@ namespace DGPF.WebAPI.Controllers
 {
     [Produces("application/json")]
     [Route("UserLogin")]
-    public class UserLoginController : Controller
+    public class UserLoginController : WebApiBaseController
     {
         UserLoginModule mm = new UserLoginModule();
         /// <summary>
