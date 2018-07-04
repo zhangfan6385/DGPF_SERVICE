@@ -223,19 +223,19 @@ namespace DGPF.WebAPI.Controllers
                 string tokenUserId = DGPF.UTILITY.AccessTokenTool.GetUserId(d["token"].ToString());
                 if (tokenUserId == mm.getAdminCode()) {
                     DGPF.LOG.SysLog log = new LOG.SysLog();
-                    log.Info(DateTime.Now, d["userId"].ToString(), "系统超级管理员", ClientIp, 0, "info", "");
+                    log.Info(DateTime.Now, tokenUserId, "系统超级管理员", ClientIp, 0, "info", "");
                     return Json(new {
                         code = 2000,
                         message = "",
                         roles = JsonConvert.DeserializeObject("['admin']") ,
                         name = "系统超级管理员",
-                        userCode = d["userId"].ToString(),
+                        userCode = tokenUserId,
                         token = d["token"].ToString(),
                         introduction = "",
                         avatar = "",
                         sysCode = "1",
                         sysName = mm.getSysName(),
-                        userId = d["userId"].ToString(),
+                        userId = tokenUserId,
                         userSex = 0,
                         departCode = "",
                         departName = ""
