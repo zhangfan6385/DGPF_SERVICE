@@ -2,32 +2,15 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
-    "iis": {
-      "applicationUrl": "http://localhost/DGPF.WebAPI",
-      "sslPort": 0
-    },
     "iisExpress": {
-      "applicationUrl": "http://localhost:52323/",
+      "applicationUrl": "http://10.201.1.82:12345/",
       "sslPort": 0
     }
   },
   "profiles": {
-    "IIS Express": {
+    "启动": {
       "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "values/value",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "DGPF.WebAPI": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "values/value",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "http://localhost:52323/"
+      "ErrorString": "Invalid property identifier character: <. Path 'iisSettings.iisExpress', line 10, position 0."
     }
   }
 }
