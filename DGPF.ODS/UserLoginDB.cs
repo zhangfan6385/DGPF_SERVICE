@@ -135,7 +135,7 @@ namespace DGPF.ODS
             var array = (JArray)d["arr"];
             string fengefu = "";
             string sql = " insert into ts_uidp_login_user(LOGIN_ID,USER_ID)values ";
-            string delSql = "delete from ts_uidp_login_user where LOGIN_ID='" + d["LOGIN_ID"].ToString() + "' and USER_ID in (";
+            string delSql = "delete from ts_uidp_login_user where  USER_ID in (";
             foreach (var item in array)
             {
                 delSql += fengefu + "'" + item.ToString() + "'";
