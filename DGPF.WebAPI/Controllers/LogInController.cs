@@ -79,7 +79,7 @@ namespace DGPF.WebAPI.Controllers
                         message = "",
                         token = accessToken,
                         orgList = new DataTable(),
-                        userList =dtUser,
+                        userList = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dtUser)),
                         roleLevel = "" });
                 }
             }
