@@ -159,6 +159,15 @@ namespace DGPF.BIZModule
             return db.GetUserAndGroup(userid);
         }
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public DataTable getUserAndGroupgByUserId(string userid)
+        {
+            return db.GetUserAndGroup(userid);
+        }
+        /// <summary>
         /// 根据userid 获取用户组织机构信息列表
         /// </summary>
         /// <param name=""></param>
@@ -426,6 +435,15 @@ namespace DGPF.BIZModule
         public string getSysName()
         {
             return db.getSysName();
+        }
+        /// <summary>
+        /// 查询用户信息
+        /// </summary>
+        /// <param name="d"></param>
+        /// <returns></returns>
+        public DataTable GetUserAndOrgByUserId(string USER_ID)
+        {
+            return db.GetUserAndOrgByUserId(USER_ID);
         }
     }
 }
