@@ -79,7 +79,7 @@ namespace DGPF.WebAPI.Controllers
                         message = "",
                         token = accessToken,
                         orgList = new DataTable(),
-                        userList = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dtUser)),
+                        userList = KVTool.TableToListDic(KVTool.GetPagedTable(dtUser, 0, dtUser==null?0:dtUser.Rows.Count)),
                         roleLevel = "" });
                 }
             }
