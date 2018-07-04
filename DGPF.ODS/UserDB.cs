@@ -87,7 +87,18 @@ namespace DGPF.ODS
 
             return db.GetDataTable(sql);
         }
+        public string updateLoginPasswordData(Dictionary<string, object> d)
+        {
+            string sql = "update  ts_uidp_login set LOGIN_PASS=" + d["newpassword"].ToString() + " where LOGIN_CODE='" + d["userid"].ToString() + "' and LOGIN_PASS='" + d["password"].ToString() + "' ;";
 
+            return db.ExecutByStringResult(sql);
+        }
+        public DataTable IsInvalidLoginPassword(Dictionary<string, object> d)
+        {
+            string sql = "select * from  ts_uidp_login  where LOGIN_CODE='" + d["userid"].ToString() + "' and LOGIN_PASS='" + d["password"].ToString() + "' ;";
+
+            return db.GetDataTable(sql);
+        }
         public string updateUserData(Dictionary<string, object> d) {
             StringBuilder sb = new StringBuilder();
             sb.Append(" update ts_uidp_userinfo set ");
