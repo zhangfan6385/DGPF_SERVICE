@@ -117,6 +117,7 @@ namespace DGPF.LOG
                 {
                     cmd.Parameters.AddRange(cmdParms);
                     cmd.ExecuteNonQuery();//s返回受影响行数
+                    conn.Close();
                 }
             }
             catch (SqlException e)

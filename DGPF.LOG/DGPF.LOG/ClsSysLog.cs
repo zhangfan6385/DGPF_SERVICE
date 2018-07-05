@@ -117,6 +117,7 @@ namespace DGPF.LOG
                    // MySqlTransaction tran = conn.BeginTransaction();
                     cmd.Parameters.AddRange(cmdParms);
                     cmd.ExecuteNonQuery();//s返回受影响行数
+                    conn.Close();
                    // tran.Commit();
                 }
             }
