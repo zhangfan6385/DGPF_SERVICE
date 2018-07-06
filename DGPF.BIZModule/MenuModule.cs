@@ -56,8 +56,9 @@ namespace DGPF.BIZModule
             List<ClsMenuInfo> clsMenuInfos = new List<ClsMenuInfo>();
 
             GetHierarchicalItem(db.fetchPermission(sysCode), clsMenuInfos);
+            clsMenuInfos=clsMenuInfos.OrderBy(o => o.MENU_ORDER).ToList();
             r["items"] = clsMenuInfos;
-            clsMenuInfos.OrderBy(o => o.MENU_ORDER);
+            
 
             return clsMenuInfos;
         }
