@@ -50,9 +50,7 @@ namespace DGPF.WebAPI.Controllers
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                
-                string userId = mm.CreateUserId(16);//生成16位userid
-                d["USER_ID"] = userId;
+                d["USER_ID"] =Guid.NewGuid();
                 string b = mm.createUserArticle(d);
                 if (b == "")
                 {

@@ -74,14 +74,14 @@ namespace DGPF.BIZModule
                 DataTable dt = db.GetUserInfoByUserCode(d["USER_CODE"].ToString(),"");//USER_DOMAIN
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    return "此员工账号已存在！";
+                    return "此员工编号已存在！";
                 }
             }
             if (d["USER_DOMAIN"]!=null) {
                 DataTable dt = db.GetUserInfoByUSER_DOMAIN(d["USER_DOMAIN"].ToString(),"");//USER_DOMAIN
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    return "此员工编号已存在！";
+                    return "此账号已存在！";
                 }
             }
             return db.createUserArticle(d);
@@ -314,7 +314,8 @@ namespace DGPF.BIZModule
                 DataTable dt = db.fetchUserOrgList(d);
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    DataTable dtName = dt.DefaultView.ToTable(true, "USER_ID", "REG_TIME", "USER_NAME", "USER_CODE", "USER_ALIAS", "USER_PASS", "PHONE_MOBILE", "PHONE_OFFICE", "PHONE_ORG", "USER_EMAIL", "EMAIL_OFFICE", "USER_IP", "FLAG", "USER_DOMAIN", "REMARK");
+                    DataTable dtName = dt.DefaultView.ToTable(true, "USER_ID", "USER_DOMAIN", "USER_NAME", "USER_CODE", "USER_PASS", "PHONE_MOBILE", "PHONE_OFFICE", 
+                        "USER_EMAIL",  "USER_IP", "USER_SEX", "FLAG", "AUTHENTICATION_TYPE", "ASSOCIATED_ACCOUNT",  "REMARK");
                     dtName.Columns.Add("orgId");
                     dtName.Columns.Add("orgName");
                     foreach (DataRow row in dtName.Rows)

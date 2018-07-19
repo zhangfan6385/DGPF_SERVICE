@@ -136,8 +136,10 @@ namespace DGPF.ODS
             string fengefu = "";
             string sql = " insert into ts_uidp_login_user(LOGIN_ID,USER_ID)values ";
             string delSql = "delete from ts_uidp_login_user where  USER_ID in (";
+            string userid = "";
             foreach (var item in array)
             {
+                userid+= fengefu + "'" + item.ToString() + "'";
                 delSql += fengefu + "'" + item.ToString() + "'";
                 sql += fengefu + "(";
                 sql += "'" + d["LOGIN_ID"].ToString() + "','" + item.ToString() + "'";
@@ -145,9 +147,20 @@ namespace DGPF.ODS
                 fengefu = ",";
             }
             delSql += ")";
+            string sqlUser = "select USER_DOMAIN from ts_uidp_userinfo where USER_ID in(" + userid + ")";
+            DataTable dt = db.GetDataTable(sqlUser);
+            fengefu = "";
+            userid = "";
+            foreach (DataRow  row  in dt.Rows)
+            {
+                userid += fengefu  + row[0].ToString();
+                fengefu = ",";
+            }
+            string sqlUpdateUserInfo = "  update ts_uidp_userinfo set ASSOCIATED_ACCOUNT='" + userid + "' where USER_ID='"+ d["LOGIN_ID"].ToString()+"'";
             List<string> list = new List<string>();
             list.Add(delSql);
             list.Add(sql);
+            list.Add(sqlUpdateUserInfo);
             return db.Executs(list);
         }
         /// <summary>

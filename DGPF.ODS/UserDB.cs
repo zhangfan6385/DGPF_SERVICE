@@ -38,36 +38,48 @@ namespace DGPF.ODS
         }
         public string createUserArticle(Dictionary<string, object> d)
         {
-            string col = "";
-            string val = "";
-            foreach (var v in d)
-            {
-                col += "," + v.Key;
-                if (v.Value.GetType().ToString() == "System.Int64") {
-                    val += "," + v.Value + "";
-                }
-                else
-                {
-                    val += ",'" + v.Value + "'";
-                }
-            }
-            if (col != "")
-            {
-                col = col.Substring(1);
-            }
-            if (val != "")
-            {
-                val = val.Substring(1);
-            }
-            string sql = "INSERT INTO ts_uidp_userinfo(" + col + ") VALUES(" + val + ") ;";
-            return db.ExecutByStringResult(sql);
+            List<string> list = new List<string>();
+            string sql = "insert into ts_uidp_org_user(ORG_ID,USER_ID)values ('";
+            sql +=d["orgId"].ToString()+ "','"+d["USER_ID"].ToString()+"')";
+            list.Add(sql);
+            StringBuilder sb = new StringBuilder();
+            sb.Append("INSERT INTO ts_uidp_userinfo(USER_ID,USER_DOMAIN,USER_CODE,USER_NAME,USER_PASS,PHONE_MOBILE,PHONE_OFFICE," +
+                "USER_EMAIL,USER_IP,USER_SEX,AUTHENTICATION_TYPE,FLAG,REG_TIME,REMARK) VALUES(");
+            sb.Append("'");
+            sb.Append(d["USER_ID"] == null ? "" : d["USER_ID"] + "', ");
+            sb.Append("'");
+            sb.Append(d["USER_DOMAIN"] == null ? "" : d["USER_DOMAIN"] + "', ");
+            sb.Append("'");
+            sb.Append(d["USER_CODE"] == null ? "" : d["USER_CODE"] + "', ");
+            sb.Append("'");
+            sb.Append(d["USER_NAME"] == null ? "" : d["USER_NAME"] + "', ");
+            sb.Append("'");
+            sb.Append(d["USER_PASS"] == null ? "" : d["USER_PASS"] + "', ");
+            sb.Append("'");
+            sb.Append(d["PHONE_MOBILE"] == null ? "" : d["PHONE_MOBILE"] + "', ");
+            sb.Append("'");
+            sb.Append(d["PHONE_OFFICE"] == null ? "" : d["PHONE_OFFICE"] + "', ");
+            sb.Append("'");
+            sb.Append(d["USER_EMAIL"] == null ? "" : d["USER_EMAIL"] + "', ");
+            sb.Append("'");
+            sb.Append(d["USER_IP"] == null ? "" : d["USER_IP"] + "', ");
+            sb.Append(d["USER_SEX"] == null ? "1" : d["USER_SEX"] + ",");
+            sb.Append(d["AUTHENTICATION_TYPE"] == null ? "" : d["AUTHENTICATION_TYPE"] + ", ");
+            sb.Append(d["FLAG"] == null ? "1" : d["FLAG"] + ", ");
+            sb.Append("'"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +"','");
+            sb.Append(d["REMARK"] == null ? "" : d["REMARK"] + "' )");
+            list.Add(sb.ToString());
+            return db.Executs(list);
         }
 
         public string updateUserArticle(Dictionary<string, object> d)
         {
+            List<string> list = new List<string>();
             string sql = "delete FROM ts_uidp_userinfo where USER_ID='" + d["USER_ID"].ToString() + "' ;";
-
-            return db.ExecutByStringResult(sql);
+            string sql2= " delete from ts_uidp_org_user where USER_ID'" + d["USER_ID"].ToString() + "' ;";
+            list.Add(sql);
+            list.Add(sql2);
+            return db.Executs(list);
         }
 
         public string updateUserFlag(Dictionary<string, object> d)
@@ -103,36 +115,30 @@ namespace DGPF.ODS
         public string updateUserData(Dictionary<string, object> d) {
             StringBuilder sb = new StringBuilder();
             sb.Append(" update ts_uidp_userinfo set ");
+            sb.Append(" USER_DOMAIN='");
+            sb.Append(d["USER_DOMAIN"] == null ? "" : d["USER_DOMAIN"] + "', ");
             sb.Append(" USER_CODE='");
             sb.Append(d["USER_CODE"] == null ? "" : d["USER_CODE"] + "', ");
-            sb.Append(" USER_NAME='" );
+            sb.Append(" USER_NAME='");
             sb.Append(d["USER_NAME"] == null ? "" : d["USER_NAME"] + "', ");
-            sb.Append(" USER_ALIAS='" );
-            sb.Append(d["USER_ALIAS"] == null ? "" : d["USER_ALIAS"] + "', ");
-            sb.Append(" USER_PASS='" );
+            sb.Append(" USER_PASS='");
             sb.Append(d["USER_PASS"] == null ? "" : d["USER_PASS"] + "', ");
-            sb.Append(" PHONE_MOBILE='" );
+            sb.Append(" PHONE_MOBILE='");
             sb.Append(d["PHONE_MOBILE"] == null ? "" : d["PHONE_MOBILE"] + "', ");
-            sb.Append(" PHONE_OFFICE='" );
+            sb.Append(" PHONE_OFFICE='");
             sb.Append(d["PHONE_OFFICE"] == null ? "" : d["PHONE_OFFICE"] + "', ");
-            sb.Append(" PHONE_ORG='" );
-            sb.Append(d["PHONE_ORG"] == null ? "" : d["PHONE_ORG"] + "', ");
-            sb.Append(" USER_EMAIL='" );
+            sb.Append(" USER_EMAIL='");
             sb.Append(d["USER_EMAIL"] == null ? "" : d["USER_EMAIL"] + "', ");
-            sb.Append(" EMAIL_OFFICE='" );
-            sb.Append(d["EMAIL_OFFICE"] == null ? "" : d["EMAIL_OFFICE"] + "', ");
             sb.Append(" USER_IP='");
             sb.Append(d["USER_IP"] == null ? "" : d["USER_IP"] + "', ");
-            sb.Append(" FLAG=" );
-            sb.Append(d["FLAG"] == null ? "" : d["FLAG"] + ", ");
-            sb.Append(" USER_SEX=" );
-            sb.Append(d["USER_SEX"] == null ? "" : d["USER_SEX"] + ",");
-            sb.Append(" USER_DOMAIN='" );
-            sb.Append(d["USER_DOMAIN"] == null ? "" : d["USER_DOMAIN"] + "', ");
+            sb.Append(" USER_SEX=");
+            sb.Append(d["USER_SEX"] == null ? "1" : d["USER_SEX"] + ",");
+            sb.Append(" AUTHENTICATION_TYPE=");
+            sb.Append(d["AUTHENTICATION_TYPE"] == null ? "" : d["AUTHENTICATION_TYPE"] + ", ");
+            sb.Append(" FLAG=");
+            sb.Append(d["FLAG"] == null ? "1" : d["FLAG"] + ", ");
             sb.Append(" REMARK='");
-            sb.Append(d["REMARK"] == null ? "" : d["REMARK"] + "' ,");
-            sb.Append(" USER_ERP='");
-            sb.Append(d["USER_ERP"] == null ? "" : d["USER_ERP"] + "' ");
+            sb.Append(d["REMARK"] == null ? "" : d["REMARK"] + "' )");
             sb.Append(" where USER_ID='" + d["USER_ID"].ToString() + "' ");
             return db.ExecutByStringResult(sb.ToString());
         }

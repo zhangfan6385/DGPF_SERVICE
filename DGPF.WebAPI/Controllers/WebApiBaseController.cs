@@ -17,12 +17,12 @@ namespace DGPF.WebAPI.Controllers
         public string UserName = "";
         public string accessToken = "";
         public string actionName = "";
-
+       
         public override void OnActionExecuting(ActionExecutingContext context)
         {
+            
             try
             {
-
                     Microsoft.Extensions.Primitives.StringValues AccessToken;//获取header中某一项的值
                     context.HttpContext.Request.Headers.TryGetValue("X-Token", out AccessToken);
                     ClientIp = Extension.GetClientUserIp(Request.HttpContext);
@@ -61,11 +61,7 @@ namespace DGPF.WebAPI.Controllers
                         {
                             context.Result = new ObjectResult(mes);
                         }
-                        DGPF.LOG.SysLog log = new LOG.SysLog();
-                        log.Info(DateTime.Now, userId, UserName, ClientIp, 0, actionName, "",1);
                     }
-
-               
             }
             catch (Exception ex)
             {
