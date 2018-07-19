@@ -446,5 +446,92 @@ namespace DGPF.BIZModule
         {
             return db.GetUserAndOrgByUserId(USER_ID);
         }
+        public string UploadUserFile(string filePath)
+        {
+            string modePath = System.IO.Directory.GetCurrentDirectory() + "\\ExcelModel\\用户.xlsx";//原始文件
+            string path = filePath;//原始文件
+            string mes = "";
+            DataTable dt = new DataTable();
+            UTILITY.ExcelTools tool = new UTILITY.ExcelTools();
+            tool.GetDataTable(System.IO.File.OpenRead(path), path, modePath, ref mes, ref dt);
+
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                return "空数据，导入失败！";
+            }
+            DataView dv = new DataView(dt);
+            if (dt.Rows.Count != dv.ToTable(true, "账号").Rows.Count)
+            {
+                return "账号列存在重复数据，导入失败！";
+            }
+            string fengefu = "";
+            StringBuilder sb = new StringBuilder();
+            StringBuilder sbOrgUser = new StringBuilder();
+            sb.Append(" INSERT INTO ts_uidp_userinfo(USER_ID,USER_DOMAIN,USER_CODE,USER_NAME,USER_PASS,PHONE_MOBILE,PHONE_OFFICE," +
+                "USER_EMAIL,USER_IP,USER_SEX,AUTHENTICATION_TYPE,FLAG,REG_TIME,REMARK) values ");
+            OrgDB orgDB = new OrgDB();
+            DataTable dtOrg = orgDB.fetchOrgList();
+            string result = "";
+            string fengefu2 = "";
+            for (int i= 0;i < dt.Rows.Count;i++)
+            {
+                if (dt.Rows[i]["组织机构编码"]==null|| dt.Rows[i]["账号"]==null) {
+                    result += fengefu2 + "第" + (i + 2) + "行，组织机构编码或者账号不能为空！，导入失败！";
+                    fengefu2 = ",";
+                    continue;
+                }
+                if (dt.Rows[i]["组织机构编码"].ToString() == "" || dt.Rows[i]["账号"].ToString() == "")
+                {
+                    result += fengefu2 + "第" + (i + 2) + "行，组织机构编码或者账号不能为空！，导入失败！";
+                    fengefu2 = ",";
+                    continue;
+                }
+                DataRow[] OrgRow = dtOrg.Select("ORG_CODE='"+ dt.Rows[i]["组织机构编码"].ToString().Trim() +"'");
+                if (OrgRow.Length<=0) {
+                    result += fengefu2 + "第" + (i + 2) + "行，系统中不存在此组织机构编码！，导入失败！";
+                    fengefu2 = ",";
+                    continue;
+                }
+                string id = Guid.NewGuid().ToString();
+
+                sb.Append(fengefu + "('" + id + "',");
+                sb.Append("'" + getString(dt.Rows[i]["账号"]) + "',");
+                sb.Append("'" + getString(dt.Rows[i]["员工编号"]) + "',");
+                sb.Append("'" + getString(dt.Rows[i]["姓名"]) + "',");
+                sb.Append("'123456',");
+                sb.Append("'" + getString(dt.Rows[i]["手机"]) + "',");
+                sb.Append("'" + getString(dt.Rows[i]["办公电话"]) + "',");
+                sb.Append("'" + getString(dt.Rows[i]["邮箱"]) + "',");
+                sb.Append("'" + getString(dt.Rows[i]["访问IP"]) + "',");
+                if (dt.Rows[i]["性别"] != null && dt.Rows[i]["性别"].ToString() == "男")
+                {
+                    sb.Append("1,");
+                }
+                else
+                {
+                    sb.Append("0,");
+                }
+                if (dt.Rows[i]["账号类型"] != null && dt.Rows[i]["账号类型"].ToString() == "PTR账号")
+                {
+                    sb.Append("'1',");
+                }
+                else
+                {
+                    sb.Append("'0',");
+                }
+                sb.Append("1,'"+DateTime.Now.ToString("yyyy-MM-dd HH:MM:SS")+"',");
+                sb.Append("'" + getString(dt.Rows[i]["备注"]) + "')");
+                fengefu = ",";
+            }
+            return db.UploadUserFile(sb.ToString());
+        }
+        public string getString(object obj)
+        {
+            if (obj == null)
+            {
+                return "";
+            }
+            return obj.ToString();
+        }
     }
 }

@@ -9,6 +9,8 @@ using DGPF.BIZModule;
 using DGPF.LOG;
 using System.Data;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http.Internal;
+using System.IO;
 
 namespace DGPF.WebAPI.Controllers
 {
@@ -347,6 +349,55 @@ namespace DGPF.WebAPI.Controllers
             UserLoginModule mm = new UserLoginModule();
             Dictionary<string, object> res = mm.fetchUserForLoginList(limit, page, USER_NAME, LOGIN_ID);
             return Json(res);
+        }
+        /// <summary>
+        /// 导入excel
+        /// </summary>
+        /// <param name="formCollection"></param>
+        /// <returns></returns>
+        [HttpPost("uploadUserArticle")]
+        public IActionResult PostFile([FromForm] IFormCollection formCollection)
+        {
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                FormFileCollection fileCollection = (FormFileCollection)formCollection.Files;
+                foreach (IFormFile file in fileCollection)
+                {
+                    StreamReader reader = new StreamReader(file.OpenReadStream());
+                    String content = reader.ReadToEnd();
+                    String name = file.FileName;
+                    String filename = System.IO.Directory.GetCurrentDirectory() + "\\Files\\" + Guid.NewGuid() + name;
+                    if (System.IO.File.Exists(filename))
+                    {
+                        System.IO.File.Delete(filename);
+                    }
+                    using (FileStream fs = System.IO.File.Create(filename))
+                    {
+                        // 复制文件
+                        file.CopyTo(fs);
+                        // 清空缓冲区数据
+                        fs.Flush();
+                    }
+                    r["message"] = mm.UploadUserFile(filename);
+                    if (r["message"].ToString() != "")
+                    {
+                        r["code"] = -1;
+                    }
+                    else
+                    {
+                        r["code"] = 2000;
+                    }
+                    Json(r);
+                }
+            }
+            catch (Exception ex)
+            {
+                r["code"] = -1;
+                r["message"] = ex.Message;
+            }
+
+            return Json(r);
         }
         #region MyRegion
         ///// <summary>

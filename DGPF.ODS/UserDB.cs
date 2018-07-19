@@ -358,5 +358,8 @@ namespace DGPF.ODS
             sql += " where a.USER_ID='"+USER_ID+"'";
             return db.GetDataTable(sql);
         }
+        public string UploadUserFile(string sql) {
+            return db.ExecutByStringResult(sql);
+        }
     }
 }
