@@ -86,8 +86,9 @@ namespace DGPF.LOG
             mod.LOG_CONTENT = LOG_CONTENT;
             mod.REMARK = REMARK;
             mod.ALARM_LEVEL = ALARM_LEVEL;
-            Thread thread = new Thread(ThreadLog);
-            thread.Start(mod);
+            //Thread thread = new Thread(ThreadLog);
+            // thread.Start(mod);
+            ThreadLog(mod);
         }
         /// <summary>
         /// 写日志到数据库
