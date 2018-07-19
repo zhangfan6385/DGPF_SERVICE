@@ -17,16 +17,13 @@ namespace DGPF.ODS
         /// <returns></returns>
         public string createOrgArticle(Dictionary<string, object> d)
         {
-            string sql = "INSERT INTO ts_uidp_org(ORG_ID,ORG_CODE,ORG_NAME,ORG_CODE_UPPER,ORG_NAME_FULL,ORG_ADDR,PHONE,PHONE_S,PHONE_FAX,REMARK) VALUES(";
+            string sql = "INSERT INTO ts_uidp_org(ORG_ID,ORG_CODE,ORG_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) VALUES(";
             sql += "'" + GetIsNullStr(d["id"]) + "',";
             sql += "'" + GetIsNullStr(d["orgCode"])+"',";
             sql += "'" + GetIsNullStr(d["orgName"]) + "',";
             sql += "'" + GetIsNullStr(d["parentId"]) + "',";
-            sql += "'" + GetIsNullStr(d["orgNameFull"])+ "',";
-            sql += "'" + GetIsNullStr(d["orgAddr"] )+ "',";
-            sql += "'" + GetIsNullStr(d["phone"])  + "',";
-            sql += "'" + GetIsNullStr(d["phoneS"])  + "',";
-            sql += "'" + GetIsNullStr(d["phoneFax"]) + "',";
+            sql += "'" + GetIsNullStr(d["ISINVALID"]) + "',";
+            sql += "'1',";//伪删除 1正常，0伪删除
             sql += "'" + GetIsNullStr(d["remark"]) + "')";
             return db.ExecutByStringResult(sql);
         }
@@ -50,24 +47,20 @@ namespace DGPF.ODS
             sql += " ORG_CODE='" + GetIsNullStr(d["orgCode"]) + "'," ;
             sql += " ORG_NAME='" + GetIsNullStr(d["orgName"] ) + "',";
             sql += " ORG_CODE_UPPER='" + GetIsNullStr(d["parentId"])+ "',";
-            sql += " ORG_NAME_FULL='" + GetIsNullStr(d["orgNameFull"]) + "',";
-            sql += " ORG_ADDR='" + GetIsNullStr(d["orgAddr"]) + "',";
-            sql += " PHONE='" + GetIsNullStr(d["phone"]) + "',";
-            sql += " PHONE_S='" + GetIsNullStr(d["phoneS"]) + "',";
-            sql += " PHONE_FAX='" + GetIsNullStr(d["phoneFax"]) + "',";
+            sql += " ISINVALID='" + GetIsNullStr(d["ISINVALID"]) + "',";
             sql += " REMARK='" + GetIsNullStr(d["remark"]) + "'";
             sql += " where ORG_ID='" + d["id"].ToString() + "' ;";
 
             return db.ExecutByStringResult(sql);
         }
         /// <summary>
-        /// 删除组织机构
+        /// 删除组织机构，变成伪删除
         /// </summary>
         /// <param name="d">带单引号 逗号分隔的id字符串</param>
         /// <returns></returns>
         public string updateOrgArticle(string strid)
         {
-            string sql = "delete FROM ts_uidp_org where ORG_ID in(" + strid + ")";
+            string sql = "update ts_uidp_org set ISDELETE='0' where ORG_ID in(" + strid + ")";
 
             return db.ExecutByStringResult(sql);
         }
@@ -111,7 +104,7 @@ namespace DGPF.ODS
         /// </summary>
         /// <returns></returns>
         public DataTable fetchOrgList() {
-            string sql = "select * FROM ts_uidp_org ";
+            string sql = "select * FROM ts_uidp_org where ISDELETE='1'";
             return db.GetDataTable(sql);
         }
         /// <summary>
@@ -136,5 +129,14 @@ namespace DGPF.ODS
             delSql += ")";
             return db.ExecutByStringResult(delSql);
         }
-    }
+        /// <summary>
+        /// 导入org
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
+        public string UploadOrgFile(string sql)
+        {
+            return db.ExecutByStringResult(sql);
+        }
+        }
 }
