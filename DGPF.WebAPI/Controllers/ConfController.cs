@@ -15,6 +15,18 @@ namespace DGPF.WebAPI.Controllers
     public class ConfController : WebApiBaseController
     {
         ConfModule mm = new ConfModule();
+        /// <summary>
+        /// 登陆页获取配置信息
+        /// </summary>
+        /// <param name="CONF_CODE">配置CODE</param>
+        /// <returns></returns>
+        [HttpGet("loginConfig")]
+        public IActionResult loginConfig(string CONF_CODE)
+            {
+            Dictionary<string, object> d = new Dictionary<string, object>();
+            d["CONF_CODE"] = CONF_CODE;
+            return Json(mm.loginConfig(d));
+        }
         // GET api/values
         [HttpGet("fetchConfigList")]
         public IActionResult fetchConfigList(string limit, string page, string CONF_NAME)

@@ -223,7 +223,7 @@ namespace DGPF.WebAPI.Controllers
                 string tokenUserId = DGPF.UTILITY.AccessTokenTool.GetUserId(d["token"].ToString());
                 if (tokenUserId == mm.getAdminCode()) {
                     DGPF.LOG.SysLog log = new LOG.SysLog();
-                    log.Info(DateTime.Now, tokenUserId, "系统超级管理员", ClientIp, 0, "info", "");
+                    log.Info(DateTime.Now, tokenUserId, "系统超级管理员", ClientIp, 0, "info", "",1);
                     return Json(new {
                         code = 2000,
                         message = "",
@@ -251,7 +251,7 @@ namespace DGPF.WebAPI.Controllers
                     string _deptCode = dt.Rows[0]["ORG_CODE"] == null ? "" : dt.Rows[0]["ORG_CODE"].ToString();
                     string _deptName = dt.Rows[0]["ORG_NAME"] == null ? "" : dt.Rows[0]["ORG_NAME"].ToString();
                     DGPF.LOG.SysLog log = new LOG.SysLog();
-                    log.Info(DateTime.Now, d["userId"].ToString(), _name, ClientIp, 0, "info", "");
+                    log.Info(DateTime.Now, d["userId"].ToString(), _name, ClientIp, 0, "info", "",1);
                     return Json(new {
                         code = 2000,
                         message = "",

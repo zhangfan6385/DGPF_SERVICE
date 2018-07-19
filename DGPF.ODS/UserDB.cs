@@ -69,6 +69,7 @@ namespace DGPF.ODS
 
             return db.ExecutByStringResult(sql);
         }
+
         public string updateUserFlag(Dictionary<string, object> d)
         {
             string sql = "update  ts_uidp_userinfo set FLAG=" + d["FLAG"] + " where USER_ID='" + d["USER_ID"].ToString() + "' ;";

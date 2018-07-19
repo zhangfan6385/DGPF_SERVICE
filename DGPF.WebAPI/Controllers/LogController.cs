@@ -22,7 +22,7 @@ namespace DGPF.WebAPI.Controllers
         /// <param name="sort"></param>
         /// <returns></returns>
         [HttpGet("fetchLogInfoList")]
-        public IActionResult fetchLogInfoList(string limit, string page, string USER_NAME, int? LOG_TYPE, string ACCESS_TIME)
+        public IActionResult fetchLogInfoList(string limit, string page, string USER_NAME, int? LOG_TYPE, string BEGIN_ACCESS_TIME,string END_ACCESS_TIME)
         {
             //DGPF.LOG.ClsSysLog aa = new DGPF.LOG.ClsSysLog();
             // aa.Info(DateTime.Now,"sdf","dsf","sdf",2,"sdf","sdf");
@@ -31,7 +31,8 @@ namespace DGPF.WebAPI.Controllers
             d["page"] = page;
             d["USER_NAME"] = USER_NAME;
             d["LOG_TYPE"] = LOG_TYPE;
-            d["ACCESS_TIME"] = ACCESS_TIME;
+            d["BEGIN_ACCESS_TIME"] = BEGIN_ACCESS_TIME;
+            d["END_ACCESS_TIME"] = END_ACCESS_TIME;
             Dictionary<string, object> res = mm.fetchLogInfoList(d);
             return Json(res);
         }

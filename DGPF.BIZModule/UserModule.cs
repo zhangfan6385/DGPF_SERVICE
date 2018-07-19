@@ -96,12 +96,12 @@ namespace DGPF.BIZModule
         }
         public string updatePasswordData(Dictionary<string, object> d)
         {
-            DataTable dt = db.IsInvalidLoginPassword(d);
+            DataTable dt = db.IsInvalidPassword(d);
             if (dt == null || dt.Rows.Count == 0)
             {
                 return "原密码不正确！";
             }
-            return db.updateLoginPasswordData(d);
+            return db.updatePasswordData(d);
         }
         public string updateUserData(Dictionary<string, object> d)
         {
