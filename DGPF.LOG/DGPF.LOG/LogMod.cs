@@ -37,6 +37,10 @@ namespace DGPF.LOG
         /// 操作时间
         /// </summary>
         public DateTime ACCESS_TIME { get; set; }
+        /// <summary>
+        /// 告警级别
+        /// </summary>
+        public int? ALARM_LEVEL { get; set; }
 
     }
 }

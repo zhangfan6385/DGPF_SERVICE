@@ -118,9 +118,9 @@ namespace DGPF.ODS
             {
                 sql += " and c.USER_NAME like '%" + USER_NAME + "%'";
             }
-            if (LOGIN_ID != null && LOGIN_ID!= "")
+            if (LOGIN_ID != null && LOGIN_ID != "")
             {
-                sql += " AND  a.LOGIN_ID ='"+LOGIN_ID+"'";
+                sql += " AND  a.LOGIN_ID ='" + LOGIN_ID + "'";
             }
             return db.GetDataTable(sql);
         }
@@ -171,6 +171,45 @@ namespace DGPF.ODS
             }
             delSql += ")";
             return db.ExecutByStringResult(delSql);
+        }
+
+        /// <summary>
+        /// 根据usercode查用户信息
+        /// </summary>
+        /// <param name="userCode"></param>
+        /// <returns></returns>
+        public DataTable getUserInfoByName(string userCode)
+        {
+            if (!string.IsNullOrEmpty(userCode))
+            {
+                string sql = String.Format("select * from ts_uidp_userinfo where USER_CODE='{0}' "
+                   , userCode);
+                return db.GetDataTable(sql);
+            }
+            throw new Exception("用户名不能为空！");
+
+        }
+
+        public DataTable getLoginByID(string userId)
+        {
+            if (!string.IsNullOrEmpty(userId))
+            {
+                string sql = String.Format(@"SELECT ts_uidp_userinfo.* from (
+select USER_ID from ts_uidp_login_user
+where LOGIN_ID = '{0}'
+union
+select LOGIN_ID from ts_uidp_login_user
+where USER_ID = '{0}'
+union
+select '{0}'
+) tbl
+LEFT JOIN
+ts_uidp_userinfo
+on tbl.USER_ID = ts_uidp_userinfo.USER_ID "
+                   , userId);
+                return db.GetDataTable(sql);
+            }
+            throw new Exception("用户ID不能为空！");
         }
     }
 }

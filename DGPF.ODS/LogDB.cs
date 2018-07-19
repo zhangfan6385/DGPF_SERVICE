@@ -16,7 +16,7 @@ namespace DGPF.ODS
         /// <returns></returns>
         public DataTable fetchLogInfoList(Dictionary<string, object> d)
         {
-            string sql = "select ACCESS_TIME,USER_ID,USER_NAME,IP_ADDR,LOG_CONTENT,REMARK, LOG_TYPE from ts_uidp_loginfo where 1=1 ";
+            string sql = "select ACCESS_TIME,USER_ID,USER_NAME,IP_ADDR,LOG_CONTENT,REMARK, LOG_TYPE,ALARM_LEVEL from ts_uidp_loginfo where 1=1 ";
             if (d["USER_NAME"] != null && d["USER_NAME"].ToString() != "")
             {
                 sql += " and USER_NAME like '%" + d["USER_NAME"].ToString() + "%'";
@@ -25,10 +25,24 @@ namespace DGPF.ODS
             {
                 sql += " and LOG_TYPE =" + d["LOG_TYPE"].ToString()+" ";
             }
-            if (d["ACCESS_TIME"] != null && d["ACCESS_TIME"].ToString() != "" )
+            if (d["BEGIN_ACCESS_TIME"] != null && d["BEGIN_ACCESS_TIME"].ToString() != "" && d["END_ACCESS_TIME"] == null && d["END_ACCESS_TIME"].ToString() == "")
             {
-                DateTime date = Convert.ToDateTime(d["ACCESS_TIME"].ToString());
-                sql += " and ACCESS_TIME between '"+date.Year+"-"+date.Month+"-"+date.Day+" 00:00:00' and '" + date.Year + "-" + date.Month + "-" + date.Day + " 23:59:59'" ;
+                DateTime date = Convert.ToDateTime(d["BEGIN_ACCESS_TIME"].ToString());
+                //sql += " and ACCESS_TIME > '" + date.Year + "-" + date.Month + "-" + date.Day + " 00:00:00'";
+                sql += " and ACCESS_TIME between '" + date.Year + "-" + date.Month + "-" + date.Day + " 00:00:00' and '" + date.Year + "-" + date.Month + "-" + date.Day + " 23:59:59'";
+                //sql += " and date_format(ACCESS_TIME,'%Y-%m-%d')= date_format('"+ d["ACCESS_TIME"].ToString() + "','%Y-%m-%d')  ";
+            }
+            else if (d["END_ACCESS_TIME"] != null && d["END_ACCESS_TIME"].ToString() != "" && d["BEGIN_ACCESS_TIME"] == null && d["BEGIN_ACCESS_TIME"].ToString() == "")
+            {
+                DateTime date = Convert.ToDateTime(d["END_ACCESS_TIME"].ToString());
+                sql += " and ACCESS_TIME < '" + date.Year + "-" + date.Month + "-" + date.Day + " 23:59:59'";
+
+            }
+            else if (d["BEGIN_ACCESS_TIME"] != null && d["BEGIN_ACCESS_TIME"].ToString() != "" && d["END_ACCESS_TIME"] != null && d["END_ACCESS_TIME"].ToString() != "")
+            {
+                DateTime bdate = Convert.ToDateTime(d["BEGIN_ACCESS_TIME"].ToString());
+                DateTime edate = Convert.ToDateTime(d["END_ACCESS_TIME"].ToString());
+                sql += " and ACCESS_TIME between '"+bdate.Year+"-"+bdate.Month+"-"+bdate.Day+" 00:00:00' and '" + edate.Year + "-" + edate.Month + "-" + edate.Day + " 23:59:59'" ;
                 //sql += " and date_format(ACCESS_TIME,'%Y-%m-%d')= date_format('"+ d["ACCESS_TIME"].ToString() + "','%Y-%m-%d')  ";
             }
             sql += " order by ACCESS_TIME desc ";

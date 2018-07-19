@@ -70,21 +70,21 @@ namespace DGPF.LOG
         /// <param name="LOG_TYPE"></param>
         /// <param name="LOG_CONTENT"></param>
         /// <param name="REMARK"></param>
-        public void Info(DateTime ACCESS_TIME, string USER_ID, string USER_NAME, string IP_ADDR, int LOG_TYPE, string LOG_CONTENT, string REMARK)
+        public void Info(DateTime ACCESS_TIME, string USER_ID, string USER_NAME, string IP_ADDR, int LOG_TYPE, string LOG_CONTENT, string REMARK,int? ALARM_LEVEL)
         {
             try
             {
                 if (dataType == "MYSQL")
                 {
-                    clsSysLog.Info(ACCESS_TIME, USER_ID, USER_NAME, IP_ADDR, LOG_TYPE, LOG_CONTENT, REMARK);
+                    clsSysLog.Info(ACCESS_TIME, USER_ID, USER_NAME, IP_ADDR, LOG_TYPE, LOG_CONTENT, REMARK, ALARM_LEVEL);
                 }
                 else if (dataType == "SQLSERVER")
                 {
-                    clsSysLogSqlServer.Info(ACCESS_TIME, USER_ID, USER_NAME, IP_ADDR, LOG_TYPE, LOG_CONTENT, REMARK);
+                    clsSysLogSqlServer.Info(ACCESS_TIME, USER_ID, USER_NAME, IP_ADDR, LOG_TYPE, LOG_CONTENT, REMARK, ALARM_LEVEL);
                 }
                 else if (dataType == "ORACLE")
                 {
-                    clsSysLogOracle.Info(ACCESS_TIME, USER_ID, USER_NAME, IP_ADDR, LOG_TYPE, LOG_CONTENT, REMARK);
+                    clsSysLogOracle.Info(ACCESS_TIME, USER_ID, USER_NAME, IP_ADDR, LOG_TYPE, LOG_CONTENT, REMARK, ALARM_LEVEL);
                 }
             }
             catch (Exception ex)

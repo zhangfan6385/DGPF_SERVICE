@@ -76,7 +76,7 @@ namespace DGPF.LOG
                 conn.Close();
             }
         }
-        public void Info(DateTime ACCESS_TIME, string USER_ID, string USER_NAME, string IP_ADDR, int LOG_TYPE, string LOG_CONTENT, string REMARK)
+        public void Info(DateTime ACCESS_TIME, string USER_ID, string USER_NAME, string IP_ADDR, int LOG_TYPE, string LOG_CONTENT, string REMARK,int? ALARM_LEVEL)
         {
             LogMod mod = new LogMod();
             mod.ACCESS_TIME = ACCESS_TIME;
@@ -84,8 +84,9 @@ namespace DGPF.LOG
             mod.USER_NAME = USER_NAME;
             mod.IP_ADDR = IP_ADDR;
             mod.LOG_TYPE = LOG_TYPE;
-            mod.LOG_CONTENT = LOG_CONTENT;
+            mod.LOG_CONTENT ="执行了"+ LOG_CONTENT+"方法";
             mod.REMARK = REMARK;
+            mod.ALARM_LEVEL = ALARM_LEVEL;
             Thread thread = new Thread(ThreadLog);
             thread.Start(mod);
         }
@@ -98,9 +99,9 @@ namespace DGPF.LOG
             try
             {
                 LogMod mod = (LogMod)obj;
-                string SQLString = "insert into ts_uidp_loginfo(ACCESS_TIME,USER_ID,USER_NAME,IP_ADDR,LOG_TYPE,LOG_CONTENT,REMARK)"
-         + " VALUES(@ACCESS_TIME, @USER_ID, @USER_NAME, @IP_ADDR, @LOG_TYPE, @LOG_CONTENT, @REMARK)";
-                SqlParameter[] cmdParms = new SqlParameter[7];
+                string SQLString = "insert into ts_uidp_loginfo(ACCESS_TIME,USER_ID,USER_NAME,IP_ADDR,LOG_TYPE,LOG_CONTENT,REMARK,ALARM_LEVEL)"
+         + " VALUES(@ACCESS_TIME, @USER_ID, @USER_NAME, @IP_ADDR, @LOG_TYPE, @LOG_CONTENT, @REMARK,@ALARM_LEVEL)";
+                SqlParameter[] cmdParms = new SqlParameter[8];
                 cmdParms[0] = new SqlParameter("@ACCESS_TIME", mod.ACCESS_TIME == null ? DateTime.Now : mod.ACCESS_TIME);
                 cmdParms[1] = new SqlParameter("@USER_ID", mod.USER_ID == null ? "" : mod.USER_ID);
                 cmdParms[2] = new SqlParameter("@USER_NAME", mod.USER_NAME == null ? "" : mod.USER_NAME);
@@ -108,6 +109,7 @@ namespace DGPF.LOG
                 cmdParms[4] = new SqlParameter("@LOG_TYPE", mod.LOG_TYPE);
                 cmdParms[5] = new SqlParameter("@LOG_CONTENT", mod.LOG_CONTENT == null ? "" : mod.LOG_CONTENT);
                 cmdParms[6] = new SqlParameter("@REMARK", mod.REMARK == null ? "" : mod.REMARK);
+                cmdParms[7] = new SqlParameter("@ALARM_LEVEL", mod.ALARM_LEVEL == null ? 1 : mod.ALARM_LEVEL);
                 if (conn.State != System.Data.ConnectionState.Open)
                 {
                     conn = new SqlConnection(connStr);

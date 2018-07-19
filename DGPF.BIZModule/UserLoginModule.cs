@@ -212,6 +212,7 @@ namespace DGPF.BIZModule
         {
             return db.deleteUserForLoginArticle(d);
         }
+
         /// <summary>
         /// 通过LOGIN_ID查用户信息
         /// </summary>
@@ -221,5 +222,16 @@ namespace DGPF.BIZModule
         {
             return db.fetchUserLoginListById(LOGIN_ID);
         }
+        
+        public DataTable getUserInfoByName(string userCode)
+        {
+            return db.getUserInfoByName(userCode);
+        }
+
+        public DataTable getLoginByID(string userId)
+        {
+            return db.getLoginByID(userId);
+        }
+
     }
 }
