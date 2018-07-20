@@ -527,7 +527,7 @@ namespace DGPF.BIZModule
             List<string> list = new List<string>();
             list.Add(sbOrgUser.ToString());
             list.Add(sb.ToString());
-            return db.UploadUserFile(sb.ToString());
+            return db.UploadUserFile(list);
         }
         public string getString(object obj)
         {
