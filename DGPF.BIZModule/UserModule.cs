@@ -467,6 +467,7 @@ namespace DGPF.BIZModule
             string fengefu = "";
             StringBuilder sb = new StringBuilder();
             StringBuilder sbOrgUser = new StringBuilder();
+            sbOrgUser.Append("insert into ts_uidp_org_user(ORG_ID,USER_ID)values ");
             sb.Append(" INSERT INTO ts_uidp_userinfo(USER_ID,USER_DOMAIN,USER_CODE,USER_NAME,USER_PASS,PHONE_MOBILE,PHONE_OFFICE," +
                 "USER_EMAIL,USER_IP,USER_SEX,AUTHENTICATION_TYPE,FLAG,REG_TIME,REMARK) values ");
             OrgDB orgDB = new OrgDB();
@@ -493,7 +494,7 @@ namespace DGPF.BIZModule
                     continue;
                 }
                 string id = Guid.NewGuid().ToString();
-
+                sbOrgUser.Append(fengefu+"('"+ dt.Rows[i]["组织机构编码"].ToString().Trim()+"','"+id+"')");
                 sb.Append(fengefu + "('" + id + "',");
                 sb.Append("'" + getString(dt.Rows[i]["账号"]) + "',");
                 sb.Append("'" + getString(dt.Rows[i]["员工编号"]) + "',");
@@ -523,6 +524,9 @@ namespace DGPF.BIZModule
                 sb.Append("'" + getString(dt.Rows[i]["备注"]) + "')");
                 fengefu = ",";
             }
+            List<string> list = new List<string>();
+            list.Add(sbOrgUser.ToString());
+            list.Add(sb.ToString());
             return db.UploadUserFile(sb.ToString());
         }
         public string getString(object obj)
