@@ -56,11 +56,13 @@ namespace DGPF.LOG
             mod.USER_NAME = USER_NAME;
             mod.IP_ADDR = IP_ADDR;
             mod.LOG_TYPE = LOG_TYPE;
-            mod.LOG_CONTENT = LOG_CONTENT;
+            //mod.LOG_CONTENT = LOG_CONTENT;
+            mod.LOG_CONTENT = "执行了" + LOG_CONTENT + "方法";
             mod.REMARK = REMARK;
-            mod.ALARM_LEVEL = ALARM_LEVEL;
-            Thread thread = new Thread(ThreadLog);
-            thread.Start(mod);
+            mod.ALARM_LEVEL = ALARM_LEVEL == null ? 1 : ALARM_LEVEL;
+            //Thread thread = new Thread(ThreadLog);
+            //thread.Start(mod);
+            ThreadLog(mod);
         }
         /// <summary>
         /// 写日志到数据库
@@ -68,6 +70,7 @@ namespace DGPF.LOG
         /// <param name="md"></param>
         public void ThreadLog(object obj)
         {
+            OracleConnection conn2 = new OracleConnection(connStr);
             try
             {
                 LogMod mod = (LogMod)obj;
@@ -82,22 +85,37 @@ namespace DGPF.LOG
                 cmdParms[5] = new OracleParameter("@LOG_CONTENT", mod.LOG_CONTENT == null ? "" : mod.LOG_CONTENT);
                 cmdParms[6] = new OracleParameter("@REMARK", mod.REMARK == null ? "" : mod.REMARK);
                 cmdParms[7] = new OracleParameter("@ALARM_LEVEL", mod.ALARM_LEVEL == null ? 1 : mod.ALARM_LEVEL);
-                if (conn.State != System.Data.ConnectionState.Open)
+                //if (conn.State != System.Data.ConnectionState.Open)
+                //{
+                //    conn = new OracleConnection(connStr);
+                //    conn.Open();
+                //}
+                //using (OracleCommand cmd = new OracleCommand(SQLString, conn))
+                //{
+                //    OracleTransaction tran = conn.BeginTransaction();
+                //    cmd.Parameters.AddRange(cmdParms);
+                //    cmd.ExecuteNonQuery();//s返回受影响行数
+                //    tran.Commit();
+                //}
+
+
+                using (OracleCommand cmd = new OracleCommand(SQLString, conn2))
                 {
-                    conn = new OracleConnection(connStr);
-                    conn.Open();
-                }
-                using (OracleCommand cmd = new OracleCommand(SQLString, conn))
-                {
-                    OracleTransaction tran = conn.BeginTransaction();
+                    // MySqlTransaction tran = conn.BeginTransaction();
                     cmd.Parameters.AddRange(cmdParms);
+                    if (conn2.State != System.Data.ConnectionState.Open)
+                    {
+                        conn2.Open();
+                    }
                     cmd.ExecuteNonQuery();//s返回受影响行数
-                    tran.Commit();
+                    conn2.Close();
+                    // tran.Commit();
                 }
+
             }
             catch (OracleException e)
             {
-                conn.Close();
+                conn2.Close();
                 throw e;
             }
         }

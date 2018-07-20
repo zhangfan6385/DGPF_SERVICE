@@ -25,6 +25,18 @@ namespace DGPF.ODS
             {
                 sql += " and LOG_TYPE =" + d["LOG_TYPE"].ToString()+" ";
             }
+            if (d["USER_ID"] != null && d["USER_ID"].ToString() != "")
+            {
+                sql += " and USER_ID like '%" + d["USER_ID"].ToString() + "%'";
+            }
+            if (d["LOG_CONTENT"] != null && d["LOG_CONTENT"].ToString() != "")
+            {
+                sql += " and LOG_CONTENT like '%" + d["LOG_CONTENT"].ToString() + "%'";
+            }
+            if (d["ALARM_LEVEL"] != null && d["ALARM_LEVEL"].ToString() != "")
+            {
+                sql += " and ALARM_LEVEL =" + d["ALARM_LEVEL"].ToString() + " ";
+            }
             if (d["BEGIN_ACCESS_TIME"] != null && d["BEGIN_ACCESS_TIME"].ToString() != "" && d["END_ACCESS_TIME"] == null && d["END_ACCESS_TIME"].ToString() == "")
             {
                 DateTime date = Convert.ToDateTime(d["BEGIN_ACCESS_TIME"].ToString());
