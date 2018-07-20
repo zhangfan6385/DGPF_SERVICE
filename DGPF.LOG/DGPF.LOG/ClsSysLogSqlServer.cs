@@ -20,8 +20,8 @@ namespace DGPF.LOG
         static ClsSysLogSqlServer()
         {
             connStr = GetStrConn();
-            conn = new SqlConnection(connStr);
-            conn.Open();
+            //conn = new SqlConnection(connStr);
+           // conn.Open();
         }
         #region MyRegion
 
@@ -97,6 +97,7 @@ namespace DGPF.LOG
         /// <param name="md"></param>
         public void ThreadLog(object obj)
         {
+            SqlConnection conn2=new SqlConnection(connStr);
             try
             {
                 LogMod mod = (LogMod)obj;
@@ -111,21 +112,21 @@ namespace DGPF.LOG
                 cmdParms[5] = new SqlParameter("@LOG_CONTENT", mod.LOG_CONTENT == null ? "" : mod.LOG_CONTENT);
                 cmdParms[6] = new SqlParameter("@REMARK", mod.REMARK == null ? "" : mod.REMARK);
                 cmdParms[7] = new SqlParameter("@ALARM_LEVEL", mod.ALARM_LEVEL == null ? 1 : mod.ALARM_LEVEL);
-                if (conn.State != System.Data.ConnectionState.Open)
-                {
-                    conn = new SqlConnection(connStr);
-                    conn.Open();
-                }
+                conn.Open();
                 using (SqlCommand cmd = new SqlCommand(SQLString, conn))
                 {
                     cmd.Parameters.AddRange(cmdParms);
+                    if (conn2.State != System.Data.ConnectionState.Open)
+                    {
+                        conn2.Open();
+                    }
                     cmd.ExecuteNonQuery();//s返回受影响行数
-                    conn.Close();
+                    conn2.Close();
                 }
             }
             catch (SqlException e)
             {
-                conn.Close();
+                conn2.Close();
                 throw e;
             }
         }

@@ -22,8 +22,8 @@ namespace DGPF.LOG
         static ClsSysLog()
         {
             connStr=GetStrConn();
-            conn = new MySqlConnection(connStr);
-            conn.Open();
+            //conn = new MySqlConnection(connStr);
+            //conn.Open();
         }
         #region MyRegion
 
@@ -96,6 +96,7 @@ namespace DGPF.LOG
         /// <param name="md"></param>
         public void ThreadLog(object obj)
         {
+            MySqlConnection conn2 = new MySqlConnection(connStr);
             try
             {
                 LogMod mod = (LogMod)obj;
@@ -110,23 +111,23 @@ namespace DGPF.LOG
                 cmdParms[5] = new MySqlParameter("@LOG_CONTENT", mod.LOG_CONTENT == null ? "" : mod.LOG_CONTENT);
                 cmdParms[6] = new MySqlParameter("@REMARK", mod.REMARK == null ? "" : mod.REMARK);
                 cmdParms[7] = new MySqlParameter("@ALARM_LEVEL", mod.ALARM_LEVEL == null ? 1 : mod.ALARM_LEVEL);
-                if (conn.State != System.Data.ConnectionState.Open)
-                {
-                    conn = new MySqlConnection(connStr);
-                    conn.Open();
-                }
-                using (MySqlCommand cmd = new MySqlCommand(SQLString, conn))
+               
+                
+                using (MySqlCommand cmd = new MySqlCommand(SQLString, conn2))
                 {
                    // MySqlTransaction tran = conn.BeginTransaction();
                     cmd.Parameters.AddRange(cmdParms);
+                    if (conn2.State!=System.Data.ConnectionState.Open) {
+                        conn2.Open();
+                    }
                     cmd.ExecuteNonQuery();//s返回受影响行数
-                    conn.Close();
+                    conn2.Close();
                    // tran.Commit();
                 }
             }
             catch (MySqlException e)
             {
-                conn.Close();
+                conn2.Close();
                 throw e;
             }
         }
