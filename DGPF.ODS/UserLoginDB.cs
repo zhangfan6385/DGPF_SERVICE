@@ -195,7 +195,7 @@ namespace DGPF.ODS
         {
             if (!string.IsNullOrEmpty(userCode))
             {
-                string sql = String.Format("select * from ts_uidp_userinfo where USER_CODE='{0}' "
+                string sql = String.Format("select * from ts_uidp_userinfo where USER_DOMAIN='{0}' "
                    , userCode);
                 return db.GetDataTable(sql);
             }

@@ -221,7 +221,7 @@ namespace DGPF.WebAPI.Controllers
             try
             {
                 string tokenUserId = DGPF.UTILITY.AccessTokenTool.GetUserId(d["token"].ToString());
-                if (tokenUserId == mm.getAdminCode()) {
+                if (tokenUserId == mm.getAdminCode()&& (d["userId"]==null|| d["userId"].ToString()=="")) {
                     DGPF.LOG.SysLog log = new LOG.SysLog();
                     log.Info(DateTime.Now, tokenUserId, "系统超级管理员", ClientIp, 0, "info", "",1);
                     return Json(new {

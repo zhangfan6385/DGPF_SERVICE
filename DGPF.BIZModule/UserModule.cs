@@ -520,13 +520,15 @@ namespace DGPF.BIZModule
                 {
                     sb.Append("'0',");
                 }
-                sb.Append("1,'"+DateTime.Now.ToString("yyyy-MM-dd HH:MM:SS")+"',");
+                sb.Append("1,'"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +"',");
                 sb.Append("'" + getString(dt.Rows[i]["备注"]) + "')");
                 fengefu = ",";
             }
+            string sqlUpdate = "   update a  set a.ORG_ID=b.ORG_ID from ts_uidp_org_user a ,ts_uidp_org b where  a.ORG_ID=b.ORG_CODE ";
             List<string> list = new List<string>();
             list.Add(sbOrgUser.ToString());
             list.Add(sb.ToString());
+            list.Add(sqlUpdate);
             return db.UploadUserFile(list);
         }
         public string getString(object obj)

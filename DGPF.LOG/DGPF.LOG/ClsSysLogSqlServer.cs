@@ -112,8 +112,7 @@ namespace DGPF.LOG
                 cmdParms[5] = new SqlParameter("@LOG_CONTENT", mod.LOG_CONTENT == null ? "" : mod.LOG_CONTENT);
                 cmdParms[6] = new SqlParameter("@REMARK", mod.REMARK == null ? "" : mod.REMARK);
                 cmdParms[7] = new SqlParameter("@ALARM_LEVEL", mod.ALARM_LEVEL == null ? 1 : mod.ALARM_LEVEL);
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand(SQLString, conn))
+                using (SqlCommand cmd = new SqlCommand(SQLString, conn2))
                 {
                     cmd.Parameters.AddRange(cmdParms);
                     if (conn2.State != System.Data.ConnectionState.Open)

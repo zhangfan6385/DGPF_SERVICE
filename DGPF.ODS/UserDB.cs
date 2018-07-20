@@ -76,7 +76,7 @@ namespace DGPF.ODS
         {
             List<string> list = new List<string>();
             string sql = "delete FROM ts_uidp_userinfo where USER_ID='" + d["USER_ID"].ToString() + "' ;";
-            string sql2= " delete from ts_uidp_org_user where USER_ID'" + d["USER_ID"].ToString() + "' ;";
+            string sql2= " delete from ts_uidp_org_user where USER_ID='" + d["USER_ID"].ToString() + "' ;";
             list.Add(sql);
             list.Add(sql2);
             return db.Executs(list);
@@ -138,7 +138,7 @@ namespace DGPF.ODS
             sb.Append(" FLAG=");
             sb.Append(d["FLAG"] == null ? "1" : d["FLAG"] + ", ");
             sb.Append(" REMARK='");
-            sb.Append(d["REMARK"] == null ? "" : d["REMARK"] + "' )");
+            sb.Append(d["REMARK"] == null ? "" : d["REMARK"] + "' ");
             sb.Append(" where USER_ID='" + d["USER_ID"].ToString() + "' ");
             return db.ExecutByStringResult(sb.ToString());
         }
