@@ -26,6 +26,13 @@ namespace DGPF.WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(x => {
+
+                x.ValueLengthLimit = int.MaxValue;
+
+                x.MultipartBodyLengthLimit = int.MaxValue;
+
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

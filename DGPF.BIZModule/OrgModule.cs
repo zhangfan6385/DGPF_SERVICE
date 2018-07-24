@@ -3,12 +3,41 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using DGPF.ODS;
+using DGPF.UTILITY;
 using Newtonsoft.Json;
 namespace DGPF.BIZModule
 {
    public class OrgModule
     {
         OrgDB db = new OrgDB();
+        public List<Dictionary<string, object>> fetchSyncOrgList()
+        {
+
+            List<Dictionary<string, object>> r = new List<Dictionary<string, object>>();
+            try
+            {
+
+                DataTable dt = db.fetchOrgList();
+                return KVTool.TableToListDic(dt);
+                //r["total"] = dt.Rows.Count;
+                //r["items"] = KVTool.TableToListDic(dt);
+                //r["code"] = 2000;
+                //r["message"] = "查询成功";
+            }
+            catch (Exception e)
+            {
+                //r["total"] = 0;
+                //r["items"] = null;
+                //r["code"] = -1;
+                //r["message"] = e.Message;
+            }
+            return r;
+        }
+        public DataTable fetchSyncOrgTable()
+        {
+            DataTable dt = db.syncOrgList();
+            return dt;
+        }
         public Dictionary<string, object> fetchOrgList(bool isAdmin) {
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
@@ -246,6 +275,40 @@ namespace DGPF.BIZModule
                 return "";
             }
             return obj.ToString();
+        }
+
+
+        public string clearOrg()
+        {
+            return db.clearOrg();
+        }
+        //DataTable dt
+        public string syncOrg(List<Dictionary<string, object>> f)
+        {
+            string fengefu = "";
+            StringBuilder sb = new StringBuilder();
+            try
+            {
+                db.clearOrg();
+                sb.Append(" insert into ts_uidp_org (ORG_ID,ORG_CODE,ORG_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) values ");
+                foreach (var row in f)
+                {
+                    sb.Append(fengefu + "('" + getString(row["ORG_ID"]) + "',");
+                    sb.Append("'" + getString(row["ORG_CODE"]) + "',");
+                    sb.Append("'" + getString(row["ORG_NAME"]) + "',");
+                    sb.Append("'" + getString(row["ORG_CODE_UPPER"]) + "',");
+                    sb.Append("'" + getString(row["ISINVALID"]) + "',");
+                    sb.Append("'1',");
+                    sb.Append("'" + getString(row["REMARK"]) + "')");
+                    fengefu = ",";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+          
+            return db.UploadOrgFile(sb.ToString());
         }
     }
 }

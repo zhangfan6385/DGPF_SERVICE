@@ -83,9 +83,9 @@ namespace DGPF.LOG
             mod.USER_NAME = USER_NAME;
             mod.IP_ADDR = IP_ADDR;
             mod.LOG_TYPE = LOG_TYPE;
-            mod.LOG_CONTENT = LOG_CONTENT;
+            mod.LOG_CONTENT = "执行了" + LOG_CONTENT + "方法";
             mod.REMARK = REMARK;
-            mod.ALARM_LEVEL = ALARM_LEVEL;
+            mod.ALARM_LEVEL = ALARM_LEVEL == null? 1 : ALARM_LEVEL;
             //Thread thread = new Thread(ThreadLog);
             // thread.Start(mod);
             ThreadLog(mod);

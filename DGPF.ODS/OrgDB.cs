@@ -64,6 +64,13 @@ namespace DGPF.ODS
 
             return db.ExecutByStringResult(sql);
         }
+
+        public string clearOrg()
+        {
+            //string sql = "delete ts_uidp_org set ISDELETE='0' where ISDELETE ='1'";
+            string sql = "TRUNCATE TABLE ts_uidp_org";
+            return db.ExecutByStringResult(sql);
+        }
         /// <summary>
         /// 分配组织结构给用户
         /// </summary>
@@ -105,6 +112,15 @@ namespace DGPF.ODS
         /// <returns></returns>
         public DataTable fetchOrgList() {
             string sql = "select * FROM ts_uidp_org where ISDELETE='1'";
+            return db.GetDataTable(sql);
+        }
+        /// <summary>
+        /// 查询所有同步数据
+        /// </summary>
+        /// <returns></returns>
+        public DataTable syncOrgList()
+        {
+            string sql = "select * FROM ts_uidp_org";
             return db.GetDataTable(sql);
         }
         /// <summary>

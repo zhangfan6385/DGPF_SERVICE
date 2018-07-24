@@ -48,7 +48,7 @@ namespace DGPF.WebAPI.Controllers
                     string accessToken = AccessTokenTool.GetAccessToken(userId);
                     DGPF.UTILITY.AccessTokenTool.DeleteToken(userId);
                     DGPF.UTILITY.AccessTokenTool.InsertToken(userId, accessToken, DateTime.Now.AddHours(1));
-                    log.Info(DateTime.Now, userId, userName, Extension.GetClientUserIp(Request.HttpContext), 2, "LogIn", "",1);
+                    log.Info(DateTime.Now, userId, userName, Extension.GetClientUserIp(Request.HttpContext), 2, "LogIn", "", 1);
                     return Json(new
                     {
                         code = 2000,
@@ -110,7 +110,8 @@ namespace DGPF.WebAPI.Controllers
                     DGPF.UTILITY.AccessTokenTool.InsertToken(userId, accessToken, DateTime.Now.AddHours(1));
                     DataTable dtUser = um.getLoginByID(userId);
                     int level = 1;
-                    if (Extension.GetClientUserIp(Request.HttpContext).ToString()!=dt.Rows[0]["USER_IP"].ToString()) {
+                    if (Extension.GetClientUserIp(Request.HttpContext).ToString() != dt.Rows[0]["USER_IP"].ToString())
+                    {
                         level = 2;
                     }
                     log.Info(DateTime.Now, userId, userName, Extension.GetClientUserIp(Request.HttpContext), 2, "LogIn", "", level);
@@ -127,7 +128,7 @@ namespace DGPF.WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                log.Info(DateTime.Now, userId, userName, Extension.GetClientUserIp(Request.HttpContext), 1, "LogIn", ex.Message.Length > 120 ? ex.Message.Substring(0, 100) : ex.Message,1);
+                log.Info(DateTime.Now, userId, userName, Extension.GetClientUserIp(Request.HttpContext), 1, "LogIn", ex.Message.Length > 120 ? ex.Message.Substring(0, 100) : ex.Message, 1);
                 return Json(new { code = -1, message = "登录时程序发生错误" + ex.Message });
 
             }
@@ -192,5 +193,48 @@ namespace DGPF.WebAPI.Controllers
 
         //}
         #endregion
+
+        [HttpPost("apiLogin")]
+        public IActionResult apiLogin([FromBody]JObject value)
+        {
+            Dictionary<string, object> d = value.ToObject<Dictionary<string, object>>();
+            string userCode = d["userCode"] == null ? "" : d["userCode"].ToString();
+            string password = d["password"] == null ? "" : d["password"].ToString();
+            string userId = "";
+            string userName = "云主机推送服务";
+            string accessToken = "";
+            try
+            {
+                if (string.IsNullOrEmpty(userCode) || string.IsNullOrEmpty(password))
+                {
+                    return Json(new { code = -1, message = "推送接口用户名或密码不能为空！" });
+                }
+                UserLoginModule um = new UserLoginModule();
+                DataTable dt = um.getUserInfoByName(userCode);
+                if (dt == null || dt.Rows.Count == 0)
+                {
+                    return Json(new { code = -1, message = "云同步用户不存在！" });
+                }
+                if (password != dt.Rows[0]["USER_PASS"].ToString())
+                {
+                    return Json(new { code = -1, message = "云同步用户密码错误！" });
+                }
+                userId = dt.Rows[0]["USER_ID"].ToString();
+                userName = dt.Rows[0]["USER_NAME"].ToString();
+                accessToken = AccessTokenTool.GetAccessToken(userId);
+                DGPF.UTILITY.AccessTokenTool.DeleteToken(userId);
+                DGPF.UTILITY.AccessTokenTool.InsertToken(userId, accessToken, DateTime.Now.AddHours(1));
+                log.Info(DateTime.Now, userId, userName, Extension.GetClientUserIp(Request.HttpContext), 2, "云组织数据同步", "", 1);
+                return Content(accessToken);
+
+            }
+            catch (Exception ex)
+            {
+                log.Info(DateTime.Now, userId, userName, Extension.GetClientUserIp(Request.HttpContext), 1, "云组织数据同步", ex.Message.Length > 120 ? ex.Message.Substring(0, 100) : ex.Message, 1);
+                return Content("");
+
+            }
+
+        }
     }
 }
