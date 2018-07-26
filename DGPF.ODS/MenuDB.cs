@@ -11,7 +11,7 @@ namespace DGPF.ODS
         DBTool db = new DBTool("MYSQL");
         public DataTable fetchMenuList(Dictionary<string,object> sysCode)
         {
-          return  db.GetDataTable("select * from ts_uidp_menuinfo where SYS_CODE='" + sysCode ["sysCode"] + "'");
+          return  db.GetDataTable("select * from ts_uidp_menuinfo where SYS_CODE='" + sysCode ["sysCode"] + "' order by MENU_ORDER ");
         }
 
         public string createMenu(Dictionary<string, object> d)
