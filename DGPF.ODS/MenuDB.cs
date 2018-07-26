@@ -125,13 +125,13 @@ namespace DGPF.ODS
 
         public DataTable fetchPermission(Dictionary<string, object> sysCode)
         {
-            string sqluser = "SELECT conf_value from ts_uidp_config where conf_code= 'Admin_Code'";
+            string sqluser = "SELECT conf_value from ts_uidp_config where conf_code= 'Admin_Code' ";
 
           string user=  db.GetString(sqluser);
             string sql = "";
             if (user == sysCode["userId"].ToString())
             {
-                sql = "SELECT  * from ts_uidp_menuinfo where SYS_CODE = '"+ sysCode["sysCode"].ToString() + "' ";
+                sql = "SELECT  * from ts_uidp_menuinfo where SYS_CODE = '"+ sysCode["sysCode"].ToString() + "' order by MENU_ORDER ";
             }
             else
             {
@@ -143,7 +143,7 @@ namespace DGPF.ODS
              "where ur.user_id = '" + sysCode["userId"].ToString() + "' " +
              " and f.SYS_CODE='"+ sysCode["sysCode"].ToString() + "' " +
                "and ur.group_id = rf.group_id " +
-               "and rf.menu_id = f.menu_id) a ";
+               "and rf.menu_id = f.menu_id order by f.MENU_ORDER) a ";
             }
 
             //string sql = "SELECT * from ts_uidp_menuinfo";
