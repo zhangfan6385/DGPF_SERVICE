@@ -73,7 +73,7 @@ namespace DGPF.BIZModule
         /// </summary>
         /// <param name="d"></param>
         /// <returns></returns>
-        public Dictionary<string, object> fetchUserForLoginList(string limit, string page, string USER_NAME, string LOGIN_ID)
+        public Dictionary<string, object> fetchUserForLoginList(string limit, string page, string USER_ID)
         {
 
             Dictionary<string, object> r = new Dictionary<string, object>();
@@ -82,7 +82,7 @@ namespace DGPF.BIZModule
                 int limit1 = limit == null ? 100 : int.Parse(limit);
                 int page1 = page == null ? 1 : int.Parse(page);
 
-                DataTable dt = db.fetchUserForLoginList(USER_NAME, LOGIN_ID);
+                DataTable dt = db.fetchUserForLoginList(USER_ID);
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     r["total"] = dt.Rows.Count;
@@ -108,6 +108,40 @@ namespace DGPF.BIZModule
             return r;
         }
         
+        public Dictionary<string, object> fetchUserForAllList(string limit, string page, string USER_ID)
+        {
+
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                int limit1 = limit == null ? 100 : int.Parse(limit);
+                int page1 = page == null ? 1 : int.Parse(page);
+
+                DataTable dt = db.fetchUserForAllList(USER_ID);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    r["total"] = dt.Rows.Count;
+                    r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dt, page1, limit1));
+                    r["code"] = 2000;
+                    r["message"] = "查询成功";
+                }
+                else
+                {
+                    r["total"] = 0;
+                    r["items"] = new Dictionary<string, object>();
+                    r["code"] = 2000;
+                    r["message"] = "查询成功";
+                }
+            }
+            catch (Exception e)
+            {
+                r["total"] = 0;
+                r["items"] = new Dictionary<string, object>();
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
         public string createUserLoginArticle(Dictionary<string, object> d)
         {
             if (d["LOGIN_CODE"] ==null|| d["LOGIN_CODE"].ToString()=="") {

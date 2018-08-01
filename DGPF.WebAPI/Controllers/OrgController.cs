@@ -24,6 +24,7 @@ namespace DGPF.WebAPI.Controllers
         OrgModule mm = new OrgModule();
         SyncResultModule srm = new SyncResultModule();
         SyncConfModule sncm = new SyncConfModule();
+        ConfModule cm = new ConfModule();
         /// <summary>
         /// 查询组织结构
         /// </summary>
@@ -49,6 +50,12 @@ namespace DGPF.WebAPI.Controllers
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
+                DataTable dt = mm.GetOrgById(d["parentId"].ToString());
+                string orgpcode = dt.Rows[0]["ORG_CODE"].ToString();
+                if (!string.IsNullOrEmpty(orgpcode))
+                {
+                    d["orgpCode"] = orgpcode;
+                }
                 string b = mm.createOrgArticle(d);
                 if (b == "")
                 {
@@ -80,6 +87,12 @@ namespace DGPF.WebAPI.Controllers
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
+                DataTable dt = mm.GetOrgById(d["parentId"].ToString());
+                string orgpcode = dt.Rows[0]["ORG_CODE"].ToString();
+                if (!string.IsNullOrEmpty(orgpcode))
+                {
+                    d["orgpCode"] = orgpcode;
+                }
                 string b = mm.updateOrgData(d);
                 if (b == "")
                 {
@@ -293,13 +306,14 @@ namespace DGPF.WebAPI.Controllers
                         // 清空缓冲区数据
                         fs.Flush();
                     }
-                    r["message"] = mm.UploadOrgFile(filename);
+                    r["message"] = mm.UploadOrgFileNew(filename);
                     if (r["message"].ToString() != "")
                     {
                         r["code"] = -1;
                     }
                     else
                     {
+                        string msg = mm.updateOrgPID();
                         r["code"] = 2000;
                     }
                     Json(r);
@@ -355,117 +369,125 @@ namespace DGPF.WebAPI.Controllers
         //    mm.createOrgArticle(r);
         //}
 
-        /// <summary>
-        /// 新增组织结构
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        [HttpPost("createOrg")]
-        public IActionResult createOrg(Dictionary<string, object> d)
-        {
-            Dictionary<string, object> r = new Dictionary<string, object>();
-            try
-            {
-                string b = mm.createOrgArticle(d);
-                if (b == "")
-                {
-                    r["message"] = "成功";
-                    r["code"] = 2000;
-                }
-                else
-                {
-                    r["code"] = -1;
-                    r["message"] = b;
-                }
-            }
-            catch (Exception e)
-            {
-                r["code"] = -1;
-                r["message"] = e.Message;
-            }
-            return Json(r);
-        }
+        ///// <summary>
+        ///// 新增组织结构
+        ///// </summary>
+        ///// <param name="value"></param>
+        ///// <returns></returns>
+        //[HttpPost("createOrg")]
+        //public IActionResult createOrg(Dictionary<string, object> d)
+        //{
+        //    Dictionary<string, object> r = new Dictionary<string, object>();
+        //    try
+        //    {
+        //        string b = mm.createOrgArticle(d);
+        //        if (b == "")
+        //        {
+        //            r["message"] = "成功";
+        //            r["code"] = 2000;
+        //        }
+        //        else
+        //        {
+        //            r["code"] = -1;
+        //            r["message"] = b;
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        r["code"] = -1;
+        //        r["message"] = e.Message;
+        //    }
+        //    return Json(r);
+        //}
         /// <summary>
         /// 推送云同步组织架构
         /// </summary>
         /// <returns></returns>
         [HttpPost("pushOrgList")]
-        public IActionResult pushOrgList()
+        public IActionResult pushOrgList([FromBody]JObject value)
         {
+           // sync_list
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                var targetlist = sncm.getSyncConfList();
-                foreach (var item in targetlist)
+                Dictionary<string, object> dd = value.ToObject<Dictionary<string, object>>();
+                //var targetlist = sncm.getSyncConfList();
+                //var targetlist = UTILITY.JsonConversionExtensions.ToDictionary((JObject)dd["arr"]);
+                //var targetlist = UTILITY.JsonConversionExtensions.ToDictionary((JObject[])dd["sync_list"]);
+                foreach (var item in (JArray)dd["sync_list"])
                 {
-                    string loginUrl = "http://" + item["SERVER_IP"].ToString() + ":" + item["SERVER_PORT"].ToString() + "/LogIn/apiLogin";
-                    //WebRequest req = WebRequest.Create("http://192.168.1.113:12345/LogIn/apiLogin");
-                    WebRequest req = WebRequest.Create(loginUrl);
-                    Dictionary<string, string> postData = new Dictionary<string, string>();
-                    //postData["userCode"] = "ceshi02";
-                    //postData["password"] = "123456";
-                    postData["userCode"] = item["USER_CODE"].ToString();
-                    postData["password"] = item["USER_PASS"].ToString();
-                    string jsonString = JsonConvert.SerializeObject(postData);
-                    byte[] objectContent = Encoding.UTF8.GetBytes(jsonString);
-                    req.ContentLength = objectContent.Length;
-                    req.ContentType = "application/json";
-                    req.Method = "POST";
-                    using (var stream = req.GetRequestStream())
+                    if (item["SYNC_FLAG"] != null && item["SYNC_FLAG"].ToString() == "0")
                     {
-                        stream.Write(objectContent, 0, objectContent.Length);
-                        stream.Close();
-                    }
-
-
-                    var resp = req.GetResponse();
-                    using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
-                    {
-                        string s = sr.ReadToEnd();
-                        if (s != "")
+                        string loginUrl = "http://" + item["SERVER_IP"].ToString() + ":" + item["SERVER_PORT"].ToString() + "/LogIn/apiLogin";
+                        //WebRequest req = WebRequest.Create("http://192.168.1.113:12345/LogIn/apiLogin");
+                        WebRequest req = WebRequest.Create(loginUrl);
+                        Dictionary<string, string> postData = new Dictionary<string, string>();
+                        //postData["userCode"] = "ceshi02";
+                        //postData["password"] = "123456";
+                        postData["userCode"] = item["USER_CODE"].ToString();
+                        postData["password"] = item["USER_PASS"].ToString();
+                        string jsonString = JsonConvert.SerializeObject(postData);
+                        byte[] objectContent = Encoding.UTF8.GetBytes(jsonString);
+                        req.ContentLength = objectContent.Length;
+                        req.ContentType = "application/json";
+                        req.Method = "POST";
+                        using (var stream = req.GetRequestStream())
                         {
-                            string syncUrl = "http://" + item["SERVER_IP"].ToString() + ":" + item["SERVER_PORT"].ToString() + "/Org/syncOrg";
-                            //WebRequest pushreq = WebRequest.Create("http://192.168.1.113:12345/Org/syncOrg");
-                            WebRequest pushreq = WebRequest.Create(syncUrl);
-                            DataTable dt = mm.fetchSyncOrgTable();
-                            string pushjsonString = JsonConvert.SerializeObject(dt);
-                            byte[] pushobjectContent = Encoding.UTF8.GetBytes(pushjsonString);
-                            pushreq.ContentLength = pushobjectContent.Length;
-                            pushreq.ContentType = "application/json";
-                            pushreq.Headers.Add("X-Token", s.ToString());
-                            pushreq.Method = "POST";
-                            using (var stream = pushreq.GetRequestStream())
+                            stream.Write(objectContent, 0, objectContent.Length);
+                            stream.Close();
+                        }
+
+
+                        var resp = req.GetResponse();
+                        using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
+                        {
+                            string s = sr.ReadToEnd();
+                            if (s != "")
                             {
-                                stream.Write(pushobjectContent, 0, pushobjectContent.Length);
-                                stream.Close();
-                            }
-                            var pushresp = pushreq.GetResponse();
-                            using (StreamReader pushsr = new StreamReader(pushresp.GetResponseStream()))
-                            {
-                                string pushs = pushsr.ReadToEnd();
-                                if (pushs == "")
+                                //"/Org/syncOrg"
+                                string syncUrl = "http://" + item["SERVER_IP"].ToString() + ":" + item["SERVER_PORT"].ToString() + item["SERVER_URL"].ToString();
+                                //WebRequest pushreq = WebRequest.Create("http://192.168.1.113:12345/Org/syncOrg");
+                                WebRequest pushreq = WebRequest.Create(syncUrl);
+                                DataTable dt = mm.fetchSyncOrgTable();
+                                string pushjsonString = JsonConvert.SerializeObject(dt);
+                                byte[] pushobjectContent = Encoding.UTF8.GetBytes(pushjsonString);
+                                pushreq.ContentLength = pushobjectContent.Length;
+                                pushreq.ContentType = "application/json";
+                                pushreq.Headers.Add("X-Token", s.ToString());
+                                pushreq.Method = "POST";
+                                using (var stream = pushreq.GetRequestStream())
                                 {
-                                    Dictionary<string, object> d = new Dictionary<string, object>();
-                                    d["SEND_URL"] = Extension.GetClientUserIp(Request.HttpContext);
-                                    d["RECEIVE_URL"] = item["SERVER_IP"].ToString();
-                                    d["SYNC_CONTENT"] = "云组织同步推送成功";
-                                    d["SYNC_RESULT"] = 0;
-                                    d["ERROR_INFO"] = "";
-                                    d["FAIL_CONTENT"] = "";
-                                    d["REMARK"] = "";
-                                    srm.createSyncResult(d);
+                                    stream.Write(pushobjectContent, 0, pushobjectContent.Length);
+                                    stream.Close();
                                 }
-                                else
+                                var pushresp = pushreq.GetResponse();
+                                using (StreamReader pushsr = new StreamReader(pushresp.GetResponseStream()))
                                 {
-                                    Dictionary<string, object> d = new Dictionary<string, object>();
-                                    d["SEND_URL"] = Extension.GetClientUserIp(Request.HttpContext);
-                                    d["RECEIVE_URL"] = item["SERVER_IP"].ToString();
-                                    d["SYNC_CONTENT"] = "云组织同步推送失败！" + pushs;
-                                    d["SYNC_RESULT"] = 0;
-                                    d["ERROR_INFO"] = "";
-                                    d["FAIL_CONTENT"] = "";
-                                    d["REMARK"] = "";
-                                    srm.createSyncResult(d);
+                                    string pushs = pushsr.ReadToEnd();
+                                    if (pushs == "")
+                                    {
+                                        Dictionary<string, object> d = new Dictionary<string, object>();
+                                        d["SEND_URL"] = Extension.GetClientUserIp(Request.HttpContext);
+                                        d["RECEIVE_URL"] = item["SERVER_IP"].ToString();
+                                        d["SYNC_CONTENT"] = "云组织同步推送成功";
+                                        d["SYNC_RESULT"] = 0;
+                                        d["ERROR_INFO"] = "";
+                                        d["FAIL_CONTENT"] = "";
+                                        d["REMARK"] = "";
+                                        srm.createSyncResult(d);
+                                    }
+                                    else
+                                    {
+                                        Dictionary<string, object> d = new Dictionary<string, object>();
+                                        d["SEND_URL"] = Extension.GetClientUserIp(Request.HttpContext);
+                                        d["RECEIVE_URL"] = item["SERVER_IP"].ToString();
+                                        d["SYNC_CONTENT"] = "云组织同步推送失败！" + pushs;
+                                        d["SYNC_RESULT"] = 0;
+                                        d["ERROR_INFO"] = "";
+                                        d["FAIL_CONTENT"] = "";
+                                        d["REMARK"] = "";
+                                        srm.createSyncResult(d);
+                                    }
                                 }
                             }
                         }
@@ -490,39 +512,44 @@ namespace DGPF.WebAPI.Controllers
         [HttpPost("syncOrg")]
         public IActionResult syncOrg([FromBody]JObject[] value)
         {
-            List<Dictionary<string, object>> f = new List<Dictionary<string, object>>();
-            foreach (JObject item in value)
+            //List<Dictionary<string, object>> f = new List<Dictionary<string, object>>();
+            //foreach (JObject item in value)
+            //{
+            //    var d = UTILITY.JsonConversionExtensions.ToDictionary(item);
+            //    f.Add((Dictionary<string, object>)d);
+            //}
+            if (cm.getConfig())
             {
-                var d = UTILITY.JsonConversionExtensions.ToDictionary(item);
-                f.Add((Dictionary<string, object>)d);
-            }
+                var t = UTILITY.JsonConversionExtensions.ToDictionary(value);
+                var res = mm.syncOrg((List<Dictionary<string, object>>)t);
+                if (res == "")
+                {
+                    Dictionary<string, object> d = new Dictionary<string, object>();
+                    d["SEND_URL"] = Extension.GetClientUserIp(Request.HttpContext);
+                    d["RECEIVE_URL"] = Request.HttpContext.Connection.LocalIpAddress.MapToIPv4().ToString();
+                    d["SYNC_CONTENT"] = "云组织同步接收成功";
+                    d["SYNC_RESULT"] = 0;
+                    d["ERROR_INFO"] = "";
+                    d["FAIL_CONTENT"] = "";
+                    d["REMARK"] = "";
+                    srm.createSyncResult(d);
+                }
+                else
+                {
+                    Dictionary<string, object> d = new Dictionary<string, object>();
+                    d["SEND_URL"] = Extension.GetClientUserIp(Request.HttpContext);
+                    d["RECEIVE_URL"] = Request.HttpContext.Connection.LocalIpAddress.MapToIPv4().ToString();
+                    d["SYNC_CONTENT"] = "云组织同步接收失败！" + res;
+                    d["SYNC_RESULT"] = 0;
+                    d["ERROR_INFO"] = "";
+                    d["FAIL_CONTENT"] = "";
+                    d["REMARK"] = "";
+                    srm.createSyncResult(d);
+                }
 
-            var res = mm.syncOrg(f);
-            if (res == "")
-            {
-                Dictionary<string, object> d = new Dictionary<string, object>();
-                d["SEND_URL"] = "localhost";
-                d["RECEIVE_URL"] = Extension.GetClientUserIp(Request.HttpContext);
-                d["SYNC_CONTENT"] = "云组织同步接收成功";
-                d["SYNC_RESULT"] = 0;
-                d["ERROR_INFO"] = "";
-                d["FAIL_CONTENT"] = "";
-                d["REMARK"] = "";
-                srm.createSyncResult(d);
+                return Content(res);
             }
-            else
-            {
-                Dictionary<string, object> d = new Dictionary<string, object>();
-                d["SEND_URL"] = "localhost";
-                d["RECEIVE_URL"] = Extension.GetClientUserIp(Request.HttpContext);
-                d["SYNC_CONTENT"] = "云组织同步接收失败！" + res;
-                d["SYNC_RESULT"] = 0;
-                d["ERROR_INFO"] = "";
-                d["FAIL_CONTENT"] = "";
-                d["REMARK"] = "";
-                srm.createSyncResult(d);
-            }
-            return Content(res);
+            return Content("");
         }
 
     }

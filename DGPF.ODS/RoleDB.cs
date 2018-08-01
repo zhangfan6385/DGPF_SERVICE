@@ -136,7 +136,7 @@ namespace DGPF.ODS
                 return "";
             }
             string fengefu = "";
-            string delSql = " delete from ts_uidp_group_user where  USER_ID in(";
+            string delSql = " delete from ts_uidp_group_user where GROUP_ID= '"+ d["GROUP_ID"] + "' and  USER_ID in(";
             foreach (var item in array)
             {
                 delSql += fengefu + "'" + item.ToString() + "'";

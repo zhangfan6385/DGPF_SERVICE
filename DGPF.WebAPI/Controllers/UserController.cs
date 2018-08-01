@@ -19,6 +19,7 @@ namespace DGPF.WebAPI.Controllers
     public class UserController : WebApiBaseController
     {
         UserModule mm = new UserModule();
+        OrgModule om = new OrgModule();
         /// <summary>
         /// 查询用户信息
         /// </summary>
@@ -304,12 +305,25 @@ namespace DGPF.WebAPI.Controllers
         /// <returns></returns>
         // GET api/values
         [HttpGet("fetchUserOrgList")]
-        public IActionResult fetchUserOrgList(string limit, string page, string USER_NAME, int? FLAG, string sort, string orgId)
+        public IActionResult fetchUserOrgList(string limit, string page, string USER_NAME, int? FLAG, string sort, string orgId,string USER_DOMAIN)
         {
             Dictionary<string, object> d = new Dictionary<string, object>();
+            if (!string.IsNullOrEmpty(orgId))
+            {
+                DataTable dt = om.GetOrgById(orgId);
+                string orgpcode = dt.Rows[0]["ORG_CODE"].ToString();
+                if (!string.IsNullOrEmpty(orgpcode))
+                {
+                    d["orgpCode"] = orgpcode;
+                }
+            }
+            else {
+                d["orgpCode"] = "";
+            }
             d["limit"] = limit;
             d["page"] = page;
             d["USER_NAME"] = USER_NAME;
+            d["USER_DOMAIN"] = USER_DOMAIN;
             d["FLAG"] = FLAG;
             d["sort"] = sort;
             d["orgId"] = orgId;
@@ -339,17 +353,26 @@ namespace DGPF.WebAPI.Controllers
             Dictionary<string, object> res = mm.fetchUserRoleList(d);
             return Json(res);
         }
-       // / <summary>
+        /// <summary>
         /// 弹窗查询
         /// </summary>
         /// <returns></returns>
         [HttpGet("fetchUserForLoginList")]
-        public IActionResult fetchUserForLoginLists(string limit, string page, string USER_NAME = "", string LOGIN_ID = "")
+        public IActionResult fetchUserForLoginList(string limit, string page, string USER_ID)
         {
             UserLoginModule mm = new UserLoginModule();
-            Dictionary<string, object> res = mm.fetchUserForLoginList(limit, page, USER_NAME, LOGIN_ID);
+            Dictionary<string, object> res = mm.fetchUserForLoginList(limit, page, USER_ID);
             return Json(res);
         }
+
+        [HttpGet("fetchUserForAllList")]
+        public IActionResult fetchUserForAllList(string limit, string page, string USER_ID)
+        {
+            UserLoginModule mm = new UserLoginModule();
+            Dictionary<string, object> res = mm.fetchUserForAllList(limit, page, USER_ID);
+            return Json(res);
+        }
+        
         /// <summary>
         /// 导入excel
         /// </summary>

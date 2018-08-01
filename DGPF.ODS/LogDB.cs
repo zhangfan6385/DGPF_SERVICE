@@ -16,7 +16,10 @@ namespace DGPF.ODS
         /// <returns></returns>
         public DataTable fetchLogInfoList(Dictionary<string, object> d)
         {
-            string sql = "select ACCESS_TIME,USER_ID,USER_NAME,IP_ADDR,LOG_CONTENT,REMARK, LOG_TYPE,ALARM_LEVEL from ts_uidp_loginfo where 1=1 ";
+            //string sql = "select ACCESS_TIME,USER_ID,USER_NAME,IP_ADDR,LOG_CONTENT,REMARK, LOG_TYPE,ALARM_LEVEL from ts_uidp_loginfo where 1=1 ";
+            string sql = @"select ACCESS_TIME,ts_uidp_loginfo.USER_ID,USER_NAME,IP_ADDR,LOG_CONTENT,ts_uidp_loginfo.REMARK, LOG_TYPE,ALARM_LEVEL,ts_uidp_org.ORG_NAME from ts_uidp_loginfo 
+LEFT JOIN ts_uidp_org_user on ts_uidp_loginfo.USER_ID=ts_uidp_org_user.USER_ID
+LEFT JOIN ts_uidp_org on ts_uidp_org_user.ORG_ID=ts_uidp_org.ORG_ID where 1=1 ";
             if (d["USER_NAME"] != null && d["USER_NAME"].ToString() != "")
             {
                 sql += " and USER_NAME like '%" + d["USER_NAME"].ToString() + "%'";

@@ -36,7 +36,17 @@ namespace DGPF.ODS
 
             return db.GetDataTable(sql);
         }
+        /// <summary>
+        /// 登录获取系统配置信息
+        /// </summary>
+        /// <param name="d"></param>
+        /// <returns></returns>
+        public DataTable getConfig()
+        {
+            string sql = "select * from ts_uidp_config where CONF_CODE='CLOUD_ORG'";
 
+            return db.GetDataTable(sql);
+        }
         public string createConfigArticle(Dictionary<string, object> d)
         {
             string col = "";

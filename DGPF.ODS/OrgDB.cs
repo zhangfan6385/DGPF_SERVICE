@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DGPF.ODS
 {
-   public class OrgDB
+    public class OrgDB
     {
         DBTool db = new DBTool("MYSQL");
         /// <summary>
@@ -17,22 +17,35 @@ namespace DGPF.ODS
         /// <returns></returns>
         public string createOrgArticle(Dictionary<string, object> d)
         {
-            string sql = "INSERT INTO ts_uidp_org(ORG_ID,ORG_CODE,ORG_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) VALUES(";
+            string sql = "INSERT INTO ts_uidp_org(ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_ID_UPPER,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) VALUES(";
             sql += "'" + GetIsNullStr(d["id"]) + "',";
-            sql += "'" + GetIsNullStr(d["orgCode"])+"',";
+            sql += "'" + GetIsNullStr(d["orgCode"]) + "',";
             sql += "'" + GetIsNullStr(d["orgName"]) + "',";
+            sql += "'" + GetIsNullStr(d["orgShortName"]) + "',";
             sql += "'" + GetIsNullStr(d["parentId"]) + "',";
+            sql += "'" + GetIsNullStr(d["orgpCode"]) + "',";
             sql += "'" + GetIsNullStr(d["ISINVALID"]) + "',";
             sql += "'1',";//伪删除 1正常，0伪删除
             sql += "'" + GetIsNullStr(d["remark"]) + "')";
             return db.ExecutByStringResult(sql);
         }
-        public string GetIsNullStr(object obj) {
+
+        public string updateOrgPID()
+        {
+            string sql = @"update ts_uidp_org a,ts_uidp_org b set a.ORG_ID_UPPER=b.ORG_ID
+where a.ORG_CODE_UPPER=b.ORG_CODE";
+            return db.ExecutByStringResult(sql);
+        }
+
+
+        public string GetIsNullStr(object obj)
+        {
             if (obj == null)
             {
                 return "";
             }
-            else {
+            else
+            {
                 return obj.ToString();
             }
         }
@@ -44,9 +57,11 @@ namespace DGPF.ODS
         public string updateOrgData(Dictionary<string, object> d)
         {
             string sql = "update  ts_uidp_org set ";
-            sql += " ORG_CODE='" + GetIsNullStr(d["orgCode"]) + "'," ;
-            sql += " ORG_NAME='" + GetIsNullStr(d["orgName"] ) + "',";
-            sql += " ORG_CODE_UPPER='" + GetIsNullStr(d["parentId"])+ "',";
+            sql += " ORG_CODE='" + GetIsNullStr(d["orgCode"]) + "',";
+            sql += " ORG_NAME='" + GetIsNullStr(d["orgName"]) + "',";
+            sql += " ORG_SHORT_NAME='" + GetIsNullStr(d["orgShortName"]) + "',";
+            sql += " ORG_ID_UPPER='" + GetIsNullStr(d["parentId"]) + "',";
+            sql += " ORG_CODE_UPPER='" + GetIsNullStr(d["orgpCode"]) + "',";
             sql += " ISINVALID='" + GetIsNullStr(d["ISINVALID"]) + "',";
             sql += " REMARK='" + GetIsNullStr(d["remark"]) + "'";
             sql += " where ORG_ID='" + d["id"].ToString() + "' ;";
@@ -79,15 +94,15 @@ namespace DGPF.ODS
         public string updateUserOrgArticle(Dictionary<string, object> d)
         {
             // string[] array = d["multipleSelection"].ToString().Split(',');
-            var array =(JArray) d["arr"];
+            var array = (JArray)d["arr"];
             string fengefu = "";
             string sql = " insert into ts_uidp_org_user(ORG_ID,USER_ID)values ";
             string delSql = "delete from ts_uidp_org_user where  USER_ID in (";
             foreach (var item in array)
             {
-                delSql += fengefu + "'" +item.ToString()+ "'";
-                sql +=fengefu+ "(";
-                sql += "'"+d["orgId"].ToString()+"','" + item.ToString()+"'" ;
+                delSql += fengefu + "'" + item.ToString() + "'";
+                sql += fengefu + "(";
+                sql += "'" + d["orgId"].ToString() + "','" + item.ToString() + "'";
                 sql += ")";
                 fengefu = ",";
             }
@@ -102,7 +117,8 @@ namespace DGPF.ODS
         /// </summary>
         /// <param name="orgId"></param>
         /// <returns></returns>
-        public DataTable GetOrgById(string orgId) {
+        public DataTable GetOrgById(string orgId)
+        {
             string sql = "select * FROM ts_uidp_org where ORG_ID='" + orgId + "' ;";
             return db.GetDataTable(sql);
         }
@@ -110,8 +126,11 @@ namespace DGPF.ODS
         /// 查询所有
         /// </summary>
         /// <returns></returns>
-        public DataTable fetchOrgList() {
-            string sql = "select * FROM ts_uidp_org where ISDELETE='1'";
+        public DataTable fetchOrgList()
+        {
+            //string sql = "select * FROM ts_uidp_org where ISDELETE='1'";
+            string sql = @"select a.*,(select ts_uidp_org.ORG_ID from ts_uidp_org where ts_uidp_org.ORG_CODE=a.ORG_CODE_UPPER) PID FROM ts_uidp_org a 
+where a.ISDELETE='1'";
             return db.GetDataTable(sql);
         }
         /// <summary>
@@ -154,5 +173,9 @@ namespace DGPF.ODS
         {
             return db.ExecutByStringResult(sql);
         }
+        public string UploadOrgFileList(List<string> sqllst)
+        {
+            return db.Executs(sqllst);
         }
+    }
 }

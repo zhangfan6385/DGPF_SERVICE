@@ -94,24 +94,30 @@ namespace DGPF.ODS
 
             return db.ExecutByStringResult(sql);
         }
+        public string updateAdminPasswordData(Dictionary<string, object> d)
+        {
+            string sql = "update  ts_uidp_config set CONF_VALUE='" + d["newpassword"].ToString() + "' where CONF_CODE='Admin_Password' ;";
+
+            return db.ExecutByStringResult(sql);
+        }
         public DataTable IsInvalidPassword(Dictionary<string, object> d)
         {
             string sql = "select * from  ts_uidp_userinfo  where USER_ID='" + d["userid"].ToString() + "' and USER_PASS='" + d["password"].ToString() + "' ;";
 
             return db.GetDataTable(sql);
         }
-        public string updateLoginPasswordData(Dictionary<string, object> d)
-        {
-            string sql = "update  ts_uidp_login set LOGIN_PASS=" + d["newpassword"].ToString() + " where LOGIN_CODE='" + d["userid"].ToString() + "' and LOGIN_PASS='" + d["password"].ToString() + "' ;";
+        //public string updateLoginPasswordData(Dictionary<string, object> d)
+        //{
+        //    string sql = "update  ts_uidp_login set LOGIN_PASS=" + d["newpassword"].ToString() + " where LOGIN_CODE='" + d["userid"].ToString() + "' and LOGIN_PASS='" + d["password"].ToString() + "' ;";
 
-            return db.ExecutByStringResult(sql);
-        }
-        public DataTable IsInvalidLoginPassword(Dictionary<string, object> d)
-        {
-            string sql = "select * from  ts_uidp_login  where LOGIN_CODE='" + d["userid"].ToString() + "' and LOGIN_PASS='" + d["password"].ToString() + "' ;";
+        //    return db.ExecutByStringResult(sql);
+        //}
+        //public DataTable IsInvalidLoginPassword(Dictionary<string, object> d)
+        //{
+        //    string sql = "select * from  ts_uidp_login  where LOGIN_CODE='" + d["userid"].ToString() + "' and LOGIN_PASS='" + d["password"].ToString() + "' ;";
 
-            return db.GetDataTable(sql);
-        }
+        //    return db.GetDataTable(sql);
+        //}
         public string updateUserData(Dictionary<string, object> d) {
             StringBuilder sb = new StringBuilder();
             sb.Append(" update ts_uidp_userinfo set ");
@@ -232,6 +238,10 @@ namespace DGPF.ODS
             {
                 sql += " and a.USER_NAME like '%" + d["USER_NAME"].ToString() + "%'";
             }
+            if (d["USER_DOMAIN"] != null && d["USER_DOMAIN"].ToString() != "")
+            {
+                sql += " and a.USER_DOMAIN like '%" + d["USER_DOMAIN"].ToString() + "%'";
+            }
             if (d["FLAG"] != null && d["FLAG"].ToString() != "")
             {
                 sql += " and a.FLAG=" + d["FLAG"].ToString();
@@ -255,13 +265,18 @@ namespace DGPF.ODS
                 {
                     sql += " and a.USER_NAME like '%" + d["USER_NAME"].ToString() + "%'";
                 }
+                if (d["USER_DOMAIN"] != null && d["USER_DOMAIN"].ToString() != "")
+                {
+                    sql += " and a.USER_DOMAIN like '%" + d["USER_DOMAIN"].ToString() + "%'";
+                }
                 if (d["FLAG"] != null && d["FLAG"].ToString() != "")
                 {
                     sql += " and a.FLAG=" + d["FLAG"].ToString();
                 }
-                if (d["orgId"] != null)
+                if (d["orgId"] != null && d["orgId"].ToString() != "" && d["orgpCode"] != null && d["orgpCode"].ToString() != "")
                 {
-                    sql += " and b.ORG_ID='" + d["orgId"].ToString() + "' ";
+                    //sql += " and b.ORG_ID='" + d["orgId"].ToString() + "' ";
+                    sql += " and b.ORG_CODE like '" + d["orgpCode"].ToString() + "%'";
                 }
                 sql += " ) ";
                 if (d["sort"] != null && d["sort"].ToString() != "" && d["sort"].ToString() == "-USER_ID")

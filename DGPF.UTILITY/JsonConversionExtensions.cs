@@ -6,6 +6,18 @@ namespace DGPF.UTILITY
 {
     public static class JsonConversionExtensions
     {
+        public static IList<Dictionary<string, object>> ToDictionary(this JObject[] jsons)
+        {
+            IList<Dictionary<string, object>> f = new List<Dictionary<string, object>>();
+            foreach (var json in jsons)
+            {
+                var propertyValuePairs = json.ToObject<Dictionary<string, object>>();
+                ProcessJObjectProperties(propertyValuePairs);
+                ProcessJArrayProperties(propertyValuePairs);
+                f.Add(propertyValuePairs);
+            }
+            return f;
+        }
         public static IDictionary<string, object> ToDictionary(this JObject json)
         {
             var propertyValuePairs = json.ToObject<Dictionary<string, object>>();

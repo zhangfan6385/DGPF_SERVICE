@@ -24,9 +24,13 @@ namespace DGPF.BIZModule
                 DataTable dt = db.loginConfig(d);
                 r["total"] = dt.Rows.Count;
                 var lst = KVTool.TableToListDic(dt);
-                r["sysname"] = lst[0];
+                r["copyright"] = lst[0];
+                r["sysname"] = lst[1];
+                var t= lst[lst.Count - 1];
+                t["CONF_VALUE"] =t["CONF_VALUE"].ToString() == "true" ? 1 : 0;
+                r["cloudorg"] = t;
                 List<object> typeList = new List<object>();
-                for (int i = 1; i < lst.Count; i++)
+                for (int i = 2; i < lst.Count-1; i++)
                 {
                     object obj = new { key = lst[i]["CONF_NAME"], user_code = lst[i]["CONF_CODE"] };
                     typeList.Add(obj);
@@ -69,6 +73,15 @@ namespace DGPF.BIZModule
                 r["message"] = e.Message;
             }
             return r;
+        }
+        public bool getConfig()
+        {
+            DataTable dt = db.getConfig();
+            if (dt != null)
+            {
+                return dt.Rows[0]["CONF_VALUE"].ToString().ToLower() == "true" ?true: false;
+            }
+            return false;
         }
 
         public string createConfigArticle(Dictionary<string, object> d)

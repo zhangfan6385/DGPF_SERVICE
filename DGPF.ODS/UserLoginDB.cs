@@ -109,19 +109,57 @@ namespace DGPF.ODS
             sql += " order by a.LOGIN_ID";
             return db.GetDataTable(sql);
         }
-        public DataTable fetchUserForLoginList(string USER_NAME, string LOGIN_ID)
+        public DataTable fetchUserForLoginList(string USER_ID)
         {
-            string sql = " select c.USER_ID,c.USER_CODE,c.USER_NAME,c.USER_DOMAIN,a.LOGIN_ID,a.LOGIN_REMARK from ts_uidp_userinfo c  ";
-            sql += " left join ts_uidp_login_user b on  c.USER_ID=b.USER_ID ";
-            sql += " left join ts_uidp_login a  on a.LOGIN_ID=b.LOGIN_ID where 1=1 ";
-            if (!string.IsNullOrEmpty(USER_NAME))
-            {
-                sql += " and c.USER_NAME like '%" + USER_NAME + "%'";
-            }
-            if (LOGIN_ID != null && LOGIN_ID != "")
-            {
-                sql += " AND  a.LOGIN_ID ='" + LOGIN_ID + "'";
-            }
+            //string sql = " select c.USER_ID,c.USER_CODE,c.USER_NAME,c.USER_DOMAIN,a.LOGIN_ID,a.LOGIN_REMARK from ts_uidp_userinfo c  ";
+            //sql += " left join ts_uidp_login_user b on  c.USER_ID=b.USER_ID ";
+            //sql += " left join ts_uidp_login a  on a.LOGIN_ID=b.LOGIN_ID where 1=1 ";
+            string sql = String.Format(@"SELECT ts_uidp_userinfo.* from (
+select USER_ID from ts_uidp_login_user
+where LOGIN_ID = '{0}'
+union
+select LOGIN_ID from ts_uidp_login_user
+where USER_ID = '{0}'
+) tbl
+LEFT JOIN
+ts_uidp_userinfo
+on tbl.USER_ID = ts_uidp_userinfo.USER_ID 
+", USER_ID);
+            //where USER_ID  != '{0}'
+            //if (!string.IsNullOrEmpty(USER_NAME))
+            //{
+            //    sql += " and c.USER_NAME like '%" + USER_NAME + "%'";
+            //}
+            //if (LOGIN_ID != null && LOGIN_ID != "")
+            //{
+            //    sql += " AND  a.LOGIN_ID ='" + LOGIN_ID + "'";
+            //}
+            return db.GetDataTable(sql);
+        }
+
+        public DataTable fetchUserForAllList(string USER_ID)
+        {
+            //string sql = " select c.USER_ID,c.USER_CODE,c.USER_NAME,c.USER_DOMAIN,a.LOGIN_ID,a.LOGIN_REMARK from ts_uidp_userinfo c  ";
+            //sql += " left join ts_uidp_login_user b on  c.USER_ID=b.USER_ID ";
+            //sql += " left join ts_uidp_login a  on a.LOGIN_ID=b.LOGIN_ID where 1=1 ";
+            string sql = String.Format(@"select * from  ts_uidp_userinfo
+where ts_uidp_userinfo.USER_ID not in(
+select USER_ID from ts_uidp_login_user
+where LOGIN_ID = '{0}'
+union
+select LOGIN_ID from ts_uidp_login_user
+where USER_ID = '{0}'
+) and ts_uidp_userinfo.USER_ID!='{0}'
+", USER_ID);
+            //where USER_ID  != '{0}'
+            //if (!string.IsNullOrEmpty(USER_NAME))
+            //{
+            //    sql += " and c.USER_NAME like '%" + USER_NAME + "%'";
+            //}
+            //if (LOGIN_ID != null && LOGIN_ID != "")
+            //{
+            //    sql += " AND  a.LOGIN_ID ='" + LOGIN_ID + "'";
+            //}
             return db.GetDataTable(sql);
         }
         /// <summary>
@@ -170,6 +208,7 @@ namespace DGPF.ODS
         /// <returns></returns>
         public string deleteUserForLoginArticle(Dictionary<string, object> d)
         {
+            List<string> list = new List<string>();
             var array = (JArray)d["arr"];
             if (array == null || array.Count == 0)
             {
@@ -181,9 +220,14 @@ namespace DGPF.ODS
             {
                 delSql += fengefu + "'" + item.ToString() + "'";
                 fengefu = ",";
+                //string sqlUpdateUserInfo = "  update ts_uidp_userinfo set ASSOCIATED_ACCOUNT='' where USER_ID='" + item.ToString() + "'";
+                string sqlUpdateUserInfo = " update ts_uidp_userinfo set ASSOCIATED_ACCOUNT=''  where USER_ID=(select LOGIN_ID from ts_uidp_login_user where ts_uidp_login_user.USER_ID='" + item.ToString() + "')";
+                list.Add(sqlUpdateUserInfo);
             }
             delSql += ")";
-            return db.ExecutByStringResult(delSql);
+            list.Add(delSql);
+            return db.Executs(list);
+            //return db.ExecutByStringResult(delSql);
         }
 
         /// <summary>

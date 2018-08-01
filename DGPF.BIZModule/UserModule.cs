@@ -27,7 +27,7 @@ namespace DGPF.BIZModule
                 DataTable dt = db.fetchUserList(d);
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    DataTable dtName = dt.DefaultView.ToTable(true, "USER_ID", "REG_TIME", "USER_NAME", "USER_CODE", "USER_ALIAS", "USER_PASS", "PHONE_MOBILE", "PHONE_OFFICE", "PHONE_ORG", "USER_EMAIL", "EMAIL_OFFICE", "USER_IP", "FLAG", "USER_DOMAIN", "REMARK","USER_SEX","USER_ERP");
+                    DataTable dtName = dt.DefaultView.ToTable(true, "USER_ID", "REG_TIME", "USER_NAME", "USER_CODE", "USER_ALIAS", "USER_PASS", "PHONE_MOBILE", "PHONE_OFFICE", "PHONE_ORG", "USER_EMAIL", "EMAIL_OFFICE", "USER_IP", "FLAG", "USER_DOMAIN", "REMARK", "USER_SEX", "USER_ERP");
                     dtName.Columns.Add("ORG_ID");
                     dtName.Columns.Add("ORG_NAME");
                     foreach (DataRow row in dtName.Rows)
@@ -51,7 +51,8 @@ namespace DGPF.BIZModule
                     r["code"] = 2000;
                     r["message"] = "查询成功";
                 }
-                else {
+                else
+                {
                     r["total"] = dt.Rows.Count;
                     r["items"] = new Dictionary<string, object>();
                     r["code"] = 2000;
@@ -70,15 +71,17 @@ namespace DGPF.BIZModule
 
         public string createUserArticle(Dictionary<string, object> d)
         {
-            if (d["USER_CODE"]!=null) {
-                DataTable dt = db.GetUserInfoByUserCode(d["USER_CODE"].ToString(),"");//USER_DOMAIN
+            if (d["USER_CODE"] != null)
+            {
+                DataTable dt = db.GetUserInfoByUserCode(d["USER_CODE"].ToString(), "");//USER_DOMAIN
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     return "此员工编号已存在！";
                 }
             }
-            if (d["USER_DOMAIN"]!=null) {
-                DataTable dt = db.GetUserInfoByUSER_DOMAIN(d["USER_DOMAIN"].ToString(),"");//USER_DOMAIN
+            if (d["USER_DOMAIN"] != null)
+            {
+                DataTable dt = db.GetUserInfoByUSER_DOMAIN(d["USER_DOMAIN"].ToString(), "");//USER_DOMAIN
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     return "此账号已存在！";
@@ -96,12 +99,25 @@ namespace DGPF.BIZModule
         }
         public string updatePasswordData(Dictionary<string, object> d)
         {
-            DataTable dt = db.IsInvalidPassword(d);
-            if (dt == null || dt.Rows.Count == 0)
+            if (d["roleLevel"].ToString() == "admin")
             {
-                return "原密码不正确！";
+                string userId = getAdminCode();
+                string pass = getAdminPass();
+                if (d["userid"].ToString() != userId|| d["password"].ToString() != pass)
+                {
+                    return "用户名或密码不正确！";
+                }
+                return db.updateAdminPasswordData(d);
             }
-            return db.updatePasswordData(d);
+            else
+            {
+                DataTable dt = db.IsInvalidPassword(d);
+                if (dt == null || dt.Rows.Count == 0)
+                {
+                    return "用户名或密码不正确！";
+                }
+                return db.updatePasswordData(d);
+            }
         }
         public string updateUserData(Dictionary<string, object> d)
         {
@@ -133,7 +149,7 @@ namespace DGPF.BIZModule
             }
             return mod;
         }
-        public DGPF.BIZModule.Models.ts_uidp_userinfo getUserInfoByLogin(string username,string userDomain)
+        public DGPF.BIZModule.Models.ts_uidp_userinfo getUserInfoByLogin(string username, string userDomain)
         {
             DataTable dt = db.GetUserInfoBylogin(username, userDomain);
             DGPF.BIZModule.Models.ts_uidp_userinfo mod = new Models.ts_uidp_userinfo();
@@ -314,8 +330,8 @@ namespace DGPF.BIZModule
                 DataTable dt = db.fetchUserOrgList(d);
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    DataTable dtName = dt.DefaultView.ToTable(true, "USER_ID", "USER_DOMAIN", "USER_NAME", "USER_CODE", "USER_PASS", "PHONE_MOBILE", "PHONE_OFFICE", 
-                        "USER_EMAIL",  "USER_IP", "USER_SEX", "FLAG", "AUTHENTICATION_TYPE", "ASSOCIATED_ACCOUNT",  "REMARK");
+                    DataTable dtName = dt.DefaultView.ToTable(true, "USER_ID", "USER_DOMAIN", "USER_NAME", "USER_CODE", "USER_PASS", "PHONE_MOBILE", "PHONE_OFFICE",
+                        "USER_EMAIL", "USER_IP", "USER_SEX", "FLAG", "AUTHENTICATION_TYPE", "ASSOCIATED_ACCOUNT", "REMARK");
                     dtName.Columns.Add("orgId");
                     dtName.Columns.Add("orgName");
                     foreach (DataRow row in dtName.Rows)
@@ -382,7 +398,7 @@ namespace DGPF.BIZModule
                         string fengefu = "";
                         foreach (DataRow item in dt.Rows)
                         {
-                            if (row["USER_ID"].ToString() == item["USER_ID"].ToString() && item["roleId"]!= null && item["roleId"].ToString()!="")
+                            if (row["USER_ID"].ToString() == item["USER_ID"].ToString() && item["roleId"] != null && item["roleId"].ToString() != "")
                             {
                                 if (!row["roleId"].ToString().Contains(item["roleId"].ToString()))
                                 {
@@ -398,7 +414,8 @@ namespace DGPF.BIZModule
                     r["code"] = 2000;
                     r["message"] = "查询成功";
                 }
-                else {
+                else
+                {
                     r["total"] = 0;
                     r["items"] = null;
                     r["code"] = 2000;
@@ -474,9 +491,10 @@ namespace DGPF.BIZModule
             DataTable dtOrg = orgDB.fetchOrgList();
             string result = "";
             string fengefu2 = "";
-            for (int i= 0;i < dt.Rows.Count;i++)
+            for (int i = 0; i < dt.Rows.Count; i++)
             {
-                if (dt.Rows[i]["组织机构编码"]==null|| dt.Rows[i]["账号"]==null) {
+                if (dt.Rows[i]["组织机构编码"] == null || dt.Rows[i]["账号"] == null)
+                {
                     result += fengefu2 + "第" + (i + 2) + "行，组织机构编码或者账号不能为空！，导入失败！";
                     fengefu2 = ",";
                     continue;
@@ -487,14 +505,15 @@ namespace DGPF.BIZModule
                     fengefu2 = ",";
                     continue;
                 }
-                DataRow[] OrgRow = dtOrg.Select("ORG_CODE='"+ dt.Rows[i]["组织机构编码"].ToString().Trim() +"'");
-                if (OrgRow.Length<=0) {
+                DataRow[] OrgRow = dtOrg.Select("ORG_CODE='" + dt.Rows[i]["组织机构编码"].ToString().Trim() + "'");
+                if (OrgRow.Length <= 0)
+                {
                     result += fengefu2 + "第" + (i + 2) + "行，系统中不存在此组织机构编码！，导入失败！";
                     fengefu2 = ",";
                     continue;
                 }
                 string id = Guid.NewGuid().ToString();
-                sbOrgUser.Append(fengefu+"('"+ dt.Rows[i]["组织机构编码"].ToString().Trim()+"','"+id+"')");
+                sbOrgUser.Append(fengefu + "('" + dt.Rows[i]["组织机构编码"].ToString().Trim() + "','" + id + "')");
                 sb.Append(fengefu + "('" + id + "',");
                 sb.Append("'" + getString(dt.Rows[i]["账号"]) + "',");
                 sb.Append("'" + getString(dt.Rows[i]["员工编号"]) + "',");
@@ -520,7 +539,7 @@ namespace DGPF.BIZModule
                 {
                     sb.Append("'0',");
                 }
-                sb.Append("1,'"+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +"',");
+                sb.Append("1,'" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "',");
                 sb.Append("'" + getString(dt.Rows[i]["备注"]) + "')");
                 fengefu = ",";
             }
