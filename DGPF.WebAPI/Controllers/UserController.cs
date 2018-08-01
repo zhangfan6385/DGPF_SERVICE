@@ -246,7 +246,7 @@ namespace DGPF.WebAPI.Controllers
                 DataTable dt = mm.GetUserAndOrgByUserId(d["userId"].ToString());
                 if (dt != null && dt.Rows.Count > 0) { 
                     string _name = dt.Rows[0]["USER_NAME"] == null ? "" : dt.Rows[0]["USER_NAME"].ToString();
-                    string _userCode= dt.Rows[0]["USER_CODE"] == null ? "" : dt.Rows[0]["USER_CODE"].ToString();
+                    string _userCode= dt.Rows[0]["USER_DOMAIN"] == null ? "" : dt.Rows[0]["USER_DOMAIN"].ToString();
                     string _userId= dt.Rows[0]["USER_ID"] == null ? "" : dt.Rows[0]["USER_ID"].ToString();
                     int _userSex= Convert.ToInt32(dt.Rows[0]["USER_SEX"].ToString());
                     string _deptCode = dt.Rows[0]["ORG_CODE"] == null ? "" : dt.Rows[0]["ORG_CODE"].ToString();

@@ -107,12 +107,12 @@ namespace DGPF.ODS
             }
             string fengefu = "";
             string sql = " insert into ts_uidp_group_user(GROUP_ID,USER_ID)values ";
-            string delSql = " delete from ts_uidp_group_user where  GROUP_ID='" + d["roleId"].ToString()+ "' and USER_ID in(";
+            string delSql = " delete from ts_uidp_group_user where  GROUP_ID='" + d["GROUP_ID"].ToString()+ "' and USER_ID in(";
             foreach (var item in array)
             {
                 delSql += fengefu + "'" + item.ToString()+"'" ;
                 sql += fengefu + "(";
-                sql += "'" + d["roleId"].ToString() + "','" + item.ToString() + "'";
+                sql += "'" + d["GROUP_ID"].ToString() + "','" + item.ToString() + "'";
                 sql += ")";
                 fengefu = ",";
             }

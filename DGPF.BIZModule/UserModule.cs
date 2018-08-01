@@ -71,7 +71,7 @@ namespace DGPF.BIZModule
 
         public string createUserArticle(Dictionary<string, object> d)
         {
-            if (d["USER_CODE"] != null)
+            if (d["USER_CODE"] != null&& d["USER_CODE"].ToString().Length>0)
             {
                 DataTable dt = db.GetUserInfoByUserCode(d["USER_CODE"].ToString(), "");//USER_DOMAIN
                 if (dt != null && dt.Rows.Count > 0)
@@ -121,22 +121,22 @@ namespace DGPF.BIZModule
         }
         public string updateUserData(Dictionary<string, object> d)
         {
-            if (d["USER_CODE"] != null)
-            {
-                DataTable dt = db.GetUserInfoByUserCode(d["USER_CODE"].ToString(), d["USER_ID"].ToString());//USER_DOMAIN
-                if (dt != null && dt.Rows.Count > 0)
-                {
-                    return "此员工账号已存在！";
-                }
-            }
-            if (d["USER_DOMAIN"] != null)
-            {
-                DataTable dt = db.GetUserInfoByUSER_DOMAIN(d["USER_DOMAIN"].ToString(), d["USER_ID"].ToString());//USER_DOMAIN
-                if (dt != null && dt.Rows.Count > 0)
-                {
-                    return "此员工编号已存在！";
-                }
-            }
+            //if (d["USER_CODE"] != null)
+            //{
+            //    DataTable dt = db.GetUserInfoByUserCode(d["USER_CODE"].ToString(), d["USER_ID"].ToString());//USER_DOMAIN
+            //    if (dt != null && dt.Rows.Count > 0)
+            //    {
+            //        return "此员工账号已存在！";
+            //    }
+            //}
+            //if (d["USER_DOMAIN"] != null)
+            //{
+            //    DataTable dt = db.GetUserInfoByUSER_DOMAIN(d["USER_DOMAIN"].ToString(), d["USER_ID"].ToString());//USER_DOMAIN
+            //    if (dt != null && dt.Rows.Count > 0)
+            //    {
+            //        return "此员工编号已存在！";
+            //    }
+            //}
             return db.updateUserData(d);
         }
         public DGPF.BIZModule.Models.ts_uidp_userinfo getUserInfoByUserId(string userId)

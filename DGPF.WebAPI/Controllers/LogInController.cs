@@ -94,6 +94,7 @@ namespace DGPF.WebAPI.Controllers
                             }
                         }
                     }
+
                     DataTable dt = um.getUserInfoByName(username);
                     if (dt == null || dt.Rows.Count == 0)
                     {
