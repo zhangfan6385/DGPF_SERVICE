@@ -219,7 +219,7 @@ namespace DGPF.BIZModule
                     }
                     else
                     {
-                        if (dr["ISINVALID"].ToString() == "1")
+                        if (dr["ISINVALID"].ToString() == "0")
                         {
                             continue;
                         }
