@@ -543,7 +543,8 @@ namespace DGPF.BIZModule
                 sb.Append("'" + getString(dt.Rows[i]["备注"]) + "')");
                 fengefu = ",";
             }
-            string sqlUpdate = "   update a  set a.ORG_ID=b.ORG_ID from ts_uidp_org_user a ,ts_uidp_org b where  a.ORG_ID=b.ORG_CODE ";
+            //string sqlUpdate = "   update a  set a.ORG_ID=b.ORG_ID from ts_uidp_org_user a ,ts_uidp_org b where  a.ORG_ID=b.ORG_CODE ";
+            string sqlUpdate = "update ts_uidp_org_user a ,ts_uidp_org b set a.ORG_ID = b.ORG_ID where a.ORG_ID = b.ORG_CODE";
             List<string> list = new List<string>();
             list.Add(sbOrgUser.ToString());
             list.Add(sb.ToString());
