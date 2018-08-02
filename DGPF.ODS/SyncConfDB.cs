@@ -70,24 +70,24 @@ namespace DGPF.ODS
             StringBuilder sb = new StringBuilder();
             sb.Append(" update ts_uidp_synchro_config set ");
             sb.Append(" SERVER_IP='");
-            sb.Append(d["SERVER_IP"] == null ? "" : d["SERVER_IP"] + "', ");
+            sb.Append(d["SERVER_IP"] == null ? "" : GetIsNullStr(d["SERVER_IP"]) + "', ");
             sb.Append(" SERVER_PORT='");
-            sb.Append(d["SERVER_PORT"] == null ? "" : d["SERVER_PORT"] + "', ");
-            sb.Append(" SERVER_URL=");
-            sb.Append(d["SERVER_URL"] == null ? "" : d["SERVER_URL"] + ", ");
+            sb.Append(d["SERVER_PORT"] == null ? "" : GetIsNullStr(d["SERVER_PORT"]) + "', ");
+            sb.Append(" SERVER_URL='");
+            sb.Append(d["SERVER_URL"] == null ? "" : GetIsNullStr(d["SERVER_URL"]) + "', ");
 
-            sb.Append(" USER_CODE=");
-            sb.Append(d["USER_CODE"] == null ? "" : d["USER_CODE"] + ", ");
-            sb.Append(" USER_PASS=");
-            sb.Append(d["USER_PASS"] == null ? "" : d["USER_PASS"] + ", ");
-            sb.Append(" SYNC_TYPE=");
-            sb.Append(d["SYNC_TYPE"] == null ? "" : d["SYNC_TYPE"] + ", ");
+            sb.Append(" USER_CODE='");
+            sb.Append(d["USER_CODE"] == null ? "" : GetIsNullStr(d["USER_CODE"]) + "', ");
+            sb.Append(" USER_PASS='");
+            sb.Append(d["USER_PASS"] == null ? "" : GetIsNullStr(d["USER_PASS"]) + "', ");
+            sb.Append(" SYNC_TYPE='");
+            sb.Append(d["SYNC_TYPE"] == null ? "" : GetIsNullStr(d["SYNC_TYPE"]) + "', ");
 
             sb.Append(" SYNC_FLAG=");
-            sb.Append(d["SYNC_FLAG"] == null ? "0" : d["SYNC_FLAG"] + ", ");
+            sb.Append(d["SYNC_FLAG"] == null ? "0" : GetIsNullStr(d["SYNC_FLAG"]) + ", ");
             sb.Append(" REMARK='");
-            sb.Append(d["REMARK"] == null ? "" : d["REMARK"] + "'");
-            sb.Append(" where SYNC_ID='" + d["SYNC_ID"].ToString() + "' ");
+            sb.Append(d["REMARK"] == null ? "" : GetIsNullStr(d["REMARK"]));
+            sb.Append("' where SYNC_ID='" + GetIsNullStr(d["SYNC_ID"].ToString()) + "' ");
             return db.ExecutByStringResult(sb.ToString());
         }
 

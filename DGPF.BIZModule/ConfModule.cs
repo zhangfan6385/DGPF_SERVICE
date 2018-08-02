@@ -26,14 +26,17 @@ namespace DGPF.BIZModule
                 var lst = KVTool.TableToListDic(dt);
                 r["copyright"] = lst[0];
                 r["sysname"] = lst[1];
-                var t= lst[lst.Count - 1];
-                t["CONF_VALUE"] =t["CONF_VALUE"].ToString() == "true" ? 1 : 0;
+                var t = lst[lst.Count - 1];
+                t["CONF_VALUE"] = t["CONF_VALUE"].ToString() == "true" ? 1 : 0;
                 r["cloudorg"] = t;
                 List<object> typeList = new List<object>();
-                for (int i = 2; i < lst.Count-1; i++)
+                for (int i = 2; i < lst.Count - 1; i++)
                 {
-                    object obj = new { key = lst[i]["CONF_NAME"], user_code = lst[i]["CONF_CODE"] };
-                    typeList.Add(obj);
+                    if (lst[i]["CONF_VALUE"].ToString() == "true")
+                    {
+                        object obj = new { key = lst[i]["CONF_NAME"], user_code = lst[i]["CONF_CODE"] };
+                        typeList.Add(obj);
+                    }
                 }
                 r["itemtype"] = typeList;
                 r["code"] = 2000;
@@ -48,7 +51,7 @@ namespace DGPF.BIZModule
             }
             return r;
         }
-        public Dictionary<string, object> fetchConfigList(Dictionary<string ,object> d)
+        public Dictionary<string, object> fetchConfigList(Dictionary<string, object> d)
         {
 
             Dictionary<string, object> r = new Dictionary<string, object>();
@@ -79,7 +82,7 @@ namespace DGPF.BIZModule
             DataTable dt = db.getConfig();
             if (dt != null)
             {
-                return dt.Rows[0]["CONF_VALUE"].ToString().ToLower() == "true" ?true: false;
+                return dt.Rows[0]["CONF_VALUE"].ToString().ToLower() == "true" ? true : false;
             }
             return false;
         }
@@ -99,6 +102,6 @@ namespace DGPF.BIZModule
             return db.updateConfigArticle(d);
         }
 
-        
+
     }
 }

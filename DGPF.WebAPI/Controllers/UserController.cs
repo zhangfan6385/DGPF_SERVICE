@@ -242,8 +242,10 @@ namespace DGPF.WebAPI.Controllers
                         departName = ""
                     });
                 }
-                string token = DGPF.UTILITY.AccessTokenTool.GetAccessToken(d["userId"].ToString());
-                DataTable dt = mm.GetUserAndOrgByUserId(d["userId"].ToString());
+                //string token = DGPF.UTILITY.AccessTokenTool.GetAccessToken(d["userId"].ToString());
+                string token = DGPF.UTILITY.AccessTokenTool.GetAccessToken(tokenUserId);
+                //DataTable dt = mm.GetUserAndOrgByUserId(d["userId"].ToString());
+                DataTable dt = mm.GetUserAndOrgByUserId(tokenUserId);
                 if (dt != null && dt.Rows.Count > 0) { 
                     string _name = dt.Rows[0]["USER_NAME"] == null ? "" : dt.Rows[0]["USER_NAME"].ToString();
                     string _userCode= dt.Rows[0]["USER_DOMAIN"] == null ? "" : dt.Rows[0]["USER_DOMAIN"].ToString();
@@ -252,7 +254,8 @@ namespace DGPF.WebAPI.Controllers
                     string _deptCode = dt.Rows[0]["ORG_CODE"] == null ? "" : dt.Rows[0]["ORG_CODE"].ToString();
                     string _deptName = dt.Rows[0]["ORG_NAME"] == null ? "" : dt.Rows[0]["ORG_NAME"].ToString();
                     DGPF.LOG.SysLog log = new LOG.SysLog();
-                    log.Info(DateTime.Now, d["userId"].ToString(), _name, ClientIp, 0, "info", "",1);
+                    //log.Info(DateTime.Now, d["userId"].ToString(), _name, ClientIp, 0, "info", "",1);
+                    log.Info(DateTime.Now, tokenUserId, _name, ClientIp, 0, "info", "", 1);
                     return Json(new {
                         code = 2000,
                         message = "",
