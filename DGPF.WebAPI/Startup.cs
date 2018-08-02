@@ -26,7 +26,8 @@ namespace DGPF.WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(x => {
+            services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(x =>
+            {
 
                 x.ValueLengthLimit = int.MaxValue;
 
@@ -38,6 +39,18 @@ namespace DGPF.WebAPI
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+        System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "ExcelModel")),
+                RequestPath = "/ExcelModel"
+            });
+            #region 解决Ubuntu Nginx 代理不能获取IP问题
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+            });
+            #endregion
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

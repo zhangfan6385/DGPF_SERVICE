@@ -223,10 +223,15 @@ namespace DGPF.WebAPI.Controllers
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
+                
                 string tokenUserId = DGPF.UTILITY.AccessTokenTool.GetUserId(d["token"].ToString());
-                //if (tokenUserId == mm.getAdminCode()&& (d["userId"]==null|| d["userId"].ToString()=="")) {
-                if (tokenUserId == mm.getAdminCode())
+                string userID= tokenUserId;
+                if (d.Keys.Contains("userId")&&d["userId"] != null && d["userId"].ToString()!= "")
                 {
+                    userID = d["userId"].ToString();
+                }
+                if (userID == mm.getAdminCode()) {
+                    //if (tokenUserId == mm.getAdminCode()&&(d["userId"]==null|| d["userId"].ToString()=="")){
                     DGPF.LOG.SysLog log = new LOG.SysLog();
                     log.Info(DateTime.Now, tokenUserId, "系统超级管理员", ClientIp, 0, "info", "", 1);
                     return Json(new
@@ -248,9 +253,9 @@ namespace DGPF.WebAPI.Controllers
                     });
                 }
                 //string token = DGPF.UTILITY.AccessTokenTool.GetAccessToken(d["userId"].ToString());
-                string token = DGPF.UTILITY.AccessTokenTool.GetAccessToken(tokenUserId);
+                string token = DGPF.UTILITY.AccessTokenTool.GetAccessToken(userID);
                 //DataTable dt = mm.GetUserAndOrgByUserId(d["userId"].ToString());
-                DataTable dt = mm.GetUserAndOrgByUserId(tokenUserId);
+                DataTable dt = mm.GetUserAndOrgByUserId(userID);
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     string _name = dt.Rows[0]["USER_NAME"] == null ? "" : dt.Rows[0]["USER_NAME"].ToString();
@@ -261,7 +266,7 @@ namespace DGPF.WebAPI.Controllers
                     string _deptName = dt.Rows[0]["ORG_NAME"] == null ? "" : dt.Rows[0]["ORG_NAME"].ToString();
                     DGPF.LOG.SysLog log = new LOG.SysLog();
                     //log.Info(DateTime.Now, d["userId"].ToString(), _name, ClientIp, 0, "info", "",1);
-                    log.Info(DateTime.Now, tokenUserId, _name, ClientIp, 0, "info", "", 1);
+                    log.Info(DateTime.Now, userID, _name, ClientIp, 0, "info", "", 1);
                     return Json(new
                     {
                         code = 2000,
