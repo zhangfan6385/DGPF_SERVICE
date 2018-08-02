@@ -31,7 +31,7 @@ namespace DGPF.WebAPI.Controllers
         /// <returns></returns>
         // GET api/values
         [HttpGet("fetchUserList")]
-        public IActionResult fetchUserList(string limit, string page, string USER_NAME,int? FLAG,string sort)
+        public IActionResult fetchUserList(string limit, string page, string USER_NAME, int? FLAG, string sort)
         {
             Dictionary<string, object> d = new Dictionary<string, object>();
             d["limit"] = limit;
@@ -48,12 +48,13 @@ namespace DGPF.WebAPI.Controllers
         /// <param name="value"></param>
         /// <returns></returns>
         [HttpPost("createUserArticle")]
-        public IActionResult createUserArticle([FromBody]JObject value) {
+        public IActionResult createUserArticle([FromBody]JObject value)
+        {
             Dictionary<string, object> d = value.ToObject<Dictionary<string, object>>();
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                d["USER_ID"] =Guid.NewGuid();
+                d["USER_ID"] = Guid.NewGuid();
                 string b = mm.createUserArticle(d);
                 if (b == "")
                 {
@@ -216,19 +217,23 @@ namespace DGPF.WebAPI.Controllers
         /// <param name=""></param>
         /// <returns></returns>
         [HttpPost("Info")]
-        public IActionResult Info([FromBody]JObject value) {
+        public IActionResult Info([FromBody]JObject value)
+        {
             Dictionary<string, object> d = value.ToObject<Dictionary<string, object>>();
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
                 string tokenUserId = DGPF.UTILITY.AccessTokenTool.GetUserId(d["token"].ToString());
-                if (tokenUserId == mm.getAdminCode()&& (d["userId"]==null|| d["userId"].ToString()=="")) {
+                //if (tokenUserId == mm.getAdminCode()&& (d["userId"]==null|| d["userId"].ToString()=="")) {
+                if (tokenUserId == mm.getAdminCode())
+                {
                     DGPF.LOG.SysLog log = new LOG.SysLog();
-                    log.Info(DateTime.Now, tokenUserId, "系统超级管理员", ClientIp, 0, "info", "",1);
-                    return Json(new {
+                    log.Info(DateTime.Now, tokenUserId, "系统超级管理员", ClientIp, 0, "info", "", 1);
+                    return Json(new
+                    {
                         code = 2000,
                         message = "",
-                        roles = JsonConvert.DeserializeObject("['admin']") ,
+                        roles = JsonConvert.DeserializeObject("['admin']"),
                         name = "系统超级管理员",
                         userCode = tokenUserId,
                         token = d["token"].ToString(),
@@ -246,17 +251,19 @@ namespace DGPF.WebAPI.Controllers
                 string token = DGPF.UTILITY.AccessTokenTool.GetAccessToken(tokenUserId);
                 //DataTable dt = mm.GetUserAndOrgByUserId(d["userId"].ToString());
                 DataTable dt = mm.GetUserAndOrgByUserId(tokenUserId);
-                if (dt != null && dt.Rows.Count > 0) { 
+                if (dt != null && dt.Rows.Count > 0)
+                {
                     string _name = dt.Rows[0]["USER_NAME"] == null ? "" : dt.Rows[0]["USER_NAME"].ToString();
-                    string _userCode= dt.Rows[0]["USER_DOMAIN"] == null ? "" : dt.Rows[0]["USER_DOMAIN"].ToString();
-                    string _userId= dt.Rows[0]["USER_ID"] == null ? "" : dt.Rows[0]["USER_ID"].ToString();
-                    int _userSex= Convert.ToInt32(dt.Rows[0]["USER_SEX"].ToString());
+                    string _userCode = dt.Rows[0]["USER_DOMAIN"] == null ? "" : dt.Rows[0]["USER_DOMAIN"].ToString();
+                    string _userId = dt.Rows[0]["USER_ID"] == null ? "" : dt.Rows[0]["USER_ID"].ToString();
+                    int _userSex = Convert.ToInt32(dt.Rows[0]["USER_SEX"].ToString());
                     string _deptCode = dt.Rows[0]["ORG_CODE"] == null ? "" : dt.Rows[0]["ORG_CODE"].ToString();
                     string _deptName = dt.Rows[0]["ORG_NAME"] == null ? "" : dt.Rows[0]["ORG_NAME"].ToString();
                     DGPF.LOG.SysLog log = new LOG.SysLog();
                     //log.Info(DateTime.Now, d["userId"].ToString(), _name, ClientIp, 0, "info", "",1);
                     log.Info(DateTime.Now, tokenUserId, _name, ClientIp, 0, "info", "", 1);
-                    return Json(new {
+                    return Json(new
+                    {
                         code = 2000,
                         message = "",
                         roles = new Dictionary<string, object>(),
@@ -273,19 +280,20 @@ namespace DGPF.WebAPI.Controllers
                         departName = _deptName
                     });
                 }
-                return Json(new {
+                return Json(new
+                {
                     code = 2000,
                     message = "",
                     roles = "",
                     name = "",
-                    userCode ="",
+                    userCode = "",
                     token = token,
                     introduction = "",
                     avatar = "",
                     sysCode = "1",
                     sysName = mm.getSysName(),
                     userId = "",
-                    userSex =0 ,
+                    userSex = 0,
                     departCode = "",
                     departName = ""
                 });
@@ -308,7 +316,7 @@ namespace DGPF.WebAPI.Controllers
         /// <returns></returns>
         // GET api/values
         [HttpGet("fetchUserOrgList")]
-        public IActionResult fetchUserOrgList(string limit, string page, string USER_NAME, int? FLAG, string sort, string orgId,string USER_DOMAIN)
+        public IActionResult fetchUserOrgList(string limit, string page, string USER_NAME, int? FLAG, string sort, string orgId, string USER_DOMAIN)
         {
             Dictionary<string, object> d = new Dictionary<string, object>();
             if (!string.IsNullOrEmpty(orgId))
@@ -320,7 +328,8 @@ namespace DGPF.WebAPI.Controllers
                     d["orgpCode"] = orgpcode;
                 }
             }
-            else {
+            else
+            {
                 d["orgpCode"] = "";
             }
             d["limit"] = limit;
@@ -375,7 +384,7 @@ namespace DGPF.WebAPI.Controllers
             Dictionary<string, object> res = mm.fetchUserForAllList(limit, page, USER_ID);
             return Json(res);
         }
-        
+
         /// <summary>
         /// 导入excel
         /// </summary>
