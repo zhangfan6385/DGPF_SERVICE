@@ -66,26 +66,38 @@ namespace DGPF.UTILITY
                 try
                 {
                     connection.Open();
-                    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection, SqlBulkCopyOptions.KeepIdentity,null))
+                    string sql = "truncate table " + tableName + ";";
+                    using (SqlCommand cmd = new SqlCommand(sql, connection))
                     {
-                        //每一批次中的行数
-                        bulkCopy.BatchSize = 100000;
-                        //超时之前操作完成所允许的秒数
-                        bulkCopy.BulkCopyTimeout = 1800;
-
-                        //将DataTable表名作为待导入库中的目标表名
-                        bulkCopy.DestinationTableName = tableName;
-
-                        //将数据集合和目标服务器库表中的字段对应 
-                        for (int i = 0; i < dt.Columns.Count; i++)
+                        // MySqlTransaction tran = conn.BeginTransaction();
+                        //cmd.Parameters.AddRange(cmdParms);
+                        if (connection.State != System.Data.ConnectionState.Open)
                         {
-                            //列映射定义数据源中的列和目标表中的列之间的关系
-                            bulkCopy.ColumnMappings.Add(dt.Columns[i].ColumnName, dt.Columns[i].ColumnName);
+                            connection.Open();
                         }
-                        //将DataTable数据上传到数据表中
-                        bulkCopy.WriteToServer(dt);
-                        return "2000";
+                        cmd.ExecuteNonQuery();//s返回受影响行数
+                        using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection, SqlBulkCopyOptions.KeepIdentity, null))
+                        {
+                            //每一批次中的行数
+                            bulkCopy.BatchSize = 100000;
+                            //超时之前操作完成所允许的秒数
+                            bulkCopy.BulkCopyTimeout = 1800;
+
+                            //将DataTable表名作为待导入库中的目标表名
+                            bulkCopy.DestinationTableName = tableName;
+
+                            //将数据集合和目标服务器库表中的字段对应 
+                            for (int i = 0; i < dt.Columns.Count; i++)
+                            {
+                                //列映射定义数据源中的列和目标表中的列之间的关系
+                                bulkCopy.ColumnMappings.Add(dt.Columns[i].ColumnName, dt.Columns[i].ColumnName);
+                            }
+                            //将DataTable数据上传到数据表中
+                            bulkCopy.WriteToServer(dt);
+                            return "2000";
+                        }
                     }
+                    
                 }
                 catch (Exception ex)
                 {
