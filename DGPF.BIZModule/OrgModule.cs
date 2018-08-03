@@ -276,13 +276,13 @@ namespace DGPF.BIZModule
             List<string> sqllst = new List<string>();
             StringBuilder sb = new StringBuilder();
             string fengefu = "";
-            
+
             foreach (DataRow row in dt.Rows)
             {
                 var orgname = getString(row["组织机构简称"]);
                 var allorgname = getString(row["组织机构名称"]);
-                 var dtt = orgdt;
-                DataRow[] rows = orgdt.Select("ORG_SHORT_NAME='" + getString(row["组织机构简称"]) + "' and ORG_NAME='"+ getString(row["组织机构名称"]) + "'");
+                var dtt = orgdt;
+                DataRow[] rows = orgdt.Select("ORG_SHORT_NAME='" + getString(row["组织机构简称"]) + "' and ORG_NAME='" + getString(row["组织机构名称"]) + "'");
                 if (rows.Length == 0)
                 {
                     //sb.Append(" insert into ts_uidp_org (ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) values ");
@@ -303,7 +303,8 @@ namespace DGPF.BIZModule
                     sb.Append("'" + getString(row["备注"]) + "')");
                     fengefu = ",";
                 }
-                else {
+                else
+                {
                     foreach (var item in rows)
                     {
                         string sql = "update  ts_uidp_org set ";
@@ -312,7 +313,7 @@ namespace DGPF.BIZModule
                         sql += " ORG_SHORT_NAME='" + getString(row["组织机构简称"]) + "',";
                         //sql += " ORG_ID_UPPER='" + getString(d["parentId"]) + "',";
                         sql += " ORG_CODE_UPPER='" + getString(row["上级组织机构编码"]) + "',";
-                        sql += " ISINVALID='" + getString((row["是否有效"] != null && row["是否有效"].ToString() == "是")?1:0) + "',";
+                        sql += " ISINVALID='" + getString((row["是否有效"] != null && row["是否有效"].ToString() == "是") ? 1 : 0) + "',";
                         sql += " REMARK='" + getString(row["备注"]) + "'";
                         sql += " where ORG_ID='" + item["ORG_ID"].ToString() + "' ;";
                         sqllst.Add(sql);
@@ -320,8 +321,9 @@ namespace DGPF.BIZModule
                 }
                 //sqllst.Add(sb.ToString());
             }
-            if (sb.Length>0) {
-                sb.Insert(0," insert into ts_uidp_org (ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) values ");
+            if (sb.Length > 0)
+            {
+                sb.Insert(0, " insert into ts_uidp_org (ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) values ");
                 sqllst.Add(sb.ToString());
             }
             return db.UploadOrgFileList(sqllst);
@@ -375,7 +377,7 @@ namespace DGPF.BIZModule
             {
                 return "";
             }
-            return obj.ToString().Replace("\\","").Trim();
+            return obj.ToString().Replace("\\", "").Trim();
         }
 
 
@@ -384,33 +386,44 @@ namespace DGPF.BIZModule
             return db.clearOrg();
         }
 
-        public string syncOrg(List<Dictionary<string, object>> f)
-        {
-            string fengefu = "";
-            StringBuilder sb = new StringBuilder();
+            public string syncOrg(List<Dictionary<string, object>> f)
+            {
             try
             {
-                db.clearOrg();
-                sb.Append(" insert into ts_uidp_org (ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) values ");
-                foreach (var row in f)
-                {
-                    sb.Append(fengefu + "('" + getString(row["ORG_ID"]) + "',");
-                    sb.Append("'" + getString(row["ORG_CODE"]) + "',");
-                    sb.Append("'" + getString(row["ORG_NAME"]) + "',");
-                    sb.Append("'" + getString(row["ORG_SHORT_NAME"]) + "',");
-                    sb.Append("'" + getString(row["ORG_CODE_UPPER"]) + "',");
-                    sb.Append("'" + getString(row["ISINVALID"]) + "',");
-                    sb.Append("'1',");
-                    sb.Append("'" + getString(row["REMARK"]) + "')");
-                    fengefu = ",";
-                }
+                DataTable dt = JsonConversionExtensions.CreateTable(f);
+                BatchImport import = new BatchImport();
+                return import.ImportInfo(dt, "ts_uidp_org");
             }
             catch (Exception ex)
             {
-                throw ex;
+                return ex.ToString();
             }
+              
+            //string fengefu = "";
+            //StringBuilder sb = new StringBuilder();
+            //try
+            //{
+            //    db.clearOrg();
+            //    sb.Append(" insert into ts_uidp_org (ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) values ");
+            //    foreach (var row in f)
+            //    {
+            //        sb.Append(fengefu + "('" + getString(row["ORG_ID"]) + "',");
+            //        sb.Append("'" + getString(row["ORG_CODE"]) + "',");
+            //        sb.Append("'" + getString(row["ORG_NAME"]) + "',");
+            //        sb.Append("'" + getString(row["ORG_SHORT_NAME"]) + "',");
+            //        sb.Append("'" + getString(row["ORG_CODE_UPPER"]) + "',");
+            //        sb.Append("'" + getString(row["ISINVALID"]) + "',");
+            //        sb.Append("'1',");
+            //        sb.Append("'" + getString(row["REMARK"]) + "')");
+            //        fengefu = ",";
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw ex;
+            //}
 
-            return db.UploadOrgFile(sb.ToString());
+            //return db.UploadOrgFile(sb.ToString());
+            }
         }
     }
-}

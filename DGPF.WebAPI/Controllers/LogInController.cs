@@ -208,17 +208,20 @@ namespace DGPF.WebAPI.Controllers
             {
                 if (string.IsNullOrEmpty(userCode) || string.IsNullOrEmpty(password))
                 {
-                    return Json(new { code = -1, message = "推送接口用户名或密码不能为空！" });
+                    //return Json(new { code = -1, message = "推送接口用户名或密码不能为空！" });
+                    return Content("");
                 }
                 UserLoginModule um = new UserLoginModule();
                 DataTable dt = um.getUserInfoByName(userCode);
                 if (dt == null || dt.Rows.Count == 0)
                 {
-                    return Json(new { code = -1, message = "云同步用户不存在！" });
+                    //return Json(new { code = -1, message = "云同步用户不存在！" });
+                    return Content("");
                 }
                 if (password != dt.Rows[0]["USER_PASS"].ToString())
                 {
-                    return Json(new { code = -1, message = "云同步用户密码错误！" });
+                    //return Json(new { code = -1, message = "云同步用户密码错误！" });
+                    return Content("");
                 }
                 userId = dt.Rows[0]["USER_ID"].ToString();
                 userName = dt.Rows[0]["USER_NAME"].ToString();

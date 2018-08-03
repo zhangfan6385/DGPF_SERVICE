@@ -405,6 +405,7 @@ namespace DGPF.WebAPI.Controllers
         /// <returns></returns>
         [HttpPost("pushOrgList")]
         public IActionResult pushOrgList([FromBody]JObject value)
+        //public IActionResult pushOrgList()
         {
            // sync_list
             Dictionary<string, object> r = new Dictionary<string, object>();
@@ -412,14 +413,14 @@ namespace DGPF.WebAPI.Controllers
             {
                 Dictionary<string, object> dd = value.ToObject<Dictionary<string, object>>();
                 //var targetlist = sncm.getSyncConfList();
-                //var targetlist = UTILITY.JsonConversionExtensions.ToDictionary((JObject)dd["arr"]);
-                //var targetlist = UTILITY.JsonConversionExtensions.ToDictionary((JObject[])dd["sync_list"]);
+                //foreach (var item in targetlist)
                 foreach (var item in (JArray)dd["sync_list"])
                 {
                     if (item["SYNC_FLAG"] != null && item["SYNC_FLAG"].ToString() == "0")
                     {
                         string loginUrl = "http://" + item["SERVER_IP"].ToString() + ":" + item["SERVER_PORT"].ToString() + "/LogIn/apiLogin";
                         //WebRequest req = WebRequest.Create("http://192.168.1.113:12345/LogIn/apiLogin");
+                        //string loginUrl = "http://192.168.1.107:12345/LogIn/apiLogin";
                         WebRequest req = WebRequest.Create(loginUrl);
                         Dictionary<string, string> postData = new Dictionary<string, string>();
                         //postData["userCode"] = "ceshi02";
@@ -446,6 +447,7 @@ namespace DGPF.WebAPI.Controllers
                             {
                                 //"/Org/syncOrg"
                                 string syncUrl = "http://" + item["SERVER_IP"].ToString() + ":" + item["SERVER_PORT"].ToString() + item["SERVER_URL"].ToString();
+                                //string syncUrl = "http://192.168.1.107:12345/Org/syncOrg";
                                 //WebRequest pushreq = WebRequest.Create("http://192.168.1.113:12345/Org/syncOrg");
                                 WebRequest pushreq = WebRequest.Create(syncUrl);
                                 DataTable dt = mm.fetchSyncOrgTable();
@@ -464,7 +466,7 @@ namespace DGPF.WebAPI.Controllers
                                 using (StreamReader pushsr = new StreamReader(pushresp.GetResponseStream()))
                                 {
                                     string pushs = pushsr.ReadToEnd();
-                                    if (pushs == "")
+                                    if (pushs == "2000")
                                     {
                                         Dictionary<string, object> d = new Dictionary<string, object>();
                                         d["SEND_URL"] = Extension.GetClientUserIp(Request.HttpContext);
@@ -536,7 +538,7 @@ namespace DGPF.WebAPI.Controllers
                 {
                     var t = UTILITY.JsonConversionExtensions.ToDictionary(value);
                     var res = mm.syncOrg((List<Dictionary<string, object>>)t);
-                    if (res == "")
+                    if (res == "2000")
                     {
                         Dictionary<string, object> d = new Dictionary<string, object>();
                         d["SEND_URL"] = Extension.GetClientUserIp(Request.HttpContext);
