@@ -476,7 +476,7 @@ namespace DGPF.WebAPI.Controllers
                                         d["REMARK"] = "";
                                         srm.createSyncResult(d);
                                     }
-                                    else
+                                    else if (pushs== "5000")
                                     {
                                         Dictionary<string, object> d = new Dictionary<string, object>();
                                         d["SEND_URL"] = Extension.GetClientUserIp(Request.HttpContext);
@@ -484,7 +484,19 @@ namespace DGPF.WebAPI.Controllers
                                         d["SYNC_CONTENT"] = "云组织同步推送失败！" + pushs;
                                         d["SYNC_RESULT"] = 0;
                                         d["ERROR_INFO"] = "";
-                                        d["FAIL_CONTENT"] = "";
+                                        d["FAIL_CONTENT"] = "系统未启用云组织";
+                                        d["REMARK"] = "";
+                                        srm.createSyncResult(d);
+                                    }
+                                    else
+                                    {
+                                        Dictionary<string, object> d = new Dictionary<string, object>();
+                                        d["SEND_URL"] = Extension.GetClientUserIp(Request.HttpContext);
+                                        d["RECEIVE_URL"] = item["SERVER_IP"].ToString();
+                                        d["SYNC_CONTENT"] = "云组织同步推送失败！" + pushs;
+                                        d["SYNC_RESULT"] = 0;
+                                        d["ERROR_INFO"] = pushs;
+                                        d["FAIL_CONTENT"] = "同步服务发生异常";
                                         d["REMARK"] = "";
                                         srm.createSyncResult(d);
                                     }
@@ -520,36 +532,45 @@ namespace DGPF.WebAPI.Controllers
             //}
             if (cm.getConfig())
             {
-                var t = UTILITY.JsonConversionExtensions.ToDictionary(value);
-                var res = mm.syncOrg((List<Dictionary<string, object>>)t);
-                if (res == "")
+                try
                 {
-                    Dictionary<string, object> d = new Dictionary<string, object>();
-                    d["SEND_URL"] = Extension.GetClientUserIp(Request.HttpContext);
-                    d["RECEIVE_URL"] = Request.HttpContext.Connection.LocalIpAddress.MapToIPv4().ToString();
-                    d["SYNC_CONTENT"] = "云组织同步接收成功";
-                    d["SYNC_RESULT"] = 0;
-                    d["ERROR_INFO"] = "";
-                    d["FAIL_CONTENT"] = "";
-                    d["REMARK"] = "";
-                    srm.createSyncResult(d);
+                    var t = UTILITY.JsonConversionExtensions.ToDictionary(value);
+                    var res = mm.syncOrg((List<Dictionary<string, object>>)t);
+                    if (res == "")
+                    {
+                        Dictionary<string, object> d = new Dictionary<string, object>();
+                        d["SEND_URL"] = Extension.GetClientUserIp(Request.HttpContext);
+                        d["RECEIVE_URL"] = Request.HttpContext.Connection.LocalIpAddress.MapToIPv4().ToString();
+                        d["SYNC_CONTENT"] = "云组织同步接收成功";
+                        d["SYNC_RESULT"] = 0;
+                        d["ERROR_INFO"] = "";
+                        d["FAIL_CONTENT"] = "";
+                        d["REMARK"] = "";
+                        srm.createSyncResult(d);
+                    }
+                    else
+                    {
+                        Dictionary<string, object> d = new Dictionary<string, object>();
+                        d["SEND_URL"] = Extension.GetClientUserIp(Request.HttpContext);
+                        d["RECEIVE_URL"] = Request.HttpContext.Connection.LocalIpAddress.MapToIPv4().ToString();
+                        d["SYNC_CONTENT"] = "云组织同步接收失败！" + res;
+                        d["SYNC_RESULT"] = 0;
+                        d["ERROR_INFO"] = "";
+                        d["FAIL_CONTENT"] = "";
+                        d["REMARK"] = "";
+                        srm.createSyncResult(d);
+                    }
+
+                    return Content(res);
                 }
-                else
+                catch (Exception ex)
                 {
-                    Dictionary<string, object> d = new Dictionary<string, object>();
-                    d["SEND_URL"] = Extension.GetClientUserIp(Request.HttpContext);
-                    d["RECEIVE_URL"] = Request.HttpContext.Connection.LocalIpAddress.MapToIPv4().ToString();
-                    d["SYNC_CONTENT"] = "云组织同步接收失败！" + res;
-                    d["SYNC_RESULT"] = 0;
-                    d["ERROR_INFO"] = "";
-                    d["FAIL_CONTENT"] = "";
-                    d["REMARK"] = "";
-                    srm.createSyncResult(d);
+
+                    return Content(ex.ToString());
                 }
 
-                return Content(res);
             }
-            return Content("");
+            return Content("5000");
         }
 
     }
