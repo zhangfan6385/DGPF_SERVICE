@@ -77,7 +77,7 @@ namespace DGPF.UTILITY
                         bulkCopy.DestinationTableName = tableName;
 
                         //将数据集合和目标服务器库表中的字段对应 
-                        for (int i = 1; i < dt.Columns.Count; i++)
+                        for (int i = 0; i < dt.Columns.Count; i++)
                         {
                             //列映射定义数据源中的列和目标表中的列之间的关系
                             bulkCopy.ColumnMappings.Add(dt.Columns[i].ColumnName, dt.Columns[i].ColumnName);

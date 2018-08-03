@@ -82,8 +82,7 @@ namespace DGPF.UTILITY
             if (p == null)
                 return table;
 
-            var headers = p.Where(x => x.Value is string)
-                           .Select(x => x.Key)
+            var headers = p.Select(x => x.Key)
                            .Concat(c == null ?
                                    Enumerable.Empty<string>() :
                                    c.Values
