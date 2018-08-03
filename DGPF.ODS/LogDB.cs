@@ -17,7 +17,7 @@ namespace DGPF.ODS
         public DataTable fetchLogInfoList(Dictionary<string, object> d)
         {
             //string sql = "select ACCESS_TIME,USER_ID,USER_NAME,IP_ADDR,LOG_CONTENT,REMARK, LOG_TYPE,ALARM_LEVEL from ts_uidp_loginfo where 1=1 ";
-            string sql = @"select ACCESS_TIME,ts_uidp_loginfo.USER_ID,case when length(ts_uidp_loginfo.USER_ID)<36 then ts_uidp_loginfo.USER_ID ELSE (select ts_uidp_userinfo.USER_DOMAIN from ts_uidp_userinfo where ts_uidp_userinfo.USER_ID=ts_uidp_loginfo.USER_ID) END USER_DOMAIN ,
+            string sql = @"select ACCESS_TIME,ts_uidp_loginfo.USER_ID,case when ts_uidp_loginfo.USER_ID=(select CONF_VALUE from ts_uidp_config where CONF_CODE='Admin_Code') then ts_uidp_loginfo.USER_ID ELSE (select ts_uidp_userinfo.USER_DOMAIN from ts_uidp_userinfo where ts_uidp_userinfo.USER_ID=ts_uidp_loginfo.USER_ID) END USER_DOMAIN ,
 USER_NAME,IP_ADDR,LOG_CONTENT,ts_uidp_loginfo.REMARK, LOG_TYPE,ALARM_LEVEL,ts_uidp_org.ORG_NAME from ts_uidp_loginfo 
 LEFT JOIN ts_uidp_org_user on ts_uidp_loginfo.USER_ID=ts_uidp_org_user.USER_ID
 LEFT JOIN ts_uidp_org on ts_uidp_org_user.ORG_ID=ts_uidp_org.ORG_ID where 1=1 ";
