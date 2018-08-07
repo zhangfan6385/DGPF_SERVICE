@@ -419,7 +419,8 @@ namespace DGPF.WebAPI.Controllers
                         // 清空缓冲区数据
                         fs.Flush();
                     }
-                    r["message"] = mm.UploadUserFile(filename);
+                    //r["message"] = mm.UploadUserFile(filename);
+                    r["message"] = mm.UploadUserFileNew(filename);
                     if (r["message"].ToString() != "")
                     {
                         r["code"] = -1;
