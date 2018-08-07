@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data;
 using System.Text;
 using DGPF.ODS;
 using DGPF.UTILITY;
+
 namespace DGPF.BIZModule
 {
     public class UserModule
@@ -610,10 +612,17 @@ namespace DGPF.BIZModule
             {
                 return "空数据，导入失败！";
             }
-            DataView dv = new DataView(dt);
-            if (dt.Rows.Count != dv.ToTable(true, "账号").Rows.Count)
+            //DataView dv = new DataView(dt);
+            //String[] str = {  "组织机构编码", "组织机构名称", "账号", "姓名", "员工编号", "性别", "办公电话", "手机", "邮箱", "访问IP", "账号类型","备注" };
+            //dt = dv.ToTable(true, str);
+            string error=GetDistinctSelf(dt, "账号");
+            //if (dt.Rows.Count != dv.ToTable(true, "账号").Rows.Count)
+            //{
+            //    return "账号列存在重复数据，导入失败！";
+            //}
+            if (error != null && error.Length > 0)
             {
-                return "账号列存在重复数据，导入失败！";
+                return error;
             }
             int truckNum = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(dt.Rows.Count / 1000)));
             for (int j = 1; j <= truckNum + 1; j++)
@@ -628,7 +637,10 @@ namespace DGPF.BIZModule
                 DataTable dtOrg = orgDB.fetchOrgList();
                 string result = "";
                 string fengefu2 = "";
-                for (int i = 0; i < dt.Rows.Count; i++)
+                int rowbegin = (j - 1) * 1000;
+                int rowend = j * 1000;
+                if (rowend > dt.Rows.Count) { rowend = dt.Rows.Count; }
+                for (int i = rowbegin; i < rowend; i++)
                 {
                     if (dt.Rows[i]["组织机构编码"] == null || dt.Rows[i]["账号"] == null)
                     {
@@ -691,6 +703,42 @@ namespace DGPF.BIZModule
             list.Add(sqlUpdate);
             return db.UploadUserFile(list);
         }
+
+        public string GetDistinctSelf(DataTable SourceDt, string filedName)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = SourceDt.Rows.Count - 2; i > 0; i--)
+            {
+                DataRow[] rows = SourceDt.Select(string.Format("{0}='{1}'", filedName, SourceDt.Rows[i][filedName]));
+                if (rows.Length > 1)
+                {
+                    //SourceDt.Rows.RemoveAt(i);
+                    //SourceDt.Rows.re
+                    sb.Append("【"+SourceDt.Rows[i][filedName]+"】,");
+                }
+            }
+            StringCollection sc = new StringCollection();
+            string[] arr = sb.ToString().TrimEnd(',').Split(',');
+            foreach (string str in arr)
+            {
+                if (!sc.Contains(str))
+                {
+                    sc.Add(str);
+                }
+            }
+            StringBuilder sb2 = new StringBuilder();
+            foreach (string str in sc)
+            {
+                sb2.Append(str + ",");
+            }
+
+            sb2.Append("账号信息重复，请确认！");
+            return sb2.ToString();
+
+
+        }
+
+
         public string getString(object obj)
         {
             if (obj == null)
