@@ -615,11 +615,12 @@ namespace DGPF.BIZModule
             //DataView dv = new DataView(dt);
             //String[] str = {  "组织机构编码", "组织机构名称", "账号", "姓名", "员工编号", "性别", "办公电话", "手机", "邮箱", "访问IP", "账号类型","备注" };
             //dt = dv.ToTable(true, str);
-            string error=GetDistinctSelf(dt, "账号");
+
             //if (dt.Rows.Count != dv.ToTable(true, "账号").Rows.Count)
             //{
             //    return "账号列存在重复数据，导入失败！";
             //}
+            string error = GetDistinctSelf(dt, "账号");
             if (error != null && error.Length > 0)
             {
                 return error;
@@ -692,15 +693,37 @@ namespace DGPF.BIZModule
                     sb.Append("'" + getString(dt.Rows[i]["备注"]) + "')");
                     fengefu = ",";
                 }
-                list.Add(sbOrgUser.ToString());
-                list.Add(sb.ToString());
+                if (sbOrgUser != null && sbOrgUser.Length > 0)
+                {
+                    list.Add(sbOrgUser.ToString());
+                }
+                if (sb != null && sb.Length > 0)
+                {
+                    list.Add(sb.ToString());
+                }
             }
-                
+
             //string sqlUpdate = "   update a  set a.ORG_ID=b.ORG_ID from ts_uidp_org_user a ,ts_uidp_org b where  a.ORG_ID=b.ORG_CODE ";
-            string sqlUpdate = "update ts_uidp_org_user a ,ts_uidp_org b set a.ORG_ID = b.ORG_ID where a.ORG_ID = b.ORG_CODE";
+            //string sqlUpdate = "update ts_uidp_org_user a ,ts_uidp_org b set a.ORG_ID = b.ORG_ID where a.ORG_ID = b.ORG_CODE";
+            if (db.GetDBType() == "MYSQL")
+            {
+                string sqlUpdate = "   update ts_uidp_org_user a ,ts_uidp_org b set a.ORG_ID = b.ORG_ID where a.ORG_ID = b.ORG_CODE";
 
+                list.Add(sqlUpdate);
+            }
+            else if (db.GetDBType() == "SQLSERVER")
+            {
+                string sqlUpdate = "   update a  set a.ORG_ID=b.ORG_ID from ts_uidp_org_user a ,ts_uidp_org b where  a.ORG_ID=b.ORG_CODE ";
 
-            list.Add(sqlUpdate);
+                list.Add(sqlUpdate);
+            }
+            else if (db.GetDBType() == "ORACLE")
+            {
+                string sqlUpdate = "  update ts_uidp_org_user a ,ts_uidp_org b set a.ORG_ID = b.ORG_ID where a.ORG_ID = b.ORG_CODE";
+
+                list.Add(sqlUpdate);
+            }
+
             return db.UploadUserFile(list);
         }
 
@@ -734,7 +757,6 @@ namespace DGPF.BIZModule
 
             sb2.Append("账号信息重复，请确认！");
             return sb2.ToString();
-
 
         }
 

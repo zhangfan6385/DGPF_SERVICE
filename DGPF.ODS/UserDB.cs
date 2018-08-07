@@ -376,5 +376,17 @@ namespace DGPF.ODS
         public string UploadUserFile(List<string> sqlList) {
             return db.Executs(sqlList);
         }
+
+        public DataTable fetchUserList()
+        {
+            //string sql = "select * FROM ts_uidp_org where ISDELETE='1'";
+            string sql = @"select * from ts_uidp_userinfo ";
+            return db.GetDataTable(sql);
+        }
+
+        public string GetDBType()
+        {
+            return Enum.GetName(typeof(DB.DBTYPE), (int)db.db.dbType);
+        }
     }
 }

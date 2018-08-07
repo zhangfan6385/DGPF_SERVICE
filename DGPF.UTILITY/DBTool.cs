@@ -16,7 +16,7 @@ namespace DGPF.UTILITY
     {
         private static  string strMySqlCon;//"server=localhost;user id=root;pwd=root;database=uidp;SslMode=none;charset=UTF8";
         public  IDataBase db;
-        private static string dbType;
+        public static string dbType;
         public DBTool(string dd)
         {
             try

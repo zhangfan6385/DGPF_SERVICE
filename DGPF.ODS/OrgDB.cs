@@ -32,8 +32,22 @@ namespace DGPF.ODS
 
         public string updateOrgPID()
         {
+            //            string sql = @"update ts_uidp_org a,ts_uidp_org b set a.ORG_ID_UPPER=b.ORG_ID
+            //where a.ORG_CODE_UPPER=b.ORG_CODE";
             string sql = @"update ts_uidp_org a,ts_uidp_org b set a.ORG_ID_UPPER=b.ORG_ID
-where a.ORG_CODE_UPPER=b.ORG_CODE";
+                where a.ORG_CODE_UPPER = b.ORG_CODE";
+            if (db.db.dbType == DB.DBTYPE.MYSQL) {
+                 sql = @"update ts_uidp_org a,ts_uidp_org b set a.ORG_ID_UPPER=b.ORG_ID
+                where a.ORG_CODE_UPPER=b.ORG_CODE";
+            }
+            else if (db.db.dbType == DB.DBTYPE.SQLSERVER) {
+                 sql = @"update a set a.ORG_ID_UPPER = b.ORG_ID from ts_uidp_org a,ts_uidp_org b
+                where a.ORG_CODE_UPPER = b.ORG_CODE";
+            }
+            //string sql = @"update ts_uidp_org set ORG_ID_UPPER =case 
+            //    when ORG_CODE_UPPER = ORG_CODE then ORG_ID
+            //    else null
+            //    END";
             return db.ExecutByStringResult(sql);
         }
 
@@ -176,6 +190,10 @@ where a.ISDELETE='1'";
         public string UploadOrgFileList(List<string> sqllst)
         {
             return db.Executs(sqllst);
+        }
+        public string GetDBType()
+        {
+            return Enum.GetName(typeof(DB.DBTYPE), (int)db.db.dbType);
         }
     }
 }

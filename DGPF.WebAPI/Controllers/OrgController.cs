@@ -313,7 +313,7 @@ namespace DGPF.WebAPI.Controllers
                     }
                     else
                     {
-                        string msg = mm.updateOrgPID();
+                        //string msg = mm.updateOrgPID();
                         r["code"] = 2000;
                     }
                     Json(r);

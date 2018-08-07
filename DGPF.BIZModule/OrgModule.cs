@@ -333,7 +333,28 @@ namespace DGPF.BIZModule
                     sb.Insert(0, " insert into ts_uidp_org (ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) values ");
                 }
                 //sb.Append(tempsb);
+                if (sb!=null&&sb.Length>0) { 
                 sqllst.Add(sb.ToString());
+                }
+            }
+
+            if (db.GetDBType() == "MYSQL")
+            {
+                string sql = @"update ts_uidp_org a,ts_uidp_org b set a.ORG_ID_UPPER=b.ORG_ID
+                where a.ORG_CODE_UPPER=b.ORG_CODE";
+                sqllst.Add(sql);
+            }
+            else if (db.GetDBType() == "SQLSERVER")
+            {
+                string sql = @"update a set a.ORG_ID_UPPER = b.ORG_ID from ts_uidp_org a,ts_uidp_org b
+                where a.ORG_CODE_UPPER = b.ORG_CODE";
+                sqllst.Add(sql);
+            }
+            else if (db.GetDBType() == "ORACLE")
+            {
+                string sql = @"update ts_uidp_org a,ts_uidp_org b set a.ORG_ID_UPPER=b.ORG_ID
+                where a.ORG_CODE_UPPER=b.ORG_CODE";
+                sqllst.Add(sql);
             }
             //sqllst.Add(sb.ToString());
             //return truck(1000, sqllst);
@@ -470,5 +491,6 @@ namespace DGPF.BIZModule
 
             //return db.UploadOrgFile(sb.ToString());
         }
+
     }
 }
