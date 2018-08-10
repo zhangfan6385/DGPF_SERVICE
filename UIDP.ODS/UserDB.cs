@@ -231,9 +231,9 @@ namespace UIDP.ODS
         /// <returns></returns>
         public DataTable fetchUserOrgList(Dictionary<string, object> d)
         {
-            string sql = "select a.*,b.ORG_ID orgId,b.ORG_CODE,b.ORG_NAME orgName from ts_uidp_userinfo a";
-            sql += " left join ts_uidp_org_user c on c.USER_ID=a.USER_ID ";
-            sql += " left join ts_uidp_org b on b.ORG_ID=c.ORG_ID  where 1=1 ";
+            string sql = "select a.*,b.ORG_ID orgId,b.ORG_CODE,b.ORG_SHORT_NAME orgName from ts_uidp_userinfo a";
+            sql += "  join ts_uidp_org_user c on c.USER_ID=a.USER_ID ";
+            sql += "  join ts_uidp_org b on b.ORG_ID=c.ORG_ID  where 1=1 ";
             if (d["USER_NAME"] != null && d["USER_NAME"].ToString() != "")
             {
                 sql += " and a.USER_NAME like '%" + d["USER_NAME"].ToString() + "%'";
@@ -255,7 +255,7 @@ namespace UIDP.ODS
                 sql += " order by a.USER_ID ASC";
             }
             if (d["orgId"] != null) {
-                sql = "select a.*,b.ORG_ID orgId,b.ORG_CODE,b.ORG_NAME orgName from ts_uidp_userinfo a";
+                sql = "select a.*,b.ORG_ID orgId,b.ORG_CODE,b.ORG_SHORT_NAME orgName from ts_uidp_userinfo a";
                 sql += "  join ts_uidp_org_user c on c.USER_ID=a.USER_ID ";
                 sql += "  join ts_uidp_org b on b.ORG_ID=c.ORG_ID  where 1=1 ";
                 sql += " and a.USER_ID in (select a.USER_ID from ts_uidp_userinfo a";
