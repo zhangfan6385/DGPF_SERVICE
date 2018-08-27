@@ -463,7 +463,8 @@ namespace UIDP.WebAPI.Controllers
                 {
                     if (item["SYNC_FLAG"] != null && item["SYNC_FLAG"].ToString() == "0")
                     {
-                        string loginUrl = "http://" + item["SERVER_IP"].ToString() + ":" + item["SERVER_PORT"].ToString() + "/LogIn/apiLogin";
+                        //string loginUrl = "http://" + item["SERVER_IP"].ToString() + ":" + item["SERVER_PORT"].ToString() + "/LogIn/apiLogin";
+                        string loginUrl = "http://" + item["SERVER_IP"].ToString() + ":" + item["SERVER_PORT"].ToString() + item["AUTHENTICATION_URL"].ToString();
                         //WebRequest req = WebRequest.Create("http://192.168.1.113:12345/LogIn/apiLogin");
                         //string loginUrl = "http://192.168.1.107:12345/LogIn/apiLogin";
                         WebRequest req = WebRequest.Create(loginUrl);

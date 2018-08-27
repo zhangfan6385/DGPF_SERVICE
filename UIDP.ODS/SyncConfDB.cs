@@ -40,11 +40,12 @@ namespace UIDP.ODS
         }
         public string createSyncConf(Dictionary<string, object> d)
         {
-            string sql = "INSERT INTO ts_uidp_synchro_config(SYNC_ID,SERVER_IP,SERVER_PORT,SERVER_URL,USER_CODE,USER_PASS,SYNC_TYPE,SYNC_FLAG,IS_DELETE,REMARK) VALUES(";
+            string sql = "INSERT INTO ts_uidp_synchro_config(SYNC_ID,SERVER_IP,SERVER_PORT,SERVER_URL,AUTHENTICATION_URL,USER_CODE,USER_PASS,SYNC_TYPE,SYNC_FLAG,IS_DELETE,REMARK) VALUES(";
             sql += "'" + GetIsNullStr(d["SYNC_ID"]) + "',";
             sql += "'" + GetIsNullStr(d["SERVER_IP"]) + "',";
             sql += "'" + GetIsNullStr(d["SERVER_PORT"]) + "',";
             sql += "'" + GetIsNullStr(d["SERVER_URL"]) + "',";
+            sql += "'" + GetIsNullStr(d["AUTHENTICATION_URL"]) + "',";
             sql += "'" + GetIsNullStr(d["USER_CODE"]) + "',";
             sql += "'" + GetIsNullStr(d["USER_PASS"]) + "',";
             sql += "'" + GetIsNullStr(d["SYNC_TYPE"]) + "',";
@@ -75,6 +76,8 @@ namespace UIDP.ODS
             sb.Append(d["SERVER_PORT"] == null ? "" : GetIsNullStr(d["SERVER_PORT"]) + "', ");
             sb.Append(" SERVER_URL='");
             sb.Append(d["SERVER_URL"] == null ? "" : GetIsNullStr(d["SERVER_URL"]) + "', ");
+            sb.Append(" AUTHENTICATION_URL='");
+            sb.Append(d["AUTHENTICATION_URL"] == null ? "" : GetIsNullStr(d["AUTHENTICATION_URL"]) + "', ");
 
             sb.Append(" USER_CODE='");
             sb.Append(d["USER_CODE"] == null ? "" : GetIsNullStr(d["USER_CODE"]) + "', ");
