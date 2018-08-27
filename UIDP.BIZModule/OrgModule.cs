@@ -202,7 +202,8 @@ namespace UIDP.BIZModule
             DataRow[] rows = rows = dt.Select("ORG_ID_UPPER='" + pid + "'");
             if (string.IsNullOrEmpty(pid))
             {
-                rows = dt.Select("ORG_ID_UPPER is null");
+                //rows = dt.Select("ORG_ID_UPPER is null");
+                rows = dt.Select("ORG_ID_UPPER is null or ORG_ID_UPPER ='' ");
             }
             if (rows.Length > 0)
             {

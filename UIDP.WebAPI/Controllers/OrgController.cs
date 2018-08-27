@@ -50,8 +50,30 @@ namespace UIDP.WebAPI.Controllers
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = mm.GetOrgById(d["parentId"].ToString());
-                string orgpcode = dt.Rows[0]["ORG_CODE"].ToString();
+                DataTable dt = null;
+                string orgpcode = null;
+                if (d.Keys.Contains("parentId") && d["parentId"] != null && !string.IsNullOrEmpty(d["parentId"].ToString()))
+                {
+                    dt = mm.GetOrgById(d["parentId"].ToString());
+                }
+                else
+                {
+                    d["parentId"] = null;
+                }
+                if (dt != null)
+                {
+                    orgpcode = dt.Rows[0]["ORG_CODE"].ToString();
+                }
+                if (!string.IsNullOrEmpty(orgpcode))
+                {
+                    d["orgpCode"] = orgpcode;
+                }
+                else
+                {
+                    d["orgpCode"] = null;
+                }
+                //DataTable dt = mm.GetOrgById(d["parentId"].ToString());
+                //string orgpcode = dt.Rows[0]["ORG_CODE"].ToString();
                 if (!string.IsNullOrEmpty(orgpcode))
                 {
                     d["orgpCode"] = orgpcode;
@@ -87,8 +109,31 @@ namespace UIDP.WebAPI.Controllers
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = mm.GetOrgById(d["parentId"].ToString());
-                string orgpcode = dt.Rows[0]["ORG_CODE"].ToString();
+
+                DataTable dt = null;
+                string orgpcode = null;
+                if (d.Keys.Contains("parentId") && d["parentId"] != null&&!string.IsNullOrEmpty(d["parentId"].ToString()))
+                {
+                    dt = mm.GetOrgById(d["parentId"].ToString());
+                }
+                else
+                {
+                    d["parentId"] = null;
+                }
+                if (dt != null)
+                {
+                    orgpcode = dt.Rows[0]["ORG_CODE"].ToString();
+                }
+                if (!string.IsNullOrEmpty(orgpcode))
+                {
+                    d["orgpCode"] = orgpcode;
+                }
+                else
+                {
+                    d["orgpCode"] = null;
+                }
+                //DataTable dt = mm.GetOrgById(d["parentId"].ToString());
+                //string orgpcode = dt.Rows[0]["ORG_CODE"].ToString();
                 if (!string.IsNullOrEmpty(orgpcode))
                 {
                     d["orgpCode"] = orgpcode;
