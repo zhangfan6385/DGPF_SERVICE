@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
+using System.Linq;
 using System.Text;
 using UIDP.ODS;
 using UIDP.UTILITY;
@@ -101,7 +102,7 @@ namespace UIDP.BIZModule
         }
         public string updatePasswordData(Dictionary<string, object> d)
         {
-            if (d["roleLevel"].ToString() == "admin")
+            if (d.Keys.Contains("roleLevel")&& d["roleLevel"] != null && d["roleLevel"].ToString() == "admin")
             {
                 string userId = getAdminCode();
                 string pass = getAdminPass();
