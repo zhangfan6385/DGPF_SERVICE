@@ -367,7 +367,7 @@ namespace UIDP.ODS
         /// <returns></returns>
         public DataTable GetUserAndOrgByUserId(string USER_ID)
         {
-            string sql = "select a.*,b.ORG_NAME,b.ORG_ID,b.ORG_CODE from ts_uidp_userinfo a ";
+            string sql = "select a.*,b.ORG_SHORT_NAME,b.ORG_ID,b.ORG_CODE from ts_uidp_userinfo a ";
             sql += " left join ts_uidp_org_user c on c.USER_ID=a.USER_ID ";
             sql += " left join ts_uidp_org b on b.ORG_ID=c.ORG_ID  ";
             sql += " where a.USER_ID='"+USER_ID+"'";

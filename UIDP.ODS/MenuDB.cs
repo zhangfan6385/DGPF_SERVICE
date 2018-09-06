@@ -11,7 +11,7 @@ namespace UIDP.ODS
         DBTool db = new DBTool("MYSQL");
         public DataTable fetchMenuList(Dictionary<string,object> sysCode)
         {
-          return  db.GetDataTable("select * from ts_uidp_menuinfo where MENU_PROP='1' and SYS_CODE='" + sysCode ["sysCode"] + "' order by MENU_ORDER ");
+          return  db.GetDataTable("select * from ts_uidp_menuinfo where   SYS_CODE='" + sysCode ["sysCode"] + "' order by MENU_ORDER ");
         }
 
         public string createMenu(Dictionary<string, object> d)
@@ -52,7 +52,7 @@ namespace UIDP.ODS
             d.Remove("id");
             d.Remove("parentId");
             d.Remove("children");
-
+            d.Remove("disabled");
             string col = "";
             
             foreach (var v in d)
@@ -131,7 +131,7 @@ namespace UIDP.ODS
             string sql = "";
             if (user == sysCode["userId"].ToString())
             {
-                sql = "SELECT  * from ts_uidp_menuinfo where SYS_CODE = '"+ sysCode["sysCode"].ToString() + "' order by MENU_ORDER ";
+                sql = "SELECT  * from ts_uidp_menuinfo where  MENU_PROP=1 and SYS_CODE = '" + sysCode["sysCode"].ToString() + "' order by MENU_ORDER ";
             }
             else
             {
@@ -142,7 +142,7 @@ namespace UIDP.ODS
                   "ts_uidp_menuinfo        f " +
              "where ur.user_id = '" + sysCode["userId"].ToString() + "' " +
              " and f.SYS_CODE='"+ sysCode["sysCode"].ToString() + "' " +
-               "and ur.group_id = rf.group_id " +
+               "and ur.group_id = rf.group_id and f.MENU_PROP=1 " +
                "and rf.menu_id = f.menu_id order by f.MENU_ORDER) a ";
             }
 

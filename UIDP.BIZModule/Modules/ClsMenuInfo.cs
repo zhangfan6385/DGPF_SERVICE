@@ -16,7 +16,7 @@ namespace UIDP.BIZModule
         public string MODULE_OBJ { get; set; }
         public string  MENU_PROP { get; set; }
         public int MENU_ORDER { get; set; }
-
+        public bool disabled { get; set; }
         public List<ClsMenuInfo> children { get; set; }
 
 

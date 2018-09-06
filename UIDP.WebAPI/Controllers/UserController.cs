@@ -249,7 +249,8 @@ namespace UIDP.WebAPI.Controllers
                         userId = tokenUserId,
                         userSex = 0,
                         departCode = "",
-                        departName = ""
+                        departName = "",
+                        userType="0"
                     });
                 }
                 //string token = UIDP.UTILITY.AccessTokenTool.GetAccessToken(d["userId"].ToString());
@@ -263,7 +264,8 @@ namespace UIDP.WebAPI.Controllers
                     string _userId = dt.Rows[0]["USER_ID"] == null ? "" : dt.Rows[0]["USER_ID"].ToString();
                     int _userSex = Convert.ToInt32(dt.Rows[0]["USER_SEX"].ToString());
                     string _deptCode = dt.Rows[0]["ORG_CODE"] == null ? "" : dt.Rows[0]["ORG_CODE"].ToString();
-                    string _deptName = dt.Rows[0]["ORG_NAME"] == null ? "" : dt.Rows[0]["ORG_NAME"].ToString();
+                    string _deptName = dt.Rows[0]["ORG_SHORT_NAME"] == null ? "" : dt.Rows[0]["ORG_SHORT_NAME"].ToString();
+                    string _userType= dt.Rows[0]["AUTHENTICATION_TYPE"] == null ? "" : dt.Rows[0]["AUTHENTICATION_TYPE"].ToString();
                     UIDP.LOG.SysLog log = new LOG.SysLog();
                     //log.Info(DateTime.Now, d["userId"].ToString(), _name, ClientIp, 0, "info", "",1);
                     log.Info(DateTime.Now, userID, _name, ClientIp, 0, "info", "", 1);
@@ -282,7 +284,8 @@ namespace UIDP.WebAPI.Controllers
                         userId = _userId,
                         userSex = _userSex,
                         departCode = _deptCode,
-                        departName = _deptName
+                        departName = _deptName,
+                        userType = _userType
                     });
                 }
                 return Json(new
@@ -300,7 +303,8 @@ namespace UIDP.WebAPI.Controllers
                     userId = "",
                     userSex = 0,
                     departCode = "",
-                    departName = ""
+                    departName = "",
+                    userType = "0"
                 });
             }
             catch (Exception ex)

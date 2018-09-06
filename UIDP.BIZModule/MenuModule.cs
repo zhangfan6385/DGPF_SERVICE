@@ -84,7 +84,13 @@ namespace UIDP.BIZModule
                     clsMenuInfo.MODULE_OBJ = dr["MODULE_OBJ"].ToString();
                     clsMenuInfo.MENU_PROP = dr["MENU_PROP"].ToString();
                     clsMenuInfo.MENU_ORDER = int.Parse(dr["MENU_ORDER"] == null ? "0" : dr["MENU_ORDER"].ToString());
-
+                    if (dr["MENU_PROP"].ToString() == "0")
+                    {
+                        clsMenuInfo.disabled = true;
+                    }
+                    else {
+                        clsMenuInfo.disabled = false;
+                    }
                     clsMenuInfo.children = new List<ClsMenuInfo>();
                     GetHierarchicalChildItem(_RptsDepartList, clsMenuInfo);
                     clsMenuInfo.children.OrderBy(o => o.MENU_ORDER);
@@ -115,7 +121,14 @@ namespace UIDP.BIZModule
                 clsMenuInfo.MODULE_OBJ = dr["MODULE_OBJ"].ToString();
                 clsMenuInfo.MENU_PROP = dr["MENU_PROP"].ToString();
                 clsMenuInfo.MENU_ORDER = int.Parse(dr["MENU_ORDER"] == null ? "0" : dr["MENU_ORDER"].ToString());
-
+                if (dr["MENU_PROP"].ToString() == "0")
+                {
+                    clsMenuInfo.disabled = true;
+                }
+                else
+                {
+                    clsMenuInfo.disabled = false;
+                }
                 clsMenuInfo.children = new List<ClsMenuInfo>();
                 GetHierarchicalChildItem(_RptsDepartList, clsMenuInfo);
                 clsMenuInfo.children.OrderBy(o => o.MENU_ORDER);
