@@ -395,27 +395,46 @@ namespace UIDP.BIZModule
                 DataTable dt = db.fetchUserRoleList(d);
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    DataTable dtName = dt.DefaultView.ToTable(true, "USER_ID", "REG_TIME", "USER_NAME", "USER_CODE", "USER_ALIAS", "USER_PASS", "PHONE_MOBILE", "PHONE_OFFICE", "PHONE_ORG", "USER_EMAIL", "EMAIL_OFFICE", "USER_IP", "FLAG", "USER_DOMAIN", "REMARK");
-                    dtName.Columns.Add("roleId");
-                    dtName.Columns.Add("groupName");
-                    foreach (DataRow row in dtName.Rows)
+                    // "USER_ID", "REG_TIME", "USER_NAME", "USER_CODE", "USER_ALIAS", "USER_PASS", "PHONE_MOBILE", "PHONE_OFFICE", "PHONE_ORG", "USER_EMAIL", "EMAIL_OFFICE", "USER_IP", "FLAG", "USER_DOMAIN", "REMARK"
+                    //"USER_ID", "USER_NAME", "USER_CODE", "PHONE_MOBILE","PHONE_ORG",  "FLAG", "USER_DOMAIN", "REMARK"
+                    DataTable dtName = dt.DefaultView.ToTable(true, "USER_ID");
+                    DataTable dtrole = KVTool.GetPagedTable(dtName, page, limit);
+                    dtrole.Columns.Add("USER_NAME");
+                    dtrole.Columns.Add("USER_CODE");
+                    dtrole.Columns.Add("PHONE_MOBILE");
+                    dtrole.Columns.Add("FLAG");
+                    dtrole.Columns.Add("USER_DOMAIN");
+                    dtrole.Columns.Add("REMARK");
+                    dtrole.Columns.Add("roleId");
+                    dtrole.Columns.Add("groupName");
+                    foreach (DataRow row in dtrole.Rows)
                     {
-                        string fengefu = "";
-                        foreach (DataRow item in dt.Rows)
-                        {
-                            if (row["USER_ID"].ToString() == item["USER_ID"].ToString() && item["roleId"] != null && item["roleId"].ToString() != "")
+                        DataRow[] arr = dt.Select("USER_ID='"+row["USER_ID"].ToString() +"'");
+                        if (arr.Length>0) {
+                            row["USER_NAME"] = arr[0]["USER_NAME"] == null ? "" : arr[0]["USER_NAME"].ToString();
+                            row["USER_CODE"] = arr[0]["USER_CODE"] == null ? "" : arr[0]["USER_CODE"].ToString();
+                            row["PHONE_MOBILE"] = arr[0]["PHONE_MOBILE"] == null ? "" : arr[0]["PHONE_MOBILE"].ToString();
+                            row["USER_DOMAIN"] = arr[0]["USER_DOMAIN"] == null ? "" : arr[0]["USER_DOMAIN"].ToString();
+                            row["FLAG"] = arr[0]["FLAG"] == null ? "" : arr[0]["FLAG"].ToString();
+                            row["REMARK"] = arr[0]["REMARK"] == null ? "" : arr[0]["REMARK"].ToString();
+                            string fengefu = "";
+                            foreach (var item in arr)
                             {
-                                if (!row["roleId"].ToString().Contains(item["roleId"].ToString()))
+                                if (item["roleId"] != null && item["roleId"].ToString() != "")
                                 {
-                                    row["roleId"] += fengefu + item["roleId"].ToString();
-                                    row["groupName"] += fengefu + item["groupName"].ToString();
-                                    fengefu = ",";
+                                    if (!row["roleId"].ToString().Contains(item["roleId"].ToString()))
+                                    {
+                                        row["roleId"] += fengefu + item["roleId"].ToString();
+                                        row["groupName"] += fengefu + item["groupName"].ToString();
+                                        fengefu = ",";
+                                    }
                                 }
                             }
                         }
+                        
                     }
                     r["total"] = dtName.Rows.Count;
-                    r["items"] = KVTool.TableToListDic(KVTool.GetPagedTable(dtName, page, limit));
+                    r["items"] = KVTool.TableToListDic(dtrole);
                     r["code"] = 2000;
                     r["message"] = "查询成功";
                 }
