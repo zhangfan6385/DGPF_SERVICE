@@ -87,10 +87,10 @@ namespace UIDP.WebAPI.Controllers
                             Dictionary<string, object> dinfo = new Dictionary<string, object>();
                             if (password != userdt.Rows[0]["USER_PASS"].ToString())
                             {
-                                dinfo["password"] = userdt.Rows[0]["USER_PASS"].ToString();
+                                //dinfo["password"] = userdt.Rows[0]["USER_PASS"].ToString();
                                 dinfo["newpassword"] = password;
                                 dinfo["userid"] = userdt.Rows[0]["USER_ID"].ToString();
-                                mm.updatePasswordData(dinfo);
+                                mm.updatePTRpass(dinfo);
                             }
                         }
                     }

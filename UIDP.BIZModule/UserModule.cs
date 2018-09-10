@@ -122,6 +122,9 @@ namespace UIDP.BIZModule
                 return db.updatePasswordData(d);
             }
         }
+        public string updatePTRpass(Dictionary<string, object> d) {
+            return db.updatePTRpass(d);
+        }
         public string updateUserData(Dictionary<string, object> d)
         {
             //if (d["USER_CODE"] != null)
