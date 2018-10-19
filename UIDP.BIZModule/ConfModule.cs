@@ -51,6 +51,33 @@ namespace UIDP.BIZModule
             }
             return r;
         }
+        /// <summary>
+        /// 获取系统颜色
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns></returns>
+
+        public Dictionary<string, object> ConfigColor(Dictionary<string, object> d)
+        {
+
+            Dictionary<string, object> r = new Dictionary<string, object>();
+            try
+            {
+                DataTable dt = db.SysColor(d);
+                var lst = KVTool.TableToListDic(dt);
+                r["item"] = lst[0];
+                r["code"] = 2000;
+                r["message"] = "查询成功";
+            }
+            catch (Exception e)
+            {
+                r["total"] = 0;
+                r["items"] = null;
+                r["code"] = -1;
+                r["message"] = e.Message;
+            }
+            return r;
+        }
         public Dictionary<string, object> fetchConfigList(Dictionary<string, object> d)
         {
 

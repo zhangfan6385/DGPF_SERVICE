@@ -27,6 +27,18 @@ namespace UIDP.WebAPI.Controllers
             d["CONF_CODE"] = CONF_CODE;
             return Json(mm.loginConfig(d));
         }
+        /// <summary>
+        /// 获取系统颜色
+        /// </summary>
+        /// <param name="CONF_CODE"></param>
+        /// <returns></returns>
+        [HttpGet("getColor")]
+        public IActionResult getColor(string CONF_CODE)
+        {
+            Dictionary<string, object> d = new Dictionary<string, object>();
+            d["CONF_CODE"] = CONF_CODE;
+            return Json(mm.ConfigColor(d));
+        }
         // GET api/values
         [HttpGet("fetchConfigList")]
         public IActionResult fetchConfigList(string limit, string page, string CONF_NAME)

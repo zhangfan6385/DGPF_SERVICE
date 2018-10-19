@@ -33,7 +33,16 @@ namespace UIDP.ODS
         public DataTable loginConfig(Dictionary<string, object> d)
         {
             string sql = "select * from ts_uidp_config where CONF_CODE in ("+ d["CONF_CODE"].ToString()+")";
-
+            return db.GetDataTable(sql);
+            
+        }
+        /// <summary>
+        /// 获取系统配置颜色
+        /// </summary>
+        /// <returns></returns>
+        public DataTable SysColor(Dictionary<string, object> d)
+        {
+            string sql = "select CONF_VALUE from ts_uidp_config where CONF_CODE='COLOR'";
             return db.GetDataTable(sql);
         }
         /// <summary>

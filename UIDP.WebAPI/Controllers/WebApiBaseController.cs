@@ -27,7 +27,7 @@ namespace UIDP.WebAPI.Controllers
                     context.HttpContext.Request.Headers.TryGetValue("X-Token", out AccessToken);
                     ClientIp = Extension.GetClientUserIp(Request.HttpContext);
                     actionName = (context.RouteData.Values["action"]).ToString().ToLower();//获取当前方法
-                    if (actionName== "loginconfig") { base.OnActionExecuting(context); return; }
+                    if (actionName== "loginconfig"||actionName== "getcolor") { base.OnActionExecuting(context); return; }
                     //根据实际需求进行具体实现
                     accessToken = AccessToken;
                     if (accessToken == "")
