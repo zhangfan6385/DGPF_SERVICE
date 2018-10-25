@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
-using UIDP.UTILITY;
+using STORE.UTILITY;
 using Newtonsoft.Json.Linq;
 
-namespace UIDP.ODS
+namespace STORE.ODS
 {
     public class UserLoginDB
     {
@@ -177,7 +177,7 @@ where USER_ID = '{0}'
             string userid = "";
             foreach (var item in array)
             {
-                userid+= fengefu + "'" + item.ToString() + "'";
+                userid += fengefu + "'" + item.ToString() + "'";
                 delSql += fengefu + "'" + item.ToString() + "'";
                 sql += fengefu + "(";
                 sql += "'" + d["LOGIN_ID"].ToString() + "','" + item.ToString() + "'";
@@ -185,16 +185,18 @@ where USER_ID = '{0}'
                 fengefu = ",";
             }
             delSql += ")";
-            string sqlUser = "select USER_DOMAIN from ts_uidp_userinfo where USER_ID in(" + userid + ")";
+            string sqlUser = "select USER_DOMAIN from ts_uidp_userinfo where USER_ID in(" + userid + ") ";
+            sqlUser += " union select a.USER_DOMAIN from ts_uidp_userinfo a join ts_uidp_login_user b on  a.USER_ID=b.USER_ID where b.LOGIN_ID='" + d["LOGIN_ID"].ToString() + "'";
             DataTable dt = db.GetDataTable(sqlUser);
             fengefu = "";
             userid = "";
-            foreach (DataRow  row  in dt.Rows)
+            foreach (DataRow row in dt.Rows)
             {
-                userid += fengefu  + row[0].ToString();
+                userid += fengefu + row[0].ToString();
                 fengefu = ",";
             }
-            string sqlUpdateUserInfo = "  update ts_uidp_userinfo set ASSOCIATED_ACCOUNT='" + userid + "' where USER_ID='"+ d["LOGIN_ID"].ToString()+"'";
+            // string sqlUpdateUserInfo = "  update ts_uidp_userinfo set ASSOCIATED_ACCOUNT= case when ASSOCIATED_ACCOUNT<>'' or ASSOCIATED_ACCOUNT is not null then CONCAT(ASSOCIATED_ACCOUNT,'," + userid + "') else '"+ userid + "' where USER_ID='"+ d["LOGIN_ID"].ToString()+"'";
+            string sqlUpdateUserInfo = " update ts_uidp_userinfo set ASSOCIATED_ACCOUNT='" + userid + "' where USER_ID='" + d["LOGIN_ID"].ToString() + "'";
             List<string> list = new List<string>();
             list.Add(delSql);
             list.Add(sql);
@@ -214,17 +216,42 @@ where USER_ID = '{0}'
             {
                 return "";
             }
+            string sqlLoginUsers = "select a.USER_DOMAIN,a.USER_ID FROM ts_uidp_userinfo a join ts_uidp_login_user b on  a.USER_ID=b.USER_ID  WHERE b.LOGIN_ID='" + d["LOGIN_ID"] + "'";
+            DataTable dtUsers = db.GetDataTable(sqlLoginUsers);
+            string strUsers = "";
             string fengefu = "";
             string delSql = " delete from ts_uidp_login_user where  USER_ID in(";
-            foreach (var item in array)
+            if (dtUsers != null && dtUsers.Rows.Count > 0)
             {
-                delSql += fengefu + "'" + item.ToString() + "'";
-                fengefu = ",";
-                //string sqlUpdateUserInfo = "  update ts_uidp_userinfo set ASSOCIATED_ACCOUNT='' where USER_ID='" + item.ToString() + "'";
-                string sqlUpdateUserInfo = " update ts_uidp_userinfo set ASSOCIATED_ACCOUNT=''  where USER_ID=(select LOGIN_ID from ts_uidp_login_user where ts_uidp_login_user.USER_ID='" + item.ToString() + "')";
-                list.Add(sqlUpdateUserInfo);
+                foreach (DataRow row in dtUsers.Rows)
+                {
+                    strUsers += row["USER_DOMAIN"].ToString() + ",";
+                    foreach (var item in array)
+                    {
+                        delSql += fengefu + "'" + item.ToString() + "'";
+                        fengefu = ",";
+                        if (row["USER_ID"].ToString() == item.ToString())
+                        {
+                            strUsers = strUsers.Replace(row["USER_DOMAIN"].ToString() + ",", "");
+                            strUsers = strUsers.Replace(row["USER_DOMAIN"].ToString(), "");
+                        }
+                    }
+                }
+            }
+            else {
+                foreach (var item in array)
+                {
+                    delSql += fengefu + "'" + item.ToString() + "'";
+                    fengefu = ",";
+                }
+            }
+            if (strUsers.Length > 0)
+            {
+                strUsers = strUsers.Substring(0, strUsers.Length - 1);
             }
             delSql += ")";
+            string sqlUpdateUserInfo = " update ts_uidp_userinfo set ASSOCIATED_ACCOUNT='" + strUsers + "' where USER_ID='" + d["LOGIN_ID"] + "'";
+            list.Add(sqlUpdateUserInfo);
             list.Add(delSql);
             return db.Executs(list);
             //return db.ExecutByStringResult(delSql);
@@ -239,7 +266,11 @@ where USER_ID = '{0}'
         {
             if (!string.IsNullOrEmpty(userCode))
             {
-                string sql = String.Format("select * from ts_uidp_userinfo where USER_DOMAIN='{0}' "
+                string sql = String.Format(@"select a.*,b.ORG_ID,c.ORG_CODE from ts_uidp_userinfo a
+                left join ts_uidp_org_user b
+                on a.USER_ID = b.USER_ID
+                left join ts_uidp_org c
+                on b.ORG_ID = c.ORG_ID where USER_DOMAIN='{0}' "
                    , userCode);
                 return db.GetDataTable(sql);
             }
