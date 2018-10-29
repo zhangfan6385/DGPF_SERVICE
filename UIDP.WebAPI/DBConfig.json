@@ -1,6 +1,6 @@
 {
-  "DataType": "MYSQL",
-  "MYSQL": "server=localhost;user id=root;pwd=root;database=resource;SslMode = none;Charset=utf8",
+  "DataType": "SQLSERVER",
+  "MYSQL": "server=localhost;user id=root;pwd=root;database=uidp;SslMode = none;Charset=utf8",
   "SQLSERVER": "server=localhost;user id=sa;pwd=123456;database=uidp",
   "ORACLE": "server=localhost;user id=root;pwd=root;database=uidp;SslMode = none;Charset=utf8"
 }

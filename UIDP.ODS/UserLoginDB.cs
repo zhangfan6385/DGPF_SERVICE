@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
-using STORE.UTILITY;
+using UIDP.UTILITY;
 using Newtonsoft.Json.Linq;
 
-namespace STORE.ODS
+namespace UIDP.ODS
 {
     public class UserLoginDB
     {
