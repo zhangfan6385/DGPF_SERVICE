@@ -82,8 +82,11 @@ namespace UIDP.ODS
 
         public string updateConfigData(Dictionary<string, object> d)
         {
-            string sql = "update  ts_uidp_config set CONF_NAME='"+ d["CONF_NAME"].ToString()+ "' ,CONF_VALUE='" + d["CONF_VALUE"].ToString() + "' where CONF_CODE='" + d["CONF_CODE"].ToString() + "'";
-
+            string sql = "update  ts_uidp_config set  CONF_VALUE='" + d["CONF_VALUE"].ToString() + "' ";
+            if (d["CONF_NAME"]!=null) {
+                sql += " , CONF_NAME='" + d["CONF_NAME"].ToString() + "' ";
+            }
+            sql += " where CONF_CODE='" + d["CONF_CODE"].ToString() + "'";
             return db.ExecutByStringResult(sql);
         }
 
