@@ -444,7 +444,7 @@ namespace UIDP.BIZModule
             {
                 return "";
             }
-            return obj.ToString().Replace("\\", "").Trim();
+            return obj.ToString().Replace("\\", "/").Trim();
         }
 
 
