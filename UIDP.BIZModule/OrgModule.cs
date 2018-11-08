@@ -290,7 +290,8 @@ namespace UIDP.BIZModule
                     var orgname = getString(dt.Rows[j]["组织机构简称"]);
                     var allorgname = getString(dt.Rows[j]["组织机构名称"]);
                     var dtt = orgdt;
-                    DataRow[] rows = orgdt.Select("ORG_SHORT_NAME='" + getString(dt.Rows[j]["组织机构简称"]) + "' and ORG_NAME='" + getString(dt.Rows[j]["组织机构名称"]) + "'");
+                    DataRow[] rows = orgdt.Select("ORG_SHORT_NAME='" + getString(dt.Rows[j]["组织机构简称"])+ "'");
+                    //DataRow[] rows = orgdt.Select("ORG_SHORT_NAME='" + getString(dt.Rows[j]["组织机构简称"]) + "' and ORG_NAME='" + getString(dt.Rows[j]["组织机构名称"]) + "'");
                     if (rows.Length == 0)
                     {
                         //sb.Append(" insert into ts_uidp_org (ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) values ");
