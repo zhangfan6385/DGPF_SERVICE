@@ -102,7 +102,17 @@ namespace UIDP.BIZModule
         }
         public string updatePasswordData(Dictionary<string, object> d)
         {
-            if (d.Keys.Contains("roleLevel")&& d["roleLevel"] != null && d["roleLevel"].ToString() == "admin")
+            //if (d.Keys.Contains("roleLevel")&& d["roleLevel"] != null && d["roleLevel"].ToString() == "admin")
+            //{
+            //    string userId = getAdminCode();
+            //    string pass = getAdminPass();
+            //    if (d["userid"].ToString() != userId || d["password"].ToString() != pass)
+            //    {
+            //        return "用户名或密码不正确！";
+            //    }
+            //    return db.updateAdminPasswordData(d);
+            //}
+            if (d["roleLevel"].ToString() == "admin")
             {
                 string userId = getAdminCode();
                 string pass = getAdminPass();

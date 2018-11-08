@@ -131,7 +131,7 @@ namespace UIDP.ODS
             string sql = "";
             if (user == sysCode["userId"].ToString())
             {
-                sql = "SELECT  * from ts_uidp_menuinfo where  MENU_PROP=1 and SYS_CODE = '" + sysCode["sysCode"].ToString() + "' order by MENU_ORDER ";
+                sql = "SELECT  * from ts_uidp_menuinfo where  MENU_PROP=1 and SYS_CODE = '" + sysCode["sysCode"].ToString() + "' union select * from ts_uidp_menuinfo where MENU_ID='0fea0012-b259-43b9-9c49-1a993cf3defa' order by MENU_ORDER ";
             }
             else
             {
