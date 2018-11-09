@@ -90,6 +90,10 @@ namespace UIDP.BIZModule
                     return "此账号已存在！";
                 }
             }
+            if (d["USER_PASS"]!=null&& d["USER_PASS"].ToString()!="") {
+                d["USER_PASS"] = UIDP.Security.SecurityHelper.StringToMD5Hash(d["USER_PASS"].ToString());
+            }
+            
             return db.createUserArticle(d);
         }
         public string updateUserArticle(Dictionary<string, object> d)
@@ -137,6 +141,11 @@ namespace UIDP.BIZModule
         }
         public string updateUserData(Dictionary<string, object> d)
         {
+            string newpass = "";
+            if (d["USER_PASS"] != null && d["USER_PASS"].ToString() != "")
+            {
+                newpass = UIDP.Security.SecurityHelper.StringToMD5Hash(d["USER_PASS"].ToString());
+            }
             //if (d["USER_CODE"] != null)
             //{
             //    DataTable dt = db.GetUserInfoByUserCode(d["USER_CODE"].ToString(), d["USER_ID"].ToString());//USER_DOMAIN
@@ -153,7 +162,7 @@ namespace UIDP.BIZModule
             //        return "此员工编号已存在！";
             //    }
             //}
-            return db.updateUserData(d);
+            return db.updateUserData(d,newpass);
         }
         public UIDP.BIZModule.Models.ts_uidp_userinfo getUserInfoByUserId(string userId)
         {

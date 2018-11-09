@@ -123,7 +123,7 @@ namespace UIDP.ODS
 
         //    return db.GetDataTable(sql);
         //}
-        public string updateUserData(Dictionary<string, object> d) {
+        public string updateUserData(Dictionary<string, object> d,string newpass) {
             StringBuilder sb = new StringBuilder();
             sb.Append(" update ts_uidp_userinfo set ");
             sb.Append(" USER_DOMAIN='");
@@ -132,8 +132,9 @@ namespace UIDP.ODS
             sb.Append(d["USER_CODE"] == null ? "" : d["USER_CODE"] + "', ");
             sb.Append(" USER_NAME='");
             sb.Append(d["USER_NAME"] == null ? "" : d["USER_NAME"] + "', ");
-            sb.Append(" USER_PASS='");
-            sb.Append(d["USER_PASS"] == null ? "" : d["USER_PASS"] + "', ");
+            if (d["USER_PASS"]!=null&& d["USER_PASS"].ToString()!="") {
+                sb.Append(" USER_PASS= case when USER_PASS<>'"+ d["USER_PASS"].ToString() + "' then '"+newpass+ "' else USER_PASS end , ");
+            }
             sb.Append(" PHONE_MOBILE='");
             sb.Append(d["PHONE_MOBILE"] == null ? "" : d["PHONE_MOBILE"] + "', ");
             sb.Append(" PHONE_OFFICE='");

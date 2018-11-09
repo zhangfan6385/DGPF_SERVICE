@@ -88,18 +88,19 @@ namespace UIDP.WebAPI.Controllers
                             if (password != userdt.Rows[0]["USER_PASS"].ToString())
                             {
                                 //dinfo["password"] = userdt.Rows[0]["USER_PASS"].ToString();
-                                dinfo["newpassword"] = password;
+                                dinfo["newpassword"] = UIDP.Security.SecurityHelper.StringToMD5Hash(password);
                                 dinfo["userid"] = userdt.Rows[0]["USER_ID"].ToString();
                                 mm.updatePTRpass(dinfo);
                             }
                         }
                     }
-
+                   
                     DataTable dt = um.getUserInfoByName(username);
                     if (dt == null || dt.Rows.Count == 0)
                     {
                         return Json(new { code = -1, message = "此用户不存在！" });
                     }
+                    password = UIDP.Security.SecurityHelper.StringToMD5Hash(password);
                     if (password != dt.Rows[0]["USER_PASS"].ToString())
                     {
                         return Json(new { code = -1, message = "密码错误！" });
@@ -200,7 +201,7 @@ namespace UIDP.WebAPI.Controllers
         {
             Dictionary<string, object> d = value.ToObject<Dictionary<string, object>>();
             string userCode = d["userCode"] == null ? "" : d["userCode"].ToString();
-            string password = d["password"] == null ? "" : d["password"].ToString();
+            string password = d["password"] == null ? "" : UIDP.Security.SecurityHelper.StringToMD5Hash(d["password"].ToString());
             string userId = "";
             string userName = "云主机推送服务";
             string accessToken = "";
