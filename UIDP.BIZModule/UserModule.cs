@@ -116,7 +116,7 @@ namespace UIDP.BIZModule
             //    }
             //    return db.updateAdminPasswordData(d);
             //}
-            if (d["roleLevel"].ToString() == "admin")
+            if (d.Keys.Contains("roleLevel") && d["roleLevel"].ToString() == "admin")
             {
                 string userId = getAdminCode();
                 string pass = getAdminPass();
@@ -128,6 +128,8 @@ namespace UIDP.BIZModule
             }
             else
             {
+                d["password"] = Security.SecurityHelper.StringToMD5Hash(d["password"].ToString());
+                d["newpassword"] = Security.SecurityHelper.StringToMD5Hash(d["newpassword"].ToString());
                 DataTable dt = db.IsInvalidPassword(d);
                 if (dt == null || dt.Rows.Count == 0)
                 {
@@ -137,6 +139,7 @@ namespace UIDP.BIZModule
             }
         }
         public string updatePTRpass(Dictionary<string, object> d) {
+            d["newpassword"] = Security.SecurityHelper.StringToMD5Hash(d["newpassword"].ToString());
             return db.updatePTRpass(d);
         }
         public string updateUserData(Dictionary<string, object> d)
