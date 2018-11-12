@@ -141,9 +141,9 @@ namespace UIDP.ODS
                    "TS_UIDP_GROUP_POWERINFO rf, " +
                   "ts_uidp_menuinfo        f " +
              "where ur.user_id = '" + sysCode["userId"].ToString() + "' " +
-             " and f.SYS_CODE='"+ sysCode["sysCode"].ToString() + "' " +
+             " and f.SYS_CODE='" + sysCode["sysCode"].ToString() + "' " +
                "and ur.group_id = rf.group_id  " +  //and f.MENU_PROP=1
-               "and rf.menu_id = f.menu_id ) a ";  //union select * from ts_uidp_menuinfo where MENU_ID='0fea0012-b259-43b9-9c49-1a993cf3defa'
+               "and rf.menu_id = f.menu_id ) a union select * from ts_uidp_menuinfo where MENU_ID='0fea0012-b259-43b9-9c49-1a993cf3defa'";
             }
 
             //string sql = "SELECT * from ts_uidp_menuinfo";
