@@ -70,6 +70,12 @@ namespace UIDP.BIZModule
         {
             return db.GetOrgById(orgId);
         }
+
+        public DataTable GetOrgByCode(string orgCode)
+        {
+            return db.GetOrgByCode(orgCode);
+        }
+
         public string updateOrgPID()
         {
             return db.updateOrgPID();
@@ -143,17 +149,22 @@ namespace UIDP.BIZModule
             {
                 return "无组织机构id";
             }
-            DataTable dt = db.fetchOrgList();
-            string strIds = getOrgIds(d["id"].ToString(), dt);
-            if (strIds != null && strIds != "")
+            //DataTable dt = db.fetchOrgList();
+            //string strIds = getOrgIds(d["id"].ToString(), dt);
+            //if (strIds != null && strIds != "")
+            //{
+            //    strIds += ",'" + d["id"].ToString() + "'";
+            //}
+            //else
+            //{
+            //    strIds = "'" + d["id"].ToString() + "'";
+            //}
+            if (db.getValidateNum(d["id"].ToString()) == "0")
             {
-                strIds += ",'" + d["id"].ToString() + "'";
+                return db.updateOrgArticle(d["id"].ToString());
             }
-            else
-            {
-                strIds = "'" + d["id"].ToString() + "'";
-            }
-            return db.updateOrgArticle(strIds);
+            throw new Exception("该组织架构下存在用户，无法删除！");
+
         }
         /// <summary>
         /// 所有子节点的id  逗号隔开
@@ -164,6 +175,7 @@ namespace UIDP.BIZModule
         {
             StringBuilder sb = new StringBuilder();
             DataRow[] rows = dt.Select("ORG_CODE_UPPER='" + pid + "'");
+            //DataRow[] rows = dt.Select("ORG_CODE_UPPER like '" + pid + "%'");
             if (rows.Length > 0)
             {
                 bool isFist = false;
@@ -287,20 +299,20 @@ namespace UIDP.BIZModule
                 for (int j = rowbegin; j < rowend; j++)
                 //foreach (DataRow row in dt.Rows)
                 {
-                    var orgname = getString(dt.Rows[j]["组织机构简称"]);
-                    var allorgname = getString(dt.Rows[j]["组织机构名称"]);
+                    var orgname = getString(dt.Rows[j]["*组织机构简称"]);
+                    var allorgname = getString(dt.Rows[j]["*组织机构名称"]);
                     var dtt = orgdt;
-                    DataRow[] rows = orgdt.Select("ORG_SHORT_NAME='" + getString(dt.Rows[j]["组织机构简称"])+ "'");
-                    //DataRow[] rows = orgdt.Select("ORG_SHORT_NAME='" + getString(dt.Rows[j]["组织机构简称"]) + "' and ORG_NAME='" + getString(dt.Rows[j]["组织机构名称"]) + "'");
+                    //DataRow[] rows = orgdt.Select("ORG_SHORT_NAME='" + getString(dt.Rows[j]["组织机构简称"])+ "'");
+                    DataRow[] rows = orgdt.Select("ORG_CODE='" + getString(dt.Rows[j]["*组织机构编码"]) + "' and ORG_CODE_UPPER='" + getString(dt.Rows[j]["*上级组织机构编码"]) + "'");
                     if (rows.Length == 0)
                     {
                         //sb.Append(" insert into ts_uidp_org (ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) values ");
                         sb.Append(fengefu + "('" + Guid.NewGuid().ToString() + "',");
-                        sb.Append("'" + getString(dt.Rows[j]["组织机构编码"]) + "',");
-                        sb.Append("'" + getString(dt.Rows[j]["组织机构名称"]) + "',");
-                        sb.Append("'" + getString(dt.Rows[j]["组织机构简称"]) + "',");
-                        sb.Append("'" + getString(dt.Rows[j]["上级组织机构编码"]) + "',");
-                        if (dt.Rows[j]["是否有效"] != null && dt.Rows[j]["是否有效"].ToString() == "是")
+                        sb.Append("'" + getString(dt.Rows[j]["*组织机构编码"]) + "',");
+                        sb.Append("'" + getString(dt.Rows[j]["*组织机构名称"]) + "',");
+                        sb.Append("'" + getString(dt.Rows[j]["*组织机构简称"]) + "',");
+                        sb.Append("'" + getString(dt.Rows[j]["*上级组织机构编码"]) + "',");
+                        if (dt.Rows[j]["*是否有效"] != null && dt.Rows[j]["*是否有效"].ToString() == "是")
                         {
                             sb.Append("'1',");
                         }
@@ -317,12 +329,12 @@ namespace UIDP.BIZModule
                         foreach (var item in rows)
                         {
                             string sql = "update  ts_uidp_org set ";
-                            sql += " ORG_CODE='" + getString(dt.Rows[j]["组织机构编码"]) + "',";
-                            sql += " ORG_NAME='" + getString(dt.Rows[j]["组织机构名称"]) + "',";
-                            sql += " ORG_SHORT_NAME='" + getString(dt.Rows[j]["组织机构简称"]) + "',";
+                            sql += " ORG_CODE='" + getString(dt.Rows[j]["*组织机构编码"]) + "',";
+                            sql += " ORG_NAME='" + getString(dt.Rows[j]["*组织机构名称"]) + "',";
+                            sql += " ORG_SHORT_NAME='" + getString(dt.Rows[j]["*组织机构简称"]) + "',";
                             //sql += " ORG_ID_UPPER='" + getString(d["parentId"]) + "',";
-                            sql += " ORG_CODE_UPPER='" + getString(dt.Rows[j]["上级组织机构编码"]) + "',";
-                            sql += " ISINVALID='" + getString((dt.Rows[j]["是否有效"] != null && dt.Rows[j]["是否有效"].ToString() == "是") ? 1 : 0) + "',";
+                            sql += " ORG_CODE_UPPER='" + getString(dt.Rows[j]["*上级组织机构编码"]) + "',";
+                            sql += " ISINVALID='" + getString((dt.Rows[j]["*是否有效"] != null && dt.Rows[j]["*是否有效"].ToString() == "是") ? 1 : 0) + "',";
                             sql += " REMARK='" + getString(dt.Rows[j]["备注"]) + "'";
                             sql += " where ORG_ID='" + item["ORG_ID"].ToString() + "' ;";
                             sqllst.Add(sql);

@@ -50,34 +50,51 @@ namespace UIDP.WebAPI.Controllers
             Dictionary<string, object> r = new Dictionary<string, object>();
             try
             {
-                DataTable dt = null;
-                string orgpcode = null;
-                if (d.Keys.Contains("parentId") && d["parentId"] != null && !string.IsNullOrEmpty(d["parentId"].ToString()))
+                //DataTable dt = null;
+                //string orgpcode = null;
+                //if (d.Keys.Contains("parentId") && d["parentId"] != null && !string.IsNullOrEmpty(d["parentId"].ToString()))
+                //{
+                //    dt = mm.GetOrgById(d["parentId"].ToString());
+                //}
+                //else
+                //{
+                //    d["parentId"] = null;
+                //}
+                //if (dt != null)
+                //{
+                //    orgpcode = dt.Rows[0]["ORG_CODE"].ToString();
+                //}
+                //if (!string.IsNullOrEmpty(orgpcode))
+                //{
+                //    d["orgpCode"] = orgpcode;
+                //}
+                //else
+                //{
+                //    d["orgpCode"] = null;
+                //}
+                //DataTable dt = mm.GetOrgById(d["parentId"].ToString());
+                //string orgpcode = dt.Rows[0]["ORG_CODE"].ToString();
+                //if (!string.IsNullOrEmpty(orgpcode))
+                //{
+                //    d["orgpCode"] = orgpcode;
+                //}
+   
+                if (!string.IsNullOrEmpty(d["orgCodeUpper"].ToString()))
                 {
-                    dt = mm.GetOrgById(d["parentId"].ToString());
-                }
-                else
-                {
-                    d["parentId"] = null;
-                }
-                if (dt != null)
-                {
-                    orgpcode = dt.Rows[0]["ORG_CODE"].ToString();
-                }
-                if (!string.IsNullOrEmpty(orgpcode))
-                {
-                    d["orgpCode"] = orgpcode;
+                    d["orgpCode"] = d["orgCodeUpper"].ToString();
                 }
                 else
                 {
                     d["orgpCode"] = null;
                 }
-                //DataTable dt = mm.GetOrgById(d["parentId"].ToString());
-                //string orgpcode = dt.Rows[0]["ORG_CODE"].ToString();
-                if (!string.IsNullOrEmpty(orgpcode))
+                DataTable orgdt = mm.GetOrgByCode(d["orgCodeUpper"].ToString());
+                int SwiftNumber = 0;
+                if (orgdt!=null&&orgdt.Rows.Count>0)
                 {
-                    d["orgpCode"] = orgpcode;
+                    SwiftNumber = orgdt.Rows.Count + 1;
                 }
+                string orgCode = d["orgCodeUpper"].ToString() + SwiftNumber.ToString().PadLeft(3, '0');
+                d["orgCode"] = orgCode;
                 string b = mm.createOrgArticle(d);
                 if (b == "")
                 {

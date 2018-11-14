@@ -89,8 +89,8 @@ namespace UIDP.ODS
         /// <returns></returns>
         public string updateOrgArticle(string strid)
         {
-            string sql = "update ts_uidp_org set ISDELETE='0' where ORG_ID in(" + strid + ")";
-
+            //string sql = "update ts_uidp_org set ISDELETE='0' where ORG_ID in(" + strid + ")";
+            string sql = "update ts_uidp_org set ISDELETE='0' where ORG_CODE like '" + strid + "%'";
             return db.ExecutByStringResult(sql);
         }
 
@@ -135,6 +135,19 @@ namespace UIDP.ODS
         {
             string sql = "select * FROM ts_uidp_org where ORG_ID='" + orgId + "' ;";
             return db.GetDataTable(sql);
+        }
+        public DataTable GetOrgByCode(string orgCode)
+        {
+            string sql = "select * FROM ts_uidp_org where ORG_CODE_UPPER='" + orgCode + "' ;";
+            return db.GetDataTable(sql);
+        }
+
+        public string getValidateNum(string orgCode)
+        {
+            string num = "0";
+            string sql = "select count(*) from ts_uidp_org inner join ts_uidp_org_user on ts_uidp_org.ORG_ID = ts_uidp_org_user.ORG_ID and ts_uidp_org.ORG_CODE like '"+ orgCode + "%'";
+            num = db.GetString(sql);
+            return num;
         }
         /// <summary>
         /// 查询所有
