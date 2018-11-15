@@ -282,7 +282,7 @@ namespace UIDP.BIZModule
                 return "空数据，导入失败！";
             }
             DataView dv = new DataView(dt);
-            if (dt.Rows.Count != dv.ToTable(true, "组织机构编码").Rows.Count)
+            if (dt.Rows.Count != dv.ToTable(true, "*组织机构编码").Rows.Count)
             {
                 return "组织机构编码存在重复数据，导入失败！";
             }
