@@ -66,7 +66,7 @@ namespace UIDP.ODS
         }
 
 
-        public string updateSyncConf(Dictionary<string, object> d)
+        public string updateSyncConf(Dictionary<string, object> d,string passnew)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(" update ts_uidp_synchro_config set ");
@@ -81,8 +81,8 @@ namespace UIDP.ODS
 
             sb.Append(" USER_CODE='");
             sb.Append(d["USER_CODE"] == null ? "" : GetIsNullStr(d["USER_CODE"]) + "', ");
-            sb.Append(" USER_PASS='");
-            sb.Append(d["USER_PASS"] == null ? "" : GetIsNullStr(d["USER_PASS"]) + "', ");
+            sb.Append(" USER_PASS= case when USER_PASS='");
+            sb.Append(d["USER_PASS"] == null ? "" : GetIsNullStr(d["USER_PASS"]) + "' THEN USER_PASS else '"+passnew+"' end , ");
             sb.Append(" SYNC_TYPE='");
             sb.Append(d["SYNC_TYPE"] == null ? "" : GetIsNullStr(d["SYNC_TYPE"]) + "', ");
 

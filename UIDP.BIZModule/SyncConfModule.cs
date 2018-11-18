@@ -56,6 +56,7 @@ namespace UIDP.BIZModule
         public string createSyncConf(Dictionary<string, object> d)
         {
             d["SYNC_ID"] = Guid.NewGuid().ToString();
+            d["USER_PASS"] = Security.SecurityHelper.StringToMD5Hash(d["USER_PASS"].ToString());
             return db.createSyncConf(d);
         }
         /// <summary>
@@ -65,7 +66,8 @@ namespace UIDP.BIZModule
         /// <returns></returns>
         public string updateSyncConf(Dictionary<string, object> d)
         {
-            return db.updateSyncConf(d);
+            string passnew = Security.SecurityHelper.StringToMD5Hash(d["USER_PASS"].ToString());
+            return db.updateSyncConf(d,passnew);
         }
         /// <summary>
         /// 删除
