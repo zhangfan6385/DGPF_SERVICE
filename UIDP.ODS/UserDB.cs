@@ -44,7 +44,7 @@ namespace UIDP.ODS
             list.Add(sql);
             StringBuilder sb = new StringBuilder();
             sb.Append("INSERT INTO ts_uidp_userinfo(USER_ID,USER_DOMAIN,USER_CODE,USER_NAME,USER_PASS,PHONE_MOBILE,PHONE_OFFICE," +
-                "USER_EMAIL,USER_IP,USER_SEX,AUTHENTICATION_TYPE,FLAG,REG_TIME,USER_TYPE,REMARK) VALUES(");
+                "USER_EMAIL,USER_SEX,AUTHENTICATION_TYPE,FLAG,REG_TIME,USER_TYPE,REMARK) VALUES(");
             sb.Append("'");
             sb.Append(d["USER_ID"] == null ? "" : d["USER_ID"] + "', ");
             sb.Append("'");
@@ -61,8 +61,6 @@ namespace UIDP.ODS
             sb.Append(d["PHONE_OFFICE"] == null ? "" : d["PHONE_OFFICE"] + "', ");
             sb.Append("'");
             sb.Append(d["USER_EMAIL"] == null ? "" : d["USER_EMAIL"] + "', ");
-            sb.Append("'");
-            sb.Append(d["USER_IP"] == null ? "" : d["USER_IP"] + "', ");
             sb.Append(d["USER_SEX"] == null ? "1" : d["USER_SEX"] + ",");
             sb.Append(d["AUTHENTICATION_TYPE"] == null ? "" : d["AUTHENTICATION_TYPE"] + ", ");
             sb.Append(d["FLAG"] == null ? "1" : d["FLAG"] + ", ");
@@ -142,8 +140,6 @@ namespace UIDP.ODS
             sb.Append(d["PHONE_OFFICE"] == null ? "" : d["PHONE_OFFICE"] + "', ");
             sb.Append(" USER_EMAIL='");
             sb.Append(d["USER_EMAIL"] == null ? "" : d["USER_EMAIL"] + "', ");
-            sb.Append(" USER_IP='");
-            sb.Append(d["USER_IP"] == null ? "" : d["USER_IP"] + "', ");
             sb.Append(" USER_SEX=");
             sb.Append(d["USER_SEX"] == null ? "1" : d["USER_SEX"] + ",");
             sb.Append(" AUTHENTICATION_TYPE=");
