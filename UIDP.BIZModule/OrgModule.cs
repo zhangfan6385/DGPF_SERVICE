@@ -282,7 +282,7 @@ namespace UIDP.BIZModule
                 return "空数据，导入失败！";
             }
             DataView dv = new DataView(dt);
-            if (dt.Rows.Count != dv.ToTable(true, "*组织机构编码").Rows.Count)
+            if (dt.Rows.Count != dv.ToTable(true, "组织机构编码").Rows.Count)
             {
                 return "组织机构编码存在重复数据，导入失败！";
             }
@@ -299,20 +299,20 @@ namespace UIDP.BIZModule
                 for (int j = rowbegin; j < rowend; j++)
                 //foreach (DataRow row in dt.Rows)
                 {
-                    var orgname = getString(dt.Rows[j]["*组织机构简称"]);
-                    var allorgname = getString(dt.Rows[j]["*组织机构名称"]);
+                    var orgname = getString(dt.Rows[j]["组织机构简称"]);
+                    var allorgname = getString(dt.Rows[j]["组织机构名称"]);
                     var dtt = orgdt;
                     //DataRow[] rows = orgdt.Select("ORG_SHORT_NAME='" + getString(dt.Rows[j]["组织机构简称"])+ "'");
-                    DataRow[] rows = orgdt.Select("ORG_CODE='" + getString(dt.Rows[j]["*组织机构编码"]) + "' and ORG_CODE_UPPER='" + getString(dt.Rows[j]["*上级组织机构编码"]) + "'");
+                    DataRow[] rows = orgdt.Select("ORG_CODE='" + getString(dt.Rows[j]["组织机构编码"]) + "' and ORG_CODE_UPPER='" + getString(dt.Rows[j]["上级组织机构编码"]) + "'");
                     if (rows.Length == 0)
                     {
                         //sb.Append(" insert into ts_uidp_org (ORG_ID,ORG_CODE,ORG_NAME,ORG_SHORT_NAME,ORG_CODE_UPPER,ISINVALID,ISDELETE,REMARK) values ");
                         sb.Append(fengefu + "('" + Guid.NewGuid().ToString() + "',");
-                        sb.Append("'" + getString(dt.Rows[j]["*组织机构编码"]) + "',");
-                        sb.Append("'" + getString(dt.Rows[j]["*组织机构名称"]) + "',");
-                        sb.Append("'" + getString(dt.Rows[j]["*组织机构简称"]) + "',");
-                        sb.Append("'" + getString(dt.Rows[j]["*上级组织机构编码"]) + "',");
-                        if (dt.Rows[j]["*是否有效"] != null && dt.Rows[j]["*是否有效"].ToString() == "是")
+                        sb.Append("'" + getString(dt.Rows[j]["组织机构编码"]) + "',");
+                        sb.Append("'" + getString(dt.Rows[j]["组织机构名称"]) + "',");
+                        sb.Append("'" + getString(dt.Rows[j]["组织机构简称"]) + "',");
+                        sb.Append("'" + getString(dt.Rows[j]["上级组织机构编码"]) + "',");
+                        if (dt.Rows[j]["是否有效"] != null && dt.Rows[j]["是否有效"].ToString() == "是")
                         {
                             sb.Append("'1',");
                         }
@@ -329,12 +329,12 @@ namespace UIDP.BIZModule
                         foreach (var item in rows)
                         {
                             string sql = "update  ts_uidp_org set ";
-                            sql += " ORG_CODE='" + getString(dt.Rows[j]["*组织机构编码"]) + "',";
-                            sql += " ORG_NAME='" + getString(dt.Rows[j]["*组织机构名称"]) + "',";
-                            sql += " ORG_SHORT_NAME='" + getString(dt.Rows[j]["*组织机构简称"]) + "',";
+                            sql += " ORG_CODE='" + getString(dt.Rows[j]["组织机构编码"]) + "',";
+                            sql += " ORG_NAME='" + getString(dt.Rows[j]["组织机构名称"]) + "',";
+                            sql += " ORG_SHORT_NAME='" + getString(dt.Rows[j]["组织机构简称"]) + "',";
                             //sql += " ORG_ID_UPPER='" + getString(d["parentId"]) + "',";
-                            sql += " ORG_CODE_UPPER='" + getString(dt.Rows[j]["*上级组织机构编码"]) + "',";
-                            sql += " ISINVALID='" + getString((dt.Rows[j]["*是否有效"] != null && dt.Rows[j]["*是否有效"].ToString() == "是") ? 1 : 0) + "',";
+                            sql += " ORG_CODE_UPPER='" + getString(dt.Rows[j]["上级组织机构编码"]) + "',";
+                            sql += " ISINVALID='" + getString((dt.Rows[j]["是否有效"] != null && dt.Rows[j]["是否有效"].ToString() == "是") ? 1 : 0) + "',";
                             sql += " REMARK='" + getString(dt.Rows[j]["备注"]) + "'";
                             sql += " where ORG_ID='" + item["ORG_ID"].ToString() + "' ;";
                             sqllst.Add(sql);
