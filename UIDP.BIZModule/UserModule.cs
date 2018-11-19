@@ -659,9 +659,9 @@ namespace UIDP.BIZModule
                         {
                             string sql = "update  ts_uidp_userinfo set ";
                             sql += " AUTHENTICATION_TYPE='";
-                            sql += getString((dt.Rows[i]["账号类型"] != null && dt.Rows[i]["账号类型"].ToString() == "PTR账号") ? 1 : 0) + "',";
+                            sql += getString((dt.Rows[i]["*账号类型"] != null && dt.Rows[i]["*账号类型"].ToString() == "PTR账号") ? 1 : 0) + "',";
                             sql += " USER_DOMAIN='" + getString(dt.Rows[i]["*账号"]) + "',";
-                            sql += " AUTHENTICATION_TYPE='";
+                            sql += " USER_TYPE='";
                             sql+= getString((dt.Rows[i]["*用户类型"] != null && dt.Rows[i]["*用户类型"].ToString() == "普通用户") ? 1 : 0) + "',";
                             sql += " USER_PASS='";
                             sql+= getString(dt.Rows[i]["用户密码"]) == "" ? UIDP.Security.SecurityHelper.StringToMD5Hash("123456") : UIDP.Security.SecurityHelper.StringToMD5Hash(getString(dt.Rows[i]["用户密码"])) + "',";
