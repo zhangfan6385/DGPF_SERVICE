@@ -52,11 +52,11 @@ namespace UIDP.BIZModule.Models
         /// <summary>
         /// 
         /// </summary>
-        public string USER_ALIAS
-        {
-            set { _user_alias = value; }
-            get { return _user_alias; }
-        }
+        //public string USER_ALIAS
+        //{
+        //    set { _user_alias = value; }
+        //    get { return _user_alias; }
+        //}
         /// <summary>
         /// 
         /// </summary>
