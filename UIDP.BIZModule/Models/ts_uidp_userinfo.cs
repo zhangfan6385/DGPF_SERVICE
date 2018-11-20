@@ -13,13 +13,13 @@ namespace UIDP.BIZModule.Models
         private string _user_id;
         private string _user_code;
         private string _user_name;
-        private string _user_alias;
+       // private string _user_alias;
         private string _user_pass;
         private string _phone_mobile;
         private string _phone_office;
-        private string _phone_org;
+       // private string _phone_org;
         private string _user_email;
-        private string _email_office;
+       // private string _email_office;
         private string _user_ip;
         private DateTime? _reg_time;
         private int? _flag = 0;
@@ -84,11 +84,11 @@ namespace UIDP.BIZModule.Models
         /// <summary>
         /// 
         /// </summary>
-        public string PHONE_ORG
-        {
-            set { _phone_org = value; }
-            get { return _phone_org; }
-        }
+        //public string PHONE_ORG
+        //{
+        //    set { _phone_org = value; }
+        //    get { return _phone_org; }
+        //}
         /// <summary>
         /// 
         /// </summary>
@@ -100,11 +100,11 @@ namespace UIDP.BIZModule.Models
         /// <summary>
         /// 
         /// </summary>
-        public string EMAIL_OFFICE
-        {
-            set { _email_office = value; }
-            get { return _email_office; }
-        }
+        //public string EMAIL_OFFICE
+        //{
+        //    set { _email_office = value; }
+        //    get { return _email_office; }
+        //}
         /// <summary>
         /// 
         /// </summary>

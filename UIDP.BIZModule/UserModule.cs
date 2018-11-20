@@ -241,10 +241,10 @@ namespace UIDP.BIZModule
                 {
                     model.USER_NAME = row["USER_NAME"].ToString();
                 }
-                if (row["USER_ALIAS"] != null)
-                {
-                    model.USER_ALIAS = row["USER_ALIAS"].ToString();
-                }
+                //if (row["USER_ALIAS"] != null)
+                //{
+                //    model.USER_ALIAS = row["USER_ALIAS"].ToString();
+                //}
                 if (row["USER_PASS"] != null)
                 {
                     model.USER_PASS = row["USER_PASS"].ToString();
@@ -257,18 +257,18 @@ namespace UIDP.BIZModule
                 {
                     model.PHONE_OFFICE = row["PHONE_OFFICE"].ToString();
                 }
-                if (row["PHONE_ORG"] != null)
-                {
-                    model.PHONE_ORG = row["PHONE_ORG"].ToString();
-                }
+                //if (row["PHONE_ORG"] != null)
+                //{
+                //    model.PHONE_ORG = row["PHONE_ORG"].ToString();
+                //}
                 if (row["USER_EMAIL"] != null)
                 {
                     model.USER_EMAIL = row["USER_EMAIL"].ToString();
                 }
-                if (row["EMAIL_OFFICE"] != null)
-                {
-                    model.EMAIL_OFFICE = row["EMAIL_OFFICE"].ToString();
-                }
+                //if (row["EMAIL_OFFICE"] != null)
+                //{
+                //    model.EMAIL_OFFICE = row["EMAIL_OFFICE"].ToString();
+                //}
                 if (row["USER_IP"] != null)
                 {
                     model.USER_IP = row["USER_IP"].ToString();
