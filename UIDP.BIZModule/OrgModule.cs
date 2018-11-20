@@ -269,7 +269,7 @@ namespace UIDP.BIZModule
 
         public string UploadOrgFileNew(string filePath)
         {
-            string modePath = System.IO.Directory.GetCurrentDirectory() + "\\ExcelModel\\组织结构模板.xlsx";//原始文件
+            string modePath = System.IO.Directory.GetCurrentDirectory() + "\\ExcelModel\\组织结构模板.xls";//原始文件
             string path = filePath;//原始文件
             string mes = "";
             DataTable orgdt = db.fetchOrgList();
